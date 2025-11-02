@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개발자 포트폴리오</title>
+    <style>
+        /* Color Variables */
+        :root {
+            --primary: #4F46E5;
+            --primary-dark: #4338CA;
+            --secondary: #10B981;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s ease;
+        }
+
+        /* Dark Mode */
+        [data-theme="dark"] {
+            --dark: #F9FAFB;
+            --light: #111827;
+            --gray-100: #1F2937;
+            --gray-200: #1F2937;
+            --gray-500: #9CA3AF;
+            --gray-700: #E5E7EB;
+        }
+
+        /* Reset 및 기본 스타일 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        :root {
+            scroll-padding-top: 80px;  /* 헤더 높이만큼 패딩 추가 */
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --accent-color: #2563eb;
+            --hover-bg: #f9fafb;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0a0a0a;
+            --text-color: #f9fafb;
+            --text-light: #9ca3af;
+            --border-color: #2d3748;
+            --accent-color: #3b82f6;
+            --hover-bg: #111827;
+        }
+
+        body {
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-weight: 400;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        a {
+            text-decoration: underline;
+            text-decoration-color: var(--accent-color);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+            text-decoration-skip-ink: none;
+            color: var(--accent-color);
+            transition: opacity 0.2s ease;
+        }
+
+        a:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            background-color: #f5f3ff; /* 연한 라벤더 계열 */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid #e9d5ff; /* 연한 보라색 계열의 테두리 */
+            color: #4c1d95; /* 진한 보라색 계열의 텍스트 */
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-decoration: none;
+            white-space: nowrap;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            margin: 0 0.25rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--hover-bg);
+            color: var(--accent-color);
+        }
+
+        /* 메인 콘텐츠 */
+        main {
+            margin-top: 5rem;
+            padding: 6rem 0;
+        }
+
+        /* 섹션 공통 스타일 */
+        section {
+            padding: 6rem 0;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+
+        /* About 섹션 배경색 - 연한 블루 */
+        #about {
+            background-color: #dbeafe;
+        }
+
+        [data-theme="dark"] #about {
+            background-color: #1e3a8a;
+        }
+
+        /* Skills 섹션 배경색 - 연한 그린 */
+        #skills {
+            background-color: #dcfce7;
+        }
+
+        [data-theme="dark"] #skills {
+            background-color: #14532d;
+        }
+
+        /* Projects 섹션 배경색 - 연한 바이올렛 */
+        #projects {
+            background-color: #ede9fe;
+        }
+
+        [data-theme="dark"] #projects {
+            background-color: #3730a3;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        /* 히어로 섹션 */
+        .hero {
+            min-height: auto;
+            display: flex;
+            align-items: center;
+            padding: 2rem 0;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+            background: linear-gradient(90deg, var(--accent-color), #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            line-height: 1.7;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 1.25rem 3rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.3rem;
+        }
+
+        .project-title {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .project-card:hover .project-title {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            box-shadow: none;
+            margin-left: 1rem;
+        }
+
+        .btn-outline::before {
+            background: var(--primary);
+            opacity: 0.1;
+        }
+
+        .btn-outline:hover {
+            color: white;
+        }
+
+        .btn i {
+            margin-left: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .btn:hover i {
+            transform: translateX(3px);
+        }
+
+        .SectionTitle_link-btn__4fQo1:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .AboutMe_basic-infos__8_ZHB {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .AboutMe_basic-info-wrapper__LY6qK {
+            margin-bottom: 1rem;
+            background: var(--card-bg, #ffffff);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--border-color, #e5e7eb);
+        }
+
+        .AboutMe_basic-info-wrapper__LY6qK:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .AboutMe_basic-info__GJ9Sk {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            height: 100%;
+        }
+
+        .AboutMe_icon-img-wrapper__T3T_6 {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-light, #eef2ff);
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .AboutMe_icon-img-wrapper__T3T_6 img {
+            width: 24px;
+            height: 24px;
+            color: var(--primary);
+        }
+
+        .AboutMe_field__1z5OU {
+            flex: 1;
+        }
+
+        .AboutMe_field-label__DcOnU {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .AboutMe_field-value__gZ_aZ {
+            font-weight: 600;
+            color: var(--text-color);
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        /* Dark mode adjustments */
+        [data-theme="dark"] .AboutMe_basic-info-wrapper__LY6qK {
+            background: var(--card-bg, #1f2937);
+            border-color: var(--border-color, #374151);
+        }
+
+        [data-theme="dark"] .AboutMe_icon-img-wrapper__T3T_6 {
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        /* About Me 섹션 */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--text-color);
+            margin: 0;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .section-link {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .section-link:hover {
+            background-color: var(--hover-bg);
+            transform: translateY(-2px);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .about-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .about-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-color);
+        }
+
+        .about-icon {
+            font-size: 1.8rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(79, 70, 229, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--primary);
+        }
+
+        .about-info {
+            flex: 1;
+        }
+
+        .about-info label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.3rem;
+        }
+
+        .about-value {
+            font-weight: 600;
+            color: var(--text-color);
+            word-break: break-word;
+        }
+
+        @media (max-width: 1024px) {
+            .about-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* 프로젝트 그리드 */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 2rem;
+            justify-items: center;
+        }
+
+        @media (max-width: 1024px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+
+            .project-card {
+                width: 100%;
+                max-width: 600px;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+        }
+
+        .project-card {
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: var(--bg-color);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            margin: 0 auto;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-color);
+        }
+
+        .project-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .project-info {
+            padding: 0.8rem;
+            text-align: left;
+        }
+
+        .project-info h3 {
+            font-size: 2rem;
+            margin-bottom: 1.25rem;
+            color: var(--text-color);
+        }
+
+        .project-info p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .project-card:hover .tag {
+            background-color: #4F46E5;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+
+        .project-card .tag:nth-child(2n) {
+            background-color: rgba(139, 92, 246, 0.1);
+            color: #8B5CF6;
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .project-card .tag:nth-child(3n) {
+            background-color: rgba(236, 72, 153, 0.1);
+            color: #EC4899;
+            border-color: rgba(236, 72, 153, 0.2);
+        }
+
+        .project-links {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+        }
+
+        .project-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .project-links a:hover {
+            background-color: #e5e7eb;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-links a:first-child::before {
+            content: '';
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%234b5563'%3E%3Cpath d='M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm2.218 18.616c-.354.069-.468-.149-.468-.336v-1.921c0-.653-.229-1.079-.481-1.296 1.56-.173 3.198-.765 3.198-3.454 0-.765-.273-1.389-.721-1.879.072-.177.312-.889-.069-1.853 0 0-.587-.188-1.923.718-.561-.154-1.159-.231-1.754-.234-.595.003-1.194.08-1.755.234-1.337-.906-1.925-.718-1.925-.718-.379.964-.14 1.676-.067 1.852-.448.49-.722 1.114-.722 1.879 0 2.682 1.634 3.282 3.189 3.459-.2.175-.381.483-.444.936-.397.179-1.413.488-2.037-.582 0 0-.37-.672-1.073-.722 0 0-.683-.009-.048.426 0 0 .46.215.781 1.024.426.795 1.104 1.13 1.838 1.103l.048-.02v1.18c0 .185-.113.404-.462.336-2.782-.925-4.788-3.549-4.788-6.641 0-3.867 3.271-7 7.308-7s7.308 3.133 7.308 7c0 3.091-2.003 5.715-4.782 6.641z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .project-links a:last-child::before {
+            content: '';
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%234b5563'%3E%3Cpath d='M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.692 43.6 43.6 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.692A31.72 31.72 0 0 0 4.5 12c0 1.236.046 2.454.138 3.662a4.006 4.006 0 0 0 3.7 3.692c1.67.211 3.376.317 5.088.317s3.418-.106 5.088-.317a4.005 4.005 0 0 0 3.7-3.692c.092-1.208.138-2.426.138-3.662zM9.75 15.5v-7l6 3.5-6 3.5z'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .project-links a:hover::before {
+            filter: brightness(0.8);
+        }
+
+        .project-card:hover .tag:nth-child(2n) {
+            background-color: #8B5CF6;
+            color: white;
+        }
+
+        .project-card:hover .tag:nth-child(3n) {
+            background-color: #EC4899;
+            color: white;
+        }
+
+        /* 기술 스택 */
+        .skills-container {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        /* Skills Section - Modern Style */
+        #skills {
+            padding: 7rem 0;
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.9) 100%);
+        }
+
+        [data-theme="dark"] #skills {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(31, 41, 55, 0.95) 100%);
+        }
+
+        .Skills_skill-sets__J0lAx {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 2.5rem;
+            margin-top: 3rem;
+            padding-bottom: 2rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--gray-400) var(--gray-100);
+        }
+
+        /* 스크롤바 스타일링 */
+        .Skills_skill-sets__J0lAx::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .Skills_skill-sets__J0lAx::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: 4px;
+        }
+
+        .Skills_skill-sets__J0lAx::-webkit-scrollbar-thumb {
+            background: var(--gray-400);
+            border-radius: 4px;
+        }
+
+        .Skills_skill-sets__J0lAx::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-500);
+        }
+
+        .Skills_skill-set__ThBNR {
+            background: var(--bg-color);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color);
+            min-width: 300px;
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .Skills_skill-set__ThBNR:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .Skills_name__77JFy {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .Skills_name__77JFy img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .Skills_list__oVEks {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .Skills_skill__HahNA {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .Skills_skill__HahNA::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .Skills_skill__HahNA:hover::before {
+            opacity: 1;
+        }
+
+        .Skills_skill__HahNA:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .Skills_skill-set__ThBNR {
+                min-width: 320px;
+                padding: 2rem;
+            }
+        }
+
+        .skill-name {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .skill-bar {
+            height: 10px;
+            background: var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .skill-level {
+            height: 100%;
+            background: var(--accent-color);
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+
+
+
+        /* 푸터 */
+        footer {
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            text-align: center;
+            padding: 3rem 0;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        /* 반응형 디자인 */
+        /* 반응형 스타일 */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 960px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                max-width: 720px;
+            }
+
+            .section-title {
+                font-size: 2.25rem;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero p {
+                font-size: 1.125rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 540px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 2.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                padding: 0.75rem 1.75rem;
+                font-size: 0.95rem;
+            }
+
+            .about-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .skill-category {
+                min-width: 250px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 1.25rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .btn-group {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                margin: 0 !important;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr;
+            }
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            padding: 0 1rem;
+        }
+
+        .projects-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .skills-container {
+            grid-template-columns: 1fr;
+        }
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">Portfolio</a>
+            <nav class="nav-links">
+                <a href="#about">About me</a>
+                <a href="#skills">Skills</a>
+                <a href="#projects">Projects</a>
+            </nav>
+        </div>
+    </header>
+
+    <main style="margin-bottom: 0; padding-bottom: 0;">
+        <!-- 히어로 섹션 -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>이건희 포트폴리오</h1>
+                    <p>
+                        안녕하세요. 백엔드 개발자 이건희입니다.<br/>
+                        협업과 소통을 통해 문제를 정의하고, 단단한 코드로 해결책을 제시하는 과정을 좋아합니다.<br/>
+                        다양한 기술을 활용해 효율적이고 직관적인 서비스를 완성하는데 관심이 많습니다.<br/>
+                        오늘보다 나은 코드를 작성하고, 함께 성장하는 개발자가 되기 위해 꾸준히 학습하고 있습니다.
+                    </p>
+                    <!-- <a href="#projects" class="btn">프로젝트 보기</a> -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 소개 섹션 -->
+        <section id="about">
+            <div class="container">
+                <div class="section-title">
+                    <button class="section-link" aria-label="섹션 링크 버튼">
+                        <i class="fas fa-external-link-alt" style="font-size: 2.25rem;"></i>
+                    </button>
+                    <h2>About me</h2>
+                </div>
+                <div class="about-grid">
+                    <div class="about-card">
+                        <div class="about-icon">👤</div>
+                        <div class="about-info">
+                            <label>이름</label>
+                            <div class="about-value">이건희</div>
+                        </div>
+                    </div>
+                    <div class="about-card">
+                        <div class="about-icon">🎂</div>
+                        <div class="about-info">
+                            <label>생년월일</label>
+                            <div class="about-value">1991.03.09</div>
+                        </div>
+                    </div>
+                    <div class="about-card">
+                        <div class="about-icon">🎯</div>
+                        <div class="about-info">
+                            <label>관심 분야</label>
+                            <div class="about-value">AI 서비스 개발,<br/>백엔드 아키텍처 설계</div>
+                        </div>
+                    </div>
+                    <a href="https://github.com/qwerty1347" target="_blank" class="about-card" style="text-decoration: none;">
+                        <div class="about-icon"><i class="fab fa-github"></i></div>
+                        <div class="about-info">
+                            <label>GitHub</label>
+                            <div class="about-value">github.com/qwerty1347</div>
+                        </div>
+                    </a>
+                    <div class="about-card">
+                        <div class="about-icon">✉️</div>
+                        <div class="about-info">
+                            <label>이메일</label>
+                            <div class="about-value">qwertys1347@gmail.com</div>
+                        </div>
+                    </div>
+                    <div class="about-card">
+                        <div class="about-icon">🎓</div>
+                        <div class="about-info">
+                            <label>학력</label>
+                            <div class="about-value">가톨릭대학교<br/> (정보통신전자공학부)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 기술 스택 섹션 -->
+        <section id="skills">
+            <div class="container">
+                <div class="section-title">
+                    <button class="section-link" aria-label="섹션 링크 버튼">
+                        <i class="fas fa-tools" style="font-size: 2.25rem;"></i>
+                    </button>
+                    <h2>Skills</h2>
+                </div>
+                <div class="Skills_skill-sets__J0lAx">
+                    <!-- Language -->
+                    <div class="Skills_skill-set__ThBNR">
+                        <div class="Skills_name__77JFy">
+                            <i class="fas fa-code" style="font-size: 1.5rem; margin-right: 0.5rem;"></i>
+                            Language
+                        </div>
+                        <ul class="Skills_list__oVEks">
+                            <li class="Skills_skill__HahNA" style="background-color:#3d75a4;color:#ffffff">Python</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#777BB4;color:#ffffff">PHP</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#efd81d;color:#000000">JavaScript</li>
+                            <!-- <li class="Skills_skill__HahNA" style="background-color:#2f74c0;color:#ffffff">TypeScript</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#d13d35;color:#ffffff">Java</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#ae36e0;color:#ffffff">Kotlin</li> -->
+                        </ul>
+                    </div>
+
+                    <!-- Frontend -->
+                    <div class="Skills_skill-set__ThBNR">
+                        <div class="Skills_name__77JFy">
+                            <i class="fas fa-laptop-code" style="font-size: 1.5rem; margin-right: 0.5rem;"></i>
+                            Frontend
+                        </div>
+                        <ul class="Skills_list__oVEks">
+                            <li class="Skills_skill__HahNA" style="background-color:#0769AD;color:#ffffff;">jQuery</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#7952B3;color:#ffffff;">Bootstrap</li>
+                            <!-- <li class="Skills_skill__HahNA" style="background-color:#000000;color:#ffffff">Next.js / React</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#49443e;color:#ffffff">Zustand</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#3c7ce6;color:#ffffff">Recoil</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#ff4260;color:#ffffff">React-Query</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#423058;color:#ffffff">Apollo-Client</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#0f1931;color:#ffffff">React-Hook-Form</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#ce6b9c;color:#ffffff">Sass</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#38bdf8;color:#ffffff">Tailwind CSS</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#c43bad;color:#ffffff">Emotion</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#8869ee;color:#ffffff">Vite</li> -->
+                        </ul>
+                    </div>
+
+                    <!-- Backend -->
+                    <div class="Skills_skill-set__ThBNR">
+                        <div class="Skills_name__77JFy">
+                            <i class="fas fa-server" style="font-size: 1.5rem; margin-right: 0.5rem;"></i>
+                            Backend
+                        </div>
+                        <ul class="Skills_list__oVEks">
+                            <li class="Skills_skill__HahNA" style="background-color:#009688;color:#ffffff">FastAPI</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#113527;color:#ffffff">Django</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#FF4B4B;color:#ffffff">Streamlit</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#FF2D20;color:#ffffff">Laravel</li>
+                            <!-- <li class="Skills_skill__HahNA" style="background-color:#82b355;color:#ffffff">Spring (Boot)</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#18363f;color:#ffffff">Gradle</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#ffcd34;color:#000000">Firebase</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#30a26e;color:#ffffff">Supabase</li> -->
+                        </ul>
+                    </div>
+
+                    <!-- DevOps -->
+                    <div class="Skills_skill-set__ThBNR">
+                        <div class="Skills_name__77JFy">
+                            <i class="fas fa-network-wired" style="font-size: 1.5rem; margin-right: 0.5rem;"></i>
+                            DevOps
+                        </div>
+                        <ul class="Skills_list__oVEks">
+                            <li class="Skills_skill__HahNA" style="background-color:#F05032;color:#ffffff;">Git</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#2468ee;color:#ffffff">Docker</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#FCC624;color:#ffffff;">Linux</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#f79b26;color:#ffffff">AWS (EC2, S3)</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#D22128;color:#FFFFFF;">Apache</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#009639;color:#FFFFFF;">Nginx</li>
+                            <!-- <li class="Skills_skill__HahNA" style="background-color:#486edf;color:#ffffff">Kubernetes</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#db4e3f;color:#ffffff">Redis</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#5bbeb5;color:#ffffff">Elastic Search</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#000000;color:#ffffff">Vercel</li> -->
+                        </ul>
+                    </div>
+
+                    <!-- DevOps -->
+                    <div class="Skills_skill-set__ThBNR">
+                        <div class="Skills_name__77JFy">
+                            <i class="fas fa-database" style="font-size: 1.5rem; margin-right: 0.5rem;"></i>
+                            DB
+                        </div>
+                        <ul class="Skills_list__oVEks">
+                            <li class="Skills_skill__HahNA" style="background-color:#4479A1;color:#FFFFFF;">MySQL</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#47A248;color:#FFFFFF;">MongoDB</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#8E44AD;color:#FFFFFF;">Vector DB</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 프로젝트 섹션 -->
+        <section id="projects">
+            <div class="container">
+                <div class="section-title">
+                    <button class="section-link" aria-label="섹션 링크 버튼">
+                        <i class="fas fa-project-diagram" style="font-size: 2.25rem;"></i>
+                    </button>
+                    <h2>Projects</h2>
+                </div>
+                <div class="projects-grid" style="margin-top: 1rem;">
+                    <div class="project-card">
+                        <div class="project-info">
+                            <span class="project-title">에이전트 챗봇</span>
+                            <p>FastAPI 기반으로 Langchain 을 활용하여 능동적으로 도구를 직접 선택하고 알맞은 응답을 생성하는 에이전트 챗봇 입니다.</p>
+                            <div class="project-tags">
+                                <span class="tag" style="background-color:#009688;color:#FFFFFF;">FastAPI</span>
+                                <span class="tag" style="background-color:#FF4B4B;color:#FFFFFF;">Streamlit</span>
+                                <span class="tag" style="background-color:#8E44AD;color:#FFFFFF;">Vector DB</span>
+                                <span class="tag" style="background-color:#2496ED;color:#FFFFFF;">Docker</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://www.notion.so/FastAPI-Streamlit-29f4e65ad833805195b0cf45bac9692a" target="_blank">
+                                    <span>이미지</span>
+                                </a>
+                                <a href="https://github.com/qwerty1347/fastapi-chatbot" target="_blank">
+                                    <span>Github</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-info">
+                            <span class="project-title">OCR API</span>
+                            <p>FastAPI 기반으로 이미지나 사진 속 텍스트를 자동으로 인식하고 텍스트로 변환해 주는 API 입니다.</p>
+                            <div class="project-tags">
+                                <span class="tag" style="background-color:#009688;color:#FFFFFF;">FastAPI</span>
+                                <span class="tag" style="background-color:#2496ED;color:#FFFFFF;">Docker</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://www.notion.so/FastAPI-OCR-API-27c4e65ad8338002bb64cf104b0d2edd" target="_blank">
+                                    <span>이미지</span>
+                                </a>
+                                <a href="https://github.com/qwerty1347/fastapi-ocr" target="_blank">
+                                    <span>Github</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-info">
+                            <span class="project-title">게시판</span>
+                            <p>Django 기반으로 '점프 투 Django' 도서 내용을 학습하며 개발한 게시판 웹 애플리케이션 입니다.</p>
+                            <div class="project-tags">
+                                <span class="tag" style="background-color:#092E20;color:#FFFFFF;">Django</span>
+                                <span class="tag" style="background-color:#4479A1;color:#FFFFFF;">MySQL</span>
+                                <span class="tag" style="background-color:#0769AD;color:#FFFFFF;">jQuery</span>
+                                <span class="tag" style="background-color:#2496ED;color:#FFFFFF;">Docker</span>
+                            </div>
+                            <div class="project-links">
+                                <!-- <a href="#" target="_blank">
+                                    <span>이미지</span>
+                                </a> -->
+                                <a href="https://github.com/qwerty1347/jump_to_django" target="_blank">
+                                    <span>Github</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-info">
+                            <span class="project-title">관리자 대시보드</span>
+                            <p>Laravel 기반으로 개발한 관리자 CMS 통합 관리 웹 애플리케이션 입니다.</p>
+                            <div class="project-tags">
+                                <span class="tag" style="background-color:#FF2D20;color:#FFFFFF;">Laravel</span>
+                                <span class="tag" style="background-color:#4479A1;color:#FFFFFF;">MySQL</span>
+                                <span class="tag" style="background-color:#47A248;color:#FFFFFF;">MongoDB</span>
+                                <span class="tag" style="background-color:#0769AD;color:#FFFFFF;">jQuery</span>
+                                <span class="tag" style="background-color:#2496ED;color:#FFFFFF;">Docker</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://www.notion.so/larevel8-CMS-1cb4e65ad83380b6ba9dde5dfcae4af2?source=copy_link" target="_blank">
+                                    <span>이미지</span>
+                                </a>
+                                <a href="https://github.com/qwerty1347/laravel8-cms" target="_blank">
+                                    <span>Github</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 푸터 -->
+    <footer>
+        <div class="container">
+            <p>© 2025 이건희. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
