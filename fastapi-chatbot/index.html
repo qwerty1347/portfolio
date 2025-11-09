@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI - Agent 챗봇</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">Portfolio</div>
+        </div>
+    </header>
+
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title">LangChain Agent 챗봇</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>이 프로젝트는 LangChain 기반의 RAG 구조를 활용하여<br/>
+                    VectorDB 에 임베딩된 데이터 유사도 검색과 Google 웹 검색을 지원하고,<br/>
+                    자연어 처리를 통해 사용자의 질문에 정확하고 관련성 높은 정보를 제공하는 에이전트 챗봇입니다.<br/>
+                    FastAPI 를 이용해 백엔드 API를 구축하였고, Streamlit 을 통해 사용자 친화적인 UI를 구축하였습니다.</p>
+                </div>
+                <div class="about-image">
+                    <img src="chatbot_preview.png" alt="프로젝트 미리보기" class="project-image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="project" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">기술 스택</h2>
+            <div class="tech-stack">
+                <div class="tech-category">
+                    <h3>Backend & Frontend</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Python 3.11</li>
+                        <li><i class="fas fa-check"></i> FastAPI</li>
+                        <li><i class="fas fa-check"></i> VectorDB(Qdrant)</li>
+                        <li><i class="fas fa-check"></i> Streamlit</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h3>LLM / RAG</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> LangChain</li>
+                        <li><i class="fas fa-check"></i> Llama3</li>
+                        <li><i class="fas fa-check"></i> Sentence Transformers</li>
+                        <li><i class="fas fa-check"></i> Google 웹 검색</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h3>DevOps</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Docker</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2 class="section-title mt-40">주요 기능</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>자연어 질의 응답</h3>
+                    <p>사용자의 자연어 질문을 이해하고, Llama3 기반 LLM 을 활용하여 관련된 답변을 제공합니다.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>RAG 기반 유사도 검색</h3>
+                    <p>VectorDB(Qdrant) 에 임베딩된 내부 문서를 기반으로 유사도 검색을 수행하며 정확한 정보를 제공합니다.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>웹 검색</h3>
+                    <p>최신 정보가 필요하거나 내부 문서에 해당되지 않는 사용자의 질문을 Google 웹 검색을 활용하여 답변을 제공합니다.</p>
+                </div>
+            </div>
+
+            <div class="screenshots mt-60">
+                <h2 class="section-title">UI & 기능 스크린샷</h2>
+                <div class="screenshot-grid">
+                    <div class="screenshot">
+                        <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-chatbot/main/storage/screenshots/ui.png" alt="챗봇 UI">
+                        <p>챗봇 대화 화면</p>
+                    </div>
+                    <div class="screenshot">
+                        <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-chatbot/main/storage/screenshots/db_search.png" alt="RAG 기반 유사도 검색 결과">
+                        <p>RAG 기반 유사도 검색 결과</p>
+                    </div>
+                    <div class="screenshot">
+                        <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-chatbot/main/storage/screenshots/web_search.png" alt="웹 검색 결과">
+                        <p>웹 검색 결과</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 프로젝트 상세 -->
+    <section id="details" class="section">
+        <div class="container">
+            <h2 class="section-title">프로젝트 상세</h2>
+
+            <div class="details-grid">
+                <!-- 구현 상세 -->
+                <div class="detail-card">
+                    <div class="detail-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>구현 상세</h3>
+                    <div class="feature-list">
+                        <!-- 아키텍처 -->
+                        <div class="feature-item">
+                            <i class="fas fa-project-diagram"></i>
+                            <div>
+                                <h4>아키텍처 설계</h4>
+                                <p>
+                                    - FastAPI 백엔드와 Streamlit 프론트엔드를 연동<br/>
+                                    - RAG 구조 기반으로 벡터DB(Qdrant) 검색과 Google 웹 검색 통합<br/>
+                                    - 질문 유형에 따라 내부 문서 검색 또는 웹 검색 자동 판단 로직 구현
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 핵심 기술 -->
+                        <div class="feature-item">
+                            <i class="fas fa-robot"></i>
+                            <div>
+                                <h4>LangChain</h4>
+                                <p>
+                                    - 도구(벡터DB, 웹 검색)를 연결하여 에이전트 챗봇 구성<br/>
+                                    - Llama3 기반 LLM과 연동하여 사용자 질문에 대한 답변 생성<br/>
+                                    - 에이전트 도구 선택을 위한 프롬프트 관리 전략 구현
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 답변 모델 -->
+                        <div class="feature-item">
+                            <i class="fas fa-robot"></i>
+                            <div>
+                                <h4>답변 모델</h4>
+                                <p>
+                                    - 사용 모델: <strong>hwchase17/react</strong> (Instruction-tuned 답변 모델)<br/>
+                                    - LangChain과 결합하여 벡터DB 검색, 웹 검색 결과를 통합하여 질문에 맞는 답변 생성
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- VectorDB 컬렉션 -->
+                        <div class="feature-item">
+                            <i class="fas fa-database"></i>
+                            <div>
+                                <h4>VectorDB 컬렉션 & 토큰 관리</h4>
+                                <p>
+                                    - 컬렉션 이름: <strong>domeggook</strong><br/>
+                                    - 벡터 크기(size): 384, 거리 측정(distance metric): Cosine<br/>
+                                    - 문서를 청킹(Chunking)하여 임베딩 후 저장, 평균 토큰 수: 512<br/>
+                                    - 코사인 유사도 기반 검색 및 하이브리드 검색(키워드 + 의미 기반) 수행
+                                </p>
+                            </div>
+                        </div>
+
+
+                        <!-- 핵심 코드/구현 포인트 -->
+                        <div class="feature-item">
+                            <i class="fas fa-laptop-code"></i>
+                            <div>
+                                <h4>핵심 구현 포인트</h4>
+                                <p>
+                                    - FastAPI 비동기 처리로 고성능 RESTful API 구현<br/>
+                                    - Qdrant 벡터 임베딩 저장 및 코사인 유사도 기반 검색<br/>
+                                    - 문서 청킹(Chunking) 기법으로 RAG 정확도 향상<br/>
+                                    - 웹 검색 결과 요약 후 LLM에 전달
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 성능/결과 -->
+                        <div class="feature-item">
+                            <i class="fas fa-chart-line"></i>
+                            <div>
+                                <h4>성과 및 최적화</h4>
+                                <p>
+                                    - 하이브리드 검색(키워드 + 의미 기반)으로 정확도 향상<br/>
+                                    - 캐싱 전략 적용으로 응답 속도 최적화<br/>
+                                    - Streamlit UI를 통해 사용자 친화적 인터페이스 제공<br/>
+                                    - 실제 챗봇 대화 화면 및 검색 결과 확인 가능
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 향후 계획 -->
+                <div class="detail-card">
+                    <div class="detail-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>향후 개선 계획</h3>
+                    <div class="improvement-list">
+                        <div class="improvement-item">
+                            <div class="improvement-header">
+                                <span class="improvement-badge">대화 기능</span>
+                                <h4>대화 컨텍스트 개선</h4>
+                            </div>
+                            <p>대화 흐름을 더 자연스럽게 만들기 위해 컨텍스트 인식 기능을 강화할 계획입니다. 이전 대화 내용을 더 오래 기억하고 관련성 높은 응답을 생성할 수 있도록 개선할 예정입니다.</p>
+                            <div class="improvement-tags">
+                                <span>장기 메모리</span>
+                                <span>대화 컨텍스트</span>
+                            </div>
+                        </div>
+                        <div class="improvement-item">
+                            <div class="improvement-header">
+                                <span class="improvement-badge">데이터 처리</span>
+                                <h4>다양한 데이터 소스 지원</h4>
+                            </div>
+                            <p>PDF, 워드, 엑셀 등 다양한 문서 형식에서 직접 텍스트를 추출하고 분석할 수 있는 기능을 추가할 예정입니다. 이를 통해 더 다양한 형태의 정보를 활용할 수 있을 것입니다.</p>
+                            <div class="improvement-tags">
+                                <span>PDF, 이미지 요약 정리</span>
+                            </div>
+                        </div>
+                        <div class="improvement-item">
+                            <div class="improvement-header">
+                                <span class="improvement-badge">보안 강화</span>
+                                <h4>JWT 기반 인증 시스템</h4>
+                            </div>
+                            <p>JWT(JSON Web Token)를 활용한 안전한 사용자 인증 시스템을 구축할 계획입니다.</p>
+                            <div class="improvement-tags">
+                                <span>JWT</span>
+                                <span>OAuth2</span>
+                                <span>보안</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 연락처 -->
+    <section id="contact" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">연락처</h2>
+                <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>이메일</h3>
+                    <a href="mailto:qwertys1347@gmail.com" class="contact-link">qwertys1347@gmail.com</a>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <h3>GitHub 프로젝트</h3>
+                    <a href="https://github.com/qwerty1347/fastapi-chatbot" target="_blank" class="contact-link">
+                        github.com/qwerty1347/fastapi-chatbot
+                    </a>
+                </div>
+
+                <!-- <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-code-branch"></i>
+                    </div>
+                    <h3>프로젝트 보기</h3>
+                    <a href="https://github.com/qwerty1347/fastapi-chatbot" target="_blank" class="contact-link">
+                        GitHub 저장소 바로가기
+                    </a>
+                </div> -->
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Agent 챗봇 프로젝트. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
