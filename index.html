@@ -102,14 +102,99 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
+            right: 0;
             z-index: 1000;
             padding: 1rem 0;
-            transition: all 0.3s ease;
-            background-color: #f5f3ff; /* 연한 라벤더 계열 */
+            background-color: #f5f3ff;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            border-bottom: 1px solid #e9d5ff; /* 연한 보라색 계열의 테두리 */
-            color: #4c1d95; /* 진한 보라색 계열의 텍스트 */
+            border-bottom: 1px solid #e9d5ff;
+            color: #4c1d95;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* 모바일 메뉴 버튼 */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4c1d95;
+            padding: 0.5rem;
+        }
+
+        /* 모바일 네비게이션 스타일 */
+        @media (max-width: 768px) {
+            html, body {
+                overflow-x: hidden;
+                width: 100%;
+            }
+
+            body {
+                padding-top: 70px;
+                margin: 0;
+            }
+
+            header {
+                padding: 1rem 0;
+                width: 100vw;
+                left: 0;
+                right: 0;
+                margin: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+                margin: 0;
+                padding: 0.5rem 1.5rem;
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .nav-container {
+                padding: 0 0 0 1rem;
+                position: relative;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .logo {
+                padding: 0.5rem 1.5rem;
+                display: inline-block;
+                position: relative;
+                z-index: 1;
+                margin: 0;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: #f5f3ff;
+                flex-direction: column;
+                align-items: center;
+                padding: 1rem 0;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                transform: translateY(-150%);
+                transition: transform 0.3s ease-in-out;
+                z-index: 999;
+                border-top: 1px solid #e9d5ff;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 0.75rem 1rem;
+                width: 100%;
+                text-align: center;
+            }
         }
 
         .nav-container {
@@ -117,8 +202,11 @@
             justify-content: space-between;
             align-items: center;
             max-width: 1200px;
+            width: 100%;
             margin: 0 auto;
             padding: 0 2rem;
+            box-sizing: border-box;
+            position: relative;
         }
 
         .logo {
@@ -200,7 +288,6 @@
         /* 메인 콘텐츠 */
         main {
             margin-top: 5rem;
-            padding: 6rem 0;
         }
 
         /* 섹션 공통 스타일 */
@@ -508,6 +595,20 @@
             transform: translateY(-2px);
         }
 
+        .Skills_skill-sets__J0lAx {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        .Skills_skill-set__ThBNR {
+            flex: 1;
+            min-width: 250px;
+        }
+
         .about-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -567,9 +668,13 @@
             .about-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .Skills_skill-sets__J0lAx {
+                gap: 1.5rem;
+            }
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
             .about-grid {
                 grid-template-columns: 1fr;
             }
@@ -577,9 +682,18 @@
             .section-title h2 {
                 font-size: 2rem;
             }
+
+            .Skills_skill-sets__J0lAx {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .Skills_skill-set__ThBNR {
+                width: 100%;
+            }
         }
 
-        /* 프로젝트 그리드 */
+        /* 프로젝트 그리드 - 기본 (PC) */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -591,15 +705,27 @@
             justify-items: center;
         }
 
-        @media (max-width: 1024px) {
+        /* 태블릿 (769px ~ 1024px) */
+        @media (max-width: 1024px) and (min-width: 769px) {
             .projects-grid {
                 grid-template-columns: 1fr;
-                max-width: 600px;
+                max-width: 800px;
+                padding: 0 2rem;
+            }
+        }
+
+        /* 모바일 (768px 이하) */
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr !important;
+                max-width: 100%;
+                padding: 0 1rem;
+                gap: 1.5rem;
             }
 
             .project-card {
-                width: 100%;
-                max-width: 600px;
+                width: 100% !important;
+                max-width: 100% !important;
             }
 
             .nav-links {
@@ -716,33 +842,7 @@
         }
 
         .project-links a:hover {
-            background-color: #e5e7eb;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .project-links a:first-child::before {
-            content: '';
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%234b5563'%3E%3Cpath d='M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm2.218 18.616c-.354.069-.468-.149-.468-.336v-1.921c0-.653-.229-1.079-.481-1.296 1.56-.173 3.198-.765 3.198-3.454 0-.765-.273-1.389-.721-1.879.072-.177.312-.889-.069-1.853 0 0-.587-.188-1.923.718-.561-.154-1.159-.231-1.754-.234-.595.003-1.194.08-1.755.234-1.337-.906-1.925-.718-1.925-.718-.379.964-.14 1.676-.067 1.852-.448.49-.722 1.114-.722 1.879 0 2.682 1.634 3.282 3.189 3.459-.2.175-.381.483-.444.936-.397.179-1.413.488-2.037-.582 0 0-.37-.672-1.073-.722 0 0-.683-.009-.048.426 0 0 .46.215.781 1.024.426.795 1.104 1.13 1.838 1.103l.048-.02v1.18c0 .185-.113.404-.462.336-2.782-.925-4.788-3.549-4.788-6.641 0-3.867 3.271-7 7.308-7s7.308 3.133 7.308 7c0 3.091-2.003 5.715-4.782 6.641z'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .project-links a:last-child::before {
-            content: '';
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%234b5563'%3E%3Cpath d='M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.692 43.6 43.6 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.692A31.72 31.72 0 0 0 4.5 12c0 1.236.046 2.454.138 3.662a4.006 4.006 0 0 0 3.7 3.692c1.67.211 3.376.317 5.088.317s3.418-.106 5.088-.317a4.005 4.005 0 0 0 3.7-3.692c.092-1.208.138-2.426.138-3.662zM9.75 15.5v-7l6 3.5-6 3.5z'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .project-links a:hover::before {
-            filter: brightness(0.8);
+            opacity: 0.8;
         }
 
         .project-card:hover .tag:nth-child(2n) {
@@ -1048,7 +1148,10 @@
     <header>
         <div class="container nav-container">
             <a href="#" class="logo">Portfolio</a>
-            <nav class="nav-links">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav-links" id="navLinks">
                 <a href="#about">About me</a>
                 <a href="#skills">Skills</a>
                 <a href="#projects">Projects</a>
@@ -1056,22 +1159,20 @@
         </div>
     </header>
 
-    <main style="margin-bottom: 0; padding-bottom: 0;">
+    <main>
         <!-- 히어로 섹션 -->
-        <section class="hero">
+        <!-- <section class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <h1>이건희 포트폴리오</h1>
                     <p>
                         안녕하세요. 백엔드 개발자 이건희입니다.<br/>
                         협업과 소통을 통해 문제를 정의하고, 단단한 코드로 해결책을 제시하는 과정을 좋아합니다.<br/>
                         다양한 기술을 활용해 효율적이고 직관적인 서비스를 완성하는데 관심이 많습니다.<br/>
                         오늘보다 나은 코드를 작성하고, 함께 성장하는 개발자가 되기 위해 꾸준히 학습하고 있습니다.
                     </p>
-                    <!-- <a href="#projects" class="btn">프로젝트 보기</a> -->
                 </div>
             </div>
-        </section>
+        </section> -->
 
         <!-- 소개 섹션 -->
         <section id="about">
@@ -1205,9 +1306,9 @@
                             <li class="Skills_skill__HahNA" style="background-color:#F05032;color:#ffffff;">Git</li>
                             <li class="Skills_skill__HahNA" style="background-color:#2468ee;color:#ffffff">Docker</li>
                             <li class="Skills_skill__HahNA" style="background-color:#FCC624;color:#ffffff;">Linux</li>
-                            <li class="Skills_skill__HahNA" style="background-color:#f79b26;color:#ffffff">AWS (EC2, S3)</li>
+                            <!-- <li class="Skills_skill__HahNA" style="background-color:#f79b26;color:#ffffff">AWS (EC2, S3)</li>
                             <li class="Skills_skill__HahNA" style="background-color:#D22128;color:#FFFFFF;">Apache</li>
-                            <li class="Skills_skill__HahNA" style="background-color:#009639;color:#FFFFFF;">Nginx</li>
+                            <li class="Skills_skill__HahNA" style="background-color:#009639;color:#FFFFFF;">Nginx</li> -->
                             <!-- <li class="Skills_skill__HahNA" style="background-color:#486edf;color:#ffffff">Kubernetes</li>
                             <li class="Skills_skill__HahNA" style="background-color:#db4e3f;color:#ffffff">Redis</li>
                             <li class="Skills_skill__HahNA" style="background-color:#5bbeb5;color:#ffffff">Elastic Search</li>
@@ -1244,7 +1345,11 @@
                     <div class="project-card">
                         <div class="project-info">
                             <span class="project-title">에이전트 챗봇</span>
-                            <p>FastAPI 기반으로 Langchain 을 활용하여 능동적으로 도구를 직접 선택하고 알맞은 응답을 생성하는 에이전트 챗봇 입니다.</p>
+
+                            <p>FastAPI 기반으로 LangChain을 활용하여 상황에 맞는 도구를 직접 선택하고 답변을 생성하는 에이전트 챗봇 입니다.</p>
+                            <p>RAG(Retrieval Augmented Generation) 구조를 적용하여 내부 데이터(VectorDB) 검색과 Google 웹 검색을 자동으로 판단해 수행하며, 백엔드는 FastAPI, 프론트엔드는 Streamlit으로 구성되어 있으며, 비동기 처리 기반의 아키텍처를 통해 빠르고 안정적인 응답을 제공합니다.</p>
+                            <p>LangSmith를 통해 모니터링 및 추적이 가능하며, 여러 프롬프트 버전을 실험하고 비교할 수 있는 환경을 구현하였습니다.</p>
+
                             <div class="project-tags">
                                 <span class="tag" style="background-color:#009688;color:#FFFFFF;">FastAPI</span>
                                 <span class="tag" style="background-color:#FF4B4B;color:#FFFFFF;">Streamlit</span>
@@ -1253,9 +1358,11 @@
                             </div>
                             <div class="project-links">
                                 <a href="https://www.notion.so/FastAPI-Streamlit-29f4e65ad833805195b0cf45bac9692a" target="_blank">
+                                    <i class="fas fa-images"></i>
                                     <span>이미지</span>
                                 </a>
                                 <a href="https://github.com/qwerty1347/fastapi-chatbot" target="_blank">
+                                    <i class="fab fa-github"></i>
                                     <span>Github</span>
                                 </a>
                             </div>
@@ -1265,16 +1372,22 @@
                     <div class="project-card">
                         <div class="project-info">
                             <span class="project-title">OCR API</span>
+
                             <p>FastAPI 기반으로 이미지나 사진 속 텍스트를 자동으로 인식하고 텍스트로 변환해 주는 API 입니다.</p>
+                            <p>EasyOCR, PaddleOCR, Naver ClovaOCR 다양한 엔진을 모듈화하였으며, 비동기 처리 기반의 아키텍처를 통해 빠르고 안정적인 응답을 제공합니다.</p>
+                            <p>JWT 인증을 적용하여 안전한 API 호출을 가능하게 하였습니다.</p>
+
                             <div class="project-tags">
                                 <span class="tag" style="background-color:#009688;color:#FFFFFF;">FastAPI</span>
                                 <span class="tag" style="background-color:#2496ED;color:#FFFFFF;">Docker</span>
                             </div>
                             <div class="project-links">
                                 <a href="https://www.notion.so/FastAPI-OCR-API-27c4e65ad8338002bb64cf104b0d2edd" target="_blank">
+                                    <i class="fas fa-images"></i>
                                     <span>이미지</span>
                                 </a>
                                 <a href="https://github.com/qwerty1347/fastapi-ocr" target="_blank">
+                                    <i class="fab fa-github"></i>
                                     <span>Github</span>
                                 </a>
                             </div>
@@ -1284,7 +1397,10 @@
                     <div class="project-card">
                         <div class="project-info">
                             <span class="project-title">게시판</span>
+
                             <p>Django 기반으로 '점프 투 Django' 도서 내용을 학습하며 개발한 게시판 웹 애플리케이션 입니다.</p>
+                            <p>목록, 작성, 수정, 삭제, 추천, 댓글 등의 핵심 커뮤니티 기능을 구현하였으며, OAuth 인증을 활용하여 안전하고 신뢰성 높은 사용자 인증 환경을 제공합니다.</p>
+
                             <div class="project-tags">
                                 <span class="tag" style="background-color:#092E20;color:#FFFFFF;">Django</span>
                                 <span class="tag" style="background-color:#4479A1;color:#FFFFFF;">MySQL</span>
@@ -1305,7 +1421,10 @@
                     <div class="project-card">
                         <div class="project-info">
                             <span class="project-title">관리자 대시보드</span>
+
                             <p>Laravel 기반으로 개발한 관리자 CMS 통합 관리 웹 애플리케이션 입니다.</p>
+                            <p>Google, Naver, Kakao 소셜 로그인과 자체 회원가입을 모두 지원하며, 확장 가능한 컨텐츠 관리 기능과 관리자 전용 대시보드를 구현하였으며, 자동화된 테스트 환경을 구축하여 높은 안정성과 유지보수성을 확보했습니다.</p>
+
                             <div class="project-tags">
                                 <span class="tag" style="background-color:#FF2D20;color:#FFFFFF;">Laravel</span>
                                 <span class="tag" style="background-color:#4479A1;color:#FFFFFF;">MySQL</span>
@@ -1315,9 +1434,11 @@
                             </div>
                             <div class="project-links">
                                 <a href="https://www.notion.so/larevel8-CMS-1cb4e65ad83380b6ba9dde5dfcae4af2?source=copy_link" target="_blank">
+                                    <i class="fas fa-images"></i>
                                     <span>이미지</span>
                                 </a>
                                 <a href="https://github.com/qwerty1347/laravel8-cms" target="_blank">
+                                    <i class="fab fa-github"></i>
                                     <span>Github</span>
                                 </a>
                             </div>
@@ -1334,5 +1455,21 @@
             <p>© 2025 이건희. All rights reserved.</p>
         </div>
     </footer>
+    <script>
+        // 모바일 메뉴 토글
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // 메뉴 클릭 시 메뉴 닫기
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+    </script>
 </body>
 </html>
