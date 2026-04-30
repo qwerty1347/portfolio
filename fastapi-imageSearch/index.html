@@ -1,321 +1,515 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>유사 이미지 검색 API · FastAPI + Qdrant</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fastapi-imageSearch — backend portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-  <div class="grain"></div>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow" aria-hidden="true"></div>
 
-  <header class="nav">
-    <div class="nav-inner">
-      <a class="brand" href="#">
-        <span class="brand-dot"></span>
-        <span>image-search</span>
-      </a>
-      <nav class="nav-links">
-        <a href="#overview">개요</a>
-        <a href="#stack">스택</a>
-        <a href="#architecture">아키텍처</a>
-        <a href="#improvements">리팩터링</a>
-        <a href="#github">GitHub</a>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-    <section id="overview" class="hero">
-      <div class="container">
-        <span class="eyebrow">
-          <span class="eyebrow-dot"></span>
-          Backend · Computer Vision · Vector Search
-        </span>
-        <h1 class="hero-title">유사 이미지<br/>검색 API</h1>
-        <p class="hero-subtitle">
-          FastAPI + Qdrant + CLIP + YOLOv8 기반 이미지 유사도 검색 서비스.
-          의존성 주입, lifespan 워밍업, 비동기 처리를 다듬은 프로덕션 지향 백엔드.
-        </p>
-
-        <div class="hero-meta">
-          <span class="meta-pill"><i class="fa-solid fa-bolt"></i> Async I/O</span>
-          <span class="meta-pill"><i class="fa-solid fa-circle-nodes"></i> Dependency Injection</span>
-          <span class="meta-pill"><i class="fa-solid fa-layer-group"></i> Celery + Redis</span>
-          <span class="meta-pill"><i class="fa-solid fa-vector-square"></i> Qdrant</span>
-        </div>
-
-        <div class="hero-stats">
-          <div class="stat">
-            <span class="stat-number">768</span>
-            <span class="stat-label">CLIP ViT-L/14<br/>벡터 차원</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number">1×</span>
-            <span class="stat-label">프로세스당<br/>모델 로드</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number">Top-5</span>
-            <span class="stat-label">코사인 유사도<br/>실시간 검색</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="stack" class="section">
-      <div class="container">
-        <h2 class="section-title">
-          <span class="section-num">01</span>
-          기술 스택
-        </h2>
-        <p class="section-lead">
-          Web · AI/CV · Vector DB · Worker 4개 영역으로 의존성을 분리. 각 레이어는 명시적 인터페이스로만 통신합니다.
-        </p>
-
-        <div class="stack-grid">
-          <div class="stack-group">
-            <div class="stack-head">
-              <i class="fa-solid fa-server"></i>
-              <h3>Web · Validation</h3>
-            </div>
-            <div class="chips">
-              <span class="chip">FastAPI 0.136</span>
-              <span class="chip">Uvicorn (uvloop)</span>
-              <span class="chip">Pydantic 2.13</span>
-              <span class="chip">pydantic-settings</span>
-            </div>
-          </div>
-          <div class="stack-group">
-            <div class="stack-head">
-              <i class="fa-solid fa-brain"></i>
-              <h3>AI · Computer Vision</h3>
-            </div>
-            <div class="chips">
-              <span class="chip">YOLOv8 (Open Images v7)</span>
-              <span class="chip">CLIP ViT-L/14</span>
-              <span class="chip">sentence-transformers</span>
-              <span class="chip">PyTorch 2.11</span>
-            </div>
-          </div>
-          <div class="stack-group">
-            <div class="stack-head">
-              <i class="fa-solid fa-database"></i>
-              <h3>Vector DB · Cache</h3>
-            </div>
-            <div class="chips">
-              <span class="chip">Qdrant 1.15 · gRPC/HTTP</span>
-              <span class="chip">Redis 7</span>
-              <span class="chip">Cosine Similarity</span>
-            </div>
-          </div>
-          <div class="stack-group">
-            <div class="stack-head">
-              <i class="fa-solid fa-gears"></i>
-              <h3>Worker · Ops</h3>
-            </div>
-            <div class="chips">
-              <span class="chip">Celery 5.6</span>
-              <span class="chip">Flower</span>
-              <span class="chip">Docker Compose</span>
-              <span class="chip">Python 3.11</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="architecture" class="section">
-      <div class="container">
-        <h2 class="section-title">
-          <span class="section-num">02</span>
-          아키텍처
-        </h2>
-        <p class="section-lead">
-          요청은 FastAPI 라우터에서, 데이터셋 임베딩은 Celery 워커에서. 두 경로가 같은 모델 캐시를 공유합니다.
-        </p>
-
-        <div class="pipeline">
-          <div class="pipe-row">
-            <div class="pipe-card">
-              <span class="pipe-tag">Request</span>
-              <h4><i class="fa-solid fa-upload"></i> Upload</h4>
-              <code>POST /api/v1/image</code>
-            </div>
-            <span class="pipe-arrow">→</span>
-            <div class="pipe-card">
-              <span class="pipe-tag">Detect</span>
-              <h4><i class="fa-solid fa-bullseye"></i> YOLOv8</h4>
-              <p>가장 신뢰도 높은 객체 1개 추출 → bbox 산출</p>
-            </div>
-            <span class="pipe-arrow">→</span>
-            <div class="pipe-card">
-              <span class="pipe-tag">Encode</span>
-              <h4><i class="fa-solid fa-vector-square"></i> CLIP</h4>
-              <p>크롭 영역을 768차원 벡터로 인코딩</p>
-            </div>
-            <span class="pipe-arrow">→</span>
-            <div class="pipe-card">
-              <span class="pipe-tag">Search</span>
-              <h4><i class="fa-solid fa-magnifying-glass"></i> Qdrant</h4>
-              <p>fruits 컬렉션 Top-5 코사인 유사도 검색</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bento">
-          <article class="bento-card span-2">
-            <header class="bento-head">
-              <span class="bento-icon"><i class="fa-solid fa-circle-nodes"></i></span>
-              <span class="bento-tag">Dependency Injection</span>
-            </header>
-            <h3>모델 싱글톤 + <code>Depends</code></h3>
-            <p>
-              <code>@lru_cache(maxsize=1)</code>로 Qdrant 클라이언트·CLIP·YOLO를 프로세스당 1회만 로드.
-              FastAPI는 <code>Depends</code>, Celery는 같은 캐시 함수를 직접 호출하여 재사용합니다.
-              라우터 import만으로 모델이 끌어올려지지 않습니다.
-            </p>
-            <pre class="code"><code><span class="kw">@lru_cache</span>(maxsize=<span class="num">1</span>)
-<span class="kw">def</span> <span class="fn">get_qdrant_client</span>() -> QdrantClient:
-    <span class="kw">return</span> QdrantClient(url=config.QDRANT_HOST)
-
-<span class="kw">def</span> <span class="fn">get_qdrant</span>(
-    client: QdrantClient = Depends(get_qdrant_client),
-) -> Qdrant:
-    <span class="kw">return</span> Qdrant(client)</code></pre>
-          </article>
-
-          <article class="bento-card">
-            <header class="bento-head">
-              <span class="bento-icon"><i class="fa-solid fa-power-off"></i></span>
-              <span class="bento-tag">Lifespan</span>
-            </header>
-            <h3>부팅 시 워밍업</h3>
-            <p>asynccontextmanager 기반 lifespan으로 모델·클라이언트를 미리 로드, 종료 시 close.</p>
-          </article>
-
-          <article class="bento-card">
-            <header class="bento-head">
-              <span class="bento-icon"><i class="fa-solid fa-bolt"></i></span>
-              <span class="bento-tag">async / threads</span>
-            </header>
-            <h3>이벤트 루프 보호</h3>
-            <p>YOLO·CLIP·Qdrant 같은 동기 호출을 <code>asyncio.to_thread</code>로 워커 스레드에 위임.</p>
-          </article>
-
-          <article class="bento-card">
-            <header class="bento-head">
-              <span class="bento-icon"><i class="fa-solid fa-layer-group"></i></span>
-              <span class="bento-tag">Celery</span>
-            </header>
-            <h3>안전한 비동기 임베딩</h3>
-            <p><code>prefetch=1</code>, <code>acks_late</code>, soft/hard time limit. <code>uuid5</code> 결정적 ID로 멱등성 확보.</p>
-          </article>
-
-          <article class="bento-card">
-            <header class="bento-head">
-              <span class="bento-icon"><i class="fa-solid fa-shield-halved"></i></span>
-              <span class="bento-tag">Errors</span>
-            </header>
-            <h3>전역 예외 핸들러</h3>
-            <p>BusinessException · ValidationError · HTTPException 분리, 응답 포맷 통일.</p>
-          </article>
-
-          <article class="bento-card span-2">
-            <header class="bento-head">
-              <span class="bento-icon"><i class="fa-solid fa-folder-tree"></i></span>
-              <span class="bento-tag">Layered Architecture</span>
-            </header>
-            <h3>레이어 분리</h3>
-            <p>
-              api / core / infrastructure / services / worker — 라우터는 얇게,
-              서비스는 도메인 로직, infrastructure는 외부 자원 경계만 담당.
-              테스트는 <code>app.dependency_overrides</code>로 mock을 주입할 수 있도록 설계했습니다.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="improvements" class="section">
-      <div class="container">
-        <h2 class="section-title">
-          <span class="section-num">03</span>
-          리팩터링: Before → After
-        </h2>
-        <p class="section-lead">
-          초기 구조의 문제를 분석하고, DI · lifespan · asyncio 패턴으로 다시 빌드한 과정.
-        </p>
-
-        <div class="diff-grid">
-          <article class="diff-card before">
-            <span class="diff-label"><i class="fa-solid fa-triangle-exclamation"></i> Before</span>
-            <ul>
-              <li>라우터 import 시점에 CLIP·YOLO 즉시 로드 (~890MB)</li>
-              <li>Qdrant 클라이언트가 매 서비스 인스턴스마다 재생성</li>
-              <li><code>async def</code> 안에서 동기 GPU 호출 → 이벤트 루프 블로킹</li>
-              <li>라우터 모듈 싱글톤 → 테스트에서 mock 주입 불가</li>
-              <li>Celery 워커도 매 태스크마다 모델 재로드</li>
-              <li>lifespan 부재 → 첫 요청마다 콜드 스타트</li>
-            </ul>
-          </article>
-
-          <article class="diff-card after">
-            <span class="diff-label"><i class="fa-solid fa-check"></i> After</span>
-            <ul>
-              <li><code>lru_cache</code> + lifespan 워밍업 → 프로세스당 1회 로드</li>
-              <li>Qdrant 클라이언트 단일 인스턴스, FastAPI/Celery 양쪽에서 재사용</li>
-              <li><code>asyncio.to_thread</code>로 동기 호출 분리 → 동시 요청 처리 가능</li>
-              <li><code>Depends</code> 기반 DI → <code>app.dependency_overrides</code>로 mock 주입</li>
-              <li>같은 캐시 함수 호출로 워커 프로세스당 1회 로드</li>
-              <li><code>uuid5</code> 결정적 ID + <code>acks_late</code>로 재시도 안전성 확보</li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <h2 class="section-title">
-          <span class="section-num">04</span>
-          스크린샷
-        </h2>
-        <div class="shots">
-          <figure class="shot">
-            <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-image/main/storage/screenshots/image_search.png" alt="사과 이미지 검색 결과" />
-            <figcaption>사과 이미지 검색 결과</figcaption>
-          </figure>
-          <figure class="shot">
-            <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-image/main/storage/screenshots/image_search2.png" alt="오렌지 이미지 검색 결과" />
-            <figcaption>오렌지 이미지 검색 결과</figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section id="github" class="section section-cta">
-      <div class="container cta">
-        <h2 class="section-title small">코드 보러가기</h2>
-        <p class="section-lead">
-          전체 구현, Docker Compose 구성, GitHub에서 확인할 수 있습니다.
-        </p>
-        <a class="btn" href="https://github.com/qwerty1347/fastapi-image" target="_blank" rel="noreferrer">
-          <i class="fa-brands fa-github"></i>
-          github.com/qwerty1347/fastapi-image
-          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+    <header class="topbar">
+        <a class="brand" href="../../index.html">
+            <span class="brand-prompt">~/</span><span>portfolio</span><span class="brand-sep">/</span><span class="brand-cur">fastapi-imageSearch</span>
         </a>
-      </div>
-    </section>
-  </main>
+        <nav class="nav">
+            <a href="#overview">overview</a>
+            <a href="#architecture">arch</a>
+            <a href="#stack">stack</a>
+            <a href="#highlights">highlights</a>
+            <a href="#api">api</a>
+            <a href="#pipeline">pipeline</a>
+            <a href="#roadmap">roadmap</a>
+        </nav>
+    </header>
 
-  <footer class="footer">
-    <div class="footer-inner">
-      <span>© 2026 image-search · FastAPI + Qdrant</span>
-    </div>
-  </footer>
+    <main class="page">
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-meta">
+                <span class="tag tag-version">v0.1.0</span>
+                <span class="tag tag-status"><span class="dot"></span>stable</span>
+                <span class="tag">python 3.11</span>
+                <span class="tag">fastapi 0.136</span>
+                <span class="tag">qdrant 1.15</span>
+                <span class="tag">torch 2.11</span>
+            </div>
+            <h1 class="hero-title">
+                fastapi<span class="dim">-</span>imageSearch<span class="cursor">_</span>
+            </h1>
+            <p class="hero-tagline">
+                <span class="kw">→</span> Multi-stage CV pipeline <span class="sep">·</span> Vector similarity search <span class="sep">·</span> Async-safe inference
+            </p>
+            <p class="hero-summary">
+                <code>YOLOv8</code> 객체 검출 → <code>CLIP ViT-L/14</code> 768차원 임베딩 →
+                <code>Qdrant</code> 코사인 유사도 검색을 단일 API로 묶었습니다. 모델은
+                <code>lru_cache</code> + lifespan으로 프로세스당 한 번만 로드되고, 동기 추론은
+                <code>asyncio.to_thread</code>로 감싸 이벤트 루프를 보호합니다. Celery 워커는
+                <code>uuid5</code> 결정적 ID로 멱등 임베딩을 보장합니다.
+            </p>
+
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-num">768</div>
+                    <div class="stat-label">CLIP vector dim</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">1×</div>
+                    <div class="stat-label">model load / proc</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">Top-5</div>
+                    <div class="stat-label">cosine search</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">3</div>
+                    <div class="stat-label">inference stages</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 01 OVERVIEW -->
+        <section id="overview" class="section">
+            <header class="section-head">
+                <span class="section-id">01</span>
+                <span class="section-kw">// overview</span>
+            </header>
+            <h2 class="section-title">두 가지 진입 경로, 같은 모델 캐시</h2>
+
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <div class="overview-tag">request</div>
+                    <code class="overview-route">POST /api/v1/image</code>
+                    <p>
+                        업로드된 이미지에서 YOLO로 객체 1개 추출 → CLIP 인코딩 →
+                        Qdrant Top-5 검색을 한 번의 요청으로 처리. 동기 추론은 모두
+                        <code>asyncio.to_thread</code>로 위임됩니다.
+                    </p>
+                </div>
+                <div class="overview-divider">
+                    <span>vs</span>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-tag accent">background</div>
+                    <code class="overview-route">embed_fruit_images.delay()</code>
+                    <p>
+                        Celery 워커가 <code>storage/images/fruits/</code>를 순회하며 데이터셋을
+                        벡터화·upsert. <code>uuid5(name=path)</code> 결정적 ID로 재실행해도 같은
+                        포인트가 갱신되어 멱등성을 유지합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 02 ARCHITECTURE -->
+        <section id="architecture" class="section">
+            <header class="section-head">
+                <span class="section-id">02</span>
+                <span class="section-kw">// architecture</span>
+            </header>
+            <h2 class="section-title">시스템 구성</h2>
+            <p class="section-sub">// FastAPI와 Celery가 같은 lru_cache 함수로 모델·클라이언트를 공유합니다</p>
+
+            <pre class="diagram">
+                  <span class="d-fg">┌──────────────────────┐</span>
+                  <span class="d-fg">│   client (browser)    │</span>
+                  <span class="d-fg">└──────────┬────────────┘</span>
+                             <span class="d-dim">│ multipart upload</span>
+              <span class="d-fg">┌──────────────▼───────────────┐</span>
+              <span class="d-fg">│  </span><span class="d-acc">FastAPI</span><span class="d-fg"> (uvicorn :8000)      │</span>
+              <span class="d-fg">│  Depends(FruitSearchService)  │</span>
+              <span class="d-fg">└────┬───────┬───────┬──────────┘</span>
+            <span class="d-dim">to_thread│       │       │</span>
+                   <span class="d-fg">▼       ▼       ▼</span>
+          <span class="d-fg">┌─────────┐ ┌────────┐ ┌──────────────┐</span>
+          <span class="d-fg">│ </span><span class="d-acc3">YOLOv8</span><span class="d-fg">  │ │ </span><span class="d-acc3">CLIP</span><span class="d-fg">   │ │  </span><span class="d-acc2">Qdrant</span><span class="d-fg">       │</span>
+          <span class="d-fg">│ detect  │ │ encode │ │  fruits coll │</span>
+          <span class="d-fg">│ bbox    │ │ 768d   │ │  cosine      │</span>
+          <span class="d-fg">└─────────┘ └────────┘ └──────▲───────┘</span>
+                                          <span class="d-dim">│ upsert</span>
+                                   <span class="d-fg">┌──────┴────────┐</span>
+                                   <span class="d-fg">│ </span><span class="d-acc">Celery worker</span><span class="d-fg">  │</span>
+                                   <span class="d-fg">│ -Q embedding   │</span>
+                                   <span class="d-fg">│ uuid5 id       │</span>
+                                   <span class="d-fg">└──────▲────────┘</span>
+                                          <span class="d-dim">│ scan</span>
+                                  <span class="d-fg">┌───────┴────────┐</span>
+                                  <span class="d-fg">│ storage/images │</span>
+                                  <span class="d-fg">│   /fruits      │</span>
+                                  <span class="d-fg">└────────────────┘</span></pre>
+
+            <div class="arch-notes">
+                <div class="arch-note">
+                    <span class="arch-note-key">model cache</span>
+                    <span class="arch-note-val"><code>@lru_cache(maxsize=1)</code> · 프로세스당 1회 로드 · API/워커 공유</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">lifespan</span>
+                    <span class="arch-note-val"><code>asynccontextmanager</code>로 부팅 시 모델 워밍업 · 종료 시 client close</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">async safety</span>
+                    <span class="arch-note-val">동기 GPU 호출은 <code>asyncio.to_thread</code> 위임 · 이벤트 루프 블로킹 차단</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">queue</span>
+                    <span class="arch-note-val">Celery <code>-Q embedding</code> · <code>acks_late</code> · <code>uuid5</code> 멱등성</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 03 STACK -->
+        <section id="stack" class="section">
+            <header class="section-head">
+                <span class="section-id">03</span>
+                <span class="section-kw">// stack</span>
+            </header>
+            <h2 class="section-title">의존성 트리</h2>
+            <p class="section-sub">$ uv tree --depth 1</p>
+
+            <div class="stack-block">
+                <div class="stack-row">
+                    <span class="stack-key">[ web ]</span>
+                    <span class="stack-val">python <span class="ver">3.11</span> <span class="sep">·</span> fastapi <span class="ver">0.136.0</span> <span class="sep">·</span> uvicorn <span class="ver">0.44.0</span> <span class="sep">·</span> pydantic <span class="ver">2.13</span></span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ vision ]</span>
+                    <span class="stack-val">ultralytics <span class="ver">8.4.40</span> <span class="sep">·</span> sentence-transformers <span class="ver">5.4.1</span> <span class="sep">·</span> torch <span class="ver">2.11.0</span></span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ vector ]</span>
+                    <span class="stack-val">qdrant-client <span class="ver">1.17.1</span> <span class="sep">·</span> qdrant-server <span class="ver">1.15.4</span> <span class="sep">·</span> cosine</span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ task ]</span>
+                    <span class="stack-val">celery <span class="ver">5.6.3</span> <span class="sep">·</span> redis <span class="ver">7.4.0</span> <span class="sep">·</span> flower <span class="ver">2.0.1</span></span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ image ]</span>
+                    <span class="stack-val">pillow <span class="ver">12.2.0</span> <span class="sep">·</span> numpy <span class="ver">2.4.4</span> <span class="sep">·</span> python-multipart</span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ infra ]</span>
+                    <span class="stack-val">docker compose <span class="sep">·</span> uv (lockfile) <span class="sep">·</span> pydantic-settings</span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ test ]</span>
+                    <span class="stack-val">pytest <span class="sep">·</span> pytest-asyncio <span class="sep">·</span> dependency_overrides</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 04 HIGHLIGHTS -->
+        <section id="highlights" class="section">
+            <header class="section-head">
+                <span class="section-id">04</span>
+                <span class="section-kw">// highlights</span>
+            </header>
+            <h2 class="section-title">기술적 의사결정</h2>
+
+            <div class="highlights">
+                <article class="highlight">
+                    <div class="highlight-num">001</div>
+                    <div class="highlight-body">
+                        <h3>의존성 주입 + 모델 싱글톤</h3>
+                        <p>
+                            <code>get_qdrant_client</code> · <code>get_embedding_model</code> · <code>get_yolo_model</code>을
+                            <code>@lru_cache(maxsize=1)</code>로 감싸 프로세스당 1회만 로드. FastAPI는
+                            <code>Depends</code>로, Celery는 같은 캐시 함수를 직접 호출하여 <em>완전히 동일한</em>
+                            객체를 재사용합니다. 라우터 import만으로 890MB 모델이 끌려오지 않습니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">lru_cache</span>
+                            <span class="mini-tag">DI</span>
+                            <span class="mini-tag">singleton</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">002</div>
+                    <div class="highlight-body">
+                        <h3>lifespan 워밍업으로 콜드 스타트 제거</h3>
+                        <p>
+                            <code>asynccontextmanager</code> 기반 lifespan에서 부팅 시 Qdrant 클라이언트 ·
+                            CLIP · YOLO를 미리 로드. 첫 요청에 추론 + 모델 로드가 동시에 발생해 응답이
+                            느려지는 콜드 스타트를 차단합니다. 종료 시 Qdrant client를 명시적으로 close.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">lifespan</span>
+                            <span class="mini-tag">cold-start</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">003</div>
+                    <div class="highlight-body">
+                        <h3>이벤트 루프 보호 — to_thread</h3>
+                        <p>
+                            YOLO 추론, CLIP <code>encode</code>, Qdrant <code>find_points</code> 모두
+                            <em>동기·CPU/GPU bound</em> 호출입니다. <code>FruitSearchService.get_similarity_images</code>
+                            내부에서 모든 동기 호출을 <code>asyncio.to_thread(...)</code>로 워커 스레드에 위임해
+                            FastAPI 이벤트 루프가 멈추는 사고를 차단했습니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">asyncio</span>
+                            <span class="mini-tag">GPU bound</span>
+                            <span class="mini-tag">non-blocking</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">004</div>
+                    <div class="highlight-body">
+                        <h3>Celery 멱등 임베딩</h3>
+                        <p>
+                            <code>embed_fruit_images</code> 태스크는 파일 경로 기반의
+                            <code>uuid5(NAMESPACE_URL, path)</code>를 PointID로 사용합니다. 같은 이미지가
+                            재처리되어도 같은 ID로 upsert 되므로 중복 포인트가 생기지 않으며,
+                            <code>acks_late</code> + <code>reject_on_worker_lost</code>와 정합됩니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">idempotent</span>
+                            <span class="mini-tag">uuid5</span>
+                            <span class="mini-tag">upsert</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">005</div>
+                    <div class="highlight-body">
+                        <h3>레이어 분리 + 테스트 친화성</h3>
+                        <p>
+                            <code>api / core / infrastructure / services / worker</code>로 책임을 분리.
+                            라우터는 얇게 유지하고, 서비스 계층이 도메인 로직을, infrastructure는 외부 자원
+                            경계만 담당합니다. <code>app.dependency_overrides</code>로 Qdrant·CLIP·YOLO를
+                            mock으로 바꿔 단위 테스트 가능.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">layered</span>
+                            <span class="mini-tag">testable</span>
+                            <span class="mini-tag">overrides</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">006</div>
+                    <div class="highlight-body">
+                        <h3>입력 검증 — bbox 임계치</h3>
+                        <p>
+                            YOLO가 검출한 객체가 너무 작거나 비율이 비정상이면 임베딩 품질이 떨어집니다.
+                            <code>min_size=10px</code> · <code>min_ratio=0.01</code> 임계치로 사전 필터링하고,
+                            미달 시 <code>BusinessException</code>으로 422를 반환해 노이즈가 벡터DB에 들어가지 않게 합니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">validation</span>
+                            <span class="mini-tag">bbox</span>
+                            <span class="mini-tag">data quality</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 05 API -->
+        <section id="api" class="section">
+            <header class="section-head">
+                <span class="section-id">05</span>
+                <span class="section-kw">// api surface</span>
+            </header>
+            <h2 class="section-title">엔드포인트</h2>
+
+            <div class="endpoints">
+                <div class="endpoint endpoint-head">
+                    <span>method</span>
+                    <span>path</span>
+                    <span>auth</span>
+                    <span>desc</span>
+                </div>
+                <div class="endpoint">
+                    <span class="m get">GET</span>
+                    <span class="p">/</span>
+                    <span class="a public">public</span>
+                    <span class="d">헬스체크 — Hello FastAPI</span>
+                </div>
+                <div class="endpoint">
+                    <span class="m post">POST</span>
+                    <span class="p">/api/v1/image</span>
+                    <span class="a public">public</span>
+                    <span class="d">유사 이미지 검색 — multipart upload → Top-5</span>
+                </div>
+            </div>
+
+            <div class="terminal">
+                <div class="term-head">
+                    <span class="term-dot red"></span>
+                    <span class="term-dot yellow"></span>
+                    <span class="term-dot green"></span>
+                    <span class="term-title">~/fastapi-imageSearch — bash</span>
+                </div>
+                <div class="term-body">
+<span class="t-comment"># 1. 데이터셋 임베딩 (Celery 워커가 처리)</span>
+<span class="t-prompt">$</span> docker compose exec celery uv run python -c \
+       <span class="t-str">"from app.worker.tasks.embedding import embed_fruit_images; embed_fruit_images.delay()"</span>
+
+<span class="t-comment"># 2. 유사 이미지 검색</span>
+<span class="t-prompt">$</span> curl -sX POST :9100/api/v1/image -F file=@apple.jpg | jq .
+<span class="t-out">{
+  <span class="t-key">"code"</span>: 200,
+  <span class="t-key">"data"</span>: [
+    { <span class="t-key">"id"</span>: <span class="t-str">"8f1d..."</span>, <span class="t-key">"score"</span>: 0.8721,
+      <span class="t-key">"image_path"</span>: <span class="t-str">"/static/images/fruits/apple_01.jpg"</span>,
+      <span class="t-key">"bbox"</span>: [12, 34, 220, 240] },
+    ...
+  ]
+}</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 06 PIPELINE -->
+        <section id="pipeline" class="section">
+            <header class="section-head">
+                <span class="section-id">06</span>
+                <span class="section-kw">// pipeline</span>
+            </header>
+            <h2 class="section-title">검색 파이프라인 — 핵심 코드</h2>
+            <p class="section-sub">// app/services/fruit/search.py · 동기 호출은 모두 to_thread로 격리</p>
+
+            <div class="codeblock">
+                <div class="code-tabs">
+                    <span class="tab active">search.py</span>
+                    <span class="tab">point.py</span>
+                    <span class="tab">common.py</span>
+                </div>
+                <pre class="code"><span class="kw">async def</span> <span class="fn">get_similarity_images</span>(<span class="self">self</span>, file: <span class="cls">UploadFile</span>) -> <span class="cls">list</span>[<span class="cls">dict</span>]:
+    image = <span class="kw">await</span> save_temp_image(file)
+
+    <span class="cmt"># 1. YOLO — 가장 신뢰도 높은 객체 1개 추출</span>
+    detection = <span class="kw">await</span> asyncio.to_thread(
+        <span class="self">self</span>.yolo.detect_top, image,
+    )
+    <span class="kw">if not</span> <span class="self">self</span>._is_valid_bbox(detection.bbox):
+        <span class="kw">raise</span> <span class="cls">BusinessException</span>(<span class="num">422</span>, <span class="str">"object too small"</span>)
+
+    <span class="cmt"># 2. CLIP — 크롭 영역 → 768d 벡터</span>
+    vector = <span class="kw">await</span> asyncio.to_thread(
+        <span class="self">self</span>.embed.encode, detection.cropped,
+    )
+
+    <span class="cmt"># 3. Qdrant — 코사인 유사도 Top-5</span>
+    points = <span class="kw">await</span> asyncio.to_thread(
+        <span class="self">self</span>.qdrant.find_points,
+        collection=<span class="str">"fruits"</span>, vector=vector, limit=<span class="num">5</span>,
+    )
+    <span class="kw">return</span> [<span class="self">self</span>._to_response(p) <span class="kw">for</span> p <span class="kw">in</span> points]
+</pre>
+                <div class="code-foot">
+                    <span class="step">→ 의존성: <code>FruitSearchService(qdrant, embed, yolo)</code> ← <code>Depends</code> 주입</span>
+                    <span class="step">→ 모든 추론 호출이 <code>to_thread</code>로 격리되어 동시 요청 처리 가능</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 07 ROADMAP -->
+        <section id="roadmap" class="section">
+            <header class="section-head">
+                <span class="section-id">07</span>
+                <span class="section-kw">// roadmap</span>
+            </header>
+            <h2 class="section-title">다음에 다룰 것들</h2>
+
+            <div class="roadmap">
+                <div class="rm-item">
+                    <span class="rm-pri high">P0</span>
+                    <div class="rm-body">
+                        <h4>Qdrant 컬렉션 자동 생성</h4>
+                        <p>현재 <code>fruits</code> 컬렉션이 사전 생성되어 있어야 동작합니다. lifespan에서 <code>collection_exists</code> 검사 후 <code>create_collection</code> 호출로 부트스트랩.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">bootstrap</span>
+                            <span class="mini-tag">lifespan</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri high">P0</span>
+                    <div class="rm-body">
+                        <h4>응답 스키마 정합성 보정</h4>
+                        <p><code>response_model=ImageSearchResponse</code>(<code>SuccessResponse[dict]</code>)인데 실제 데이터는 <code>list[dict]</code>. 제네릭을 <code>SuccessResponse[list[ImageHit]]</code>로 정정.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">pydantic</span>
+                            <span class="mini-tag">contract</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri med">P1</span>
+                    <div class="rm-body">
+                        <h4>Celery 워커 안정성 보강</h4>
+                        <p><code>task_acks_late</code>, <code>worker_prefetch_multiplier=1</code>, <code>task_time_limit</code> 미설정. GPU 작업이 멈추거나 죽었을 때 안전한 재처리 정책을 추가.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">acks_late</span>
+                            <span class="mini-tag">prefetch</span>
+                            <span class="mini-tag">time-limit</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri med">P1</span>
+                    <div class="rm-body">
+                        <h4>테스트 작성 — DI mock 활용</h4>
+                        <p><code>tests/</code>가 비어있는 상태. <code>app.dependency_overrides[get_qdrant_client]</code>로 mock 주입해 라우터·서비스 단위 테스트 작성.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">pytest</span>
+                            <span class="mini-tag">overrides</span>
+                            <span class="mini-tag">mock</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri low">P2</span>
+                    <div class="rm-body">
+                        <h4>Qdrant 래퍼 → 도메인 리포지토리 승격</h4>
+                        <p>현재 <code>Qdrant</code> 래퍼는 client API의 얇은 패스스루. <code>FruitVectorRepo</code> 같은 도메인 리포지토리로 승격하거나, 가치가 없으면 제거 검토.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">refactor</span>
+                            <span class="mini-tag">DDD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 08 GALLERY -->
+        <section id="gallery" class="section">
+            <header class="section-head">
+                <span class="section-id">08</span>
+                <span class="section-kw">// gallery</span>
+            </header>
+            <h2 class="section-title">검색 결과 샘플</h2>
+
+            <div class="gallery">
+                <figure class="shot">
+                    <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-imageSearch/main/storage/screenshots/image_search.png" alt="사과 이미지 검색 결과">
+                    <figcaption><span class="cap-key">query</span> apple.jpg</figcaption>
+                </figure>
+                <figure class="shot">
+                    <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-imageSearch/main/storage/screenshots/image_search2.png" alt="오렌지 이미지 검색 결과">
+                    <figcaption><span class="cap-key">query</span> orange.jpg</figcaption>
+                </figure>
+            </div>
+        </section>
+    </main>
 </body>
 </html>

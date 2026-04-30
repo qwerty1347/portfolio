@@ -3,224 +3,512 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FastAPI - OCR</title>
+    <title>fastapi-ocr — backend portfolio</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="logo">Portfolio</div>
-        </div>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <header class="topbar">
+        <a class="brand" href="../../index.html">
+            <span class="brand-prompt">~/</span><span>portfolio</span><span class="brand-sep">/</span><span class="brand-cur">fastapi-ocr</span>
+        </a>
+        <nav class="nav">
+            <a href="#overview">overview</a>
+            <a href="#architecture">arch</a>
+            <a href="#stack">stack</a>
+            <a href="#highlights">highlights</a>
+            <a href="#api">api</a>
+            <a href="#engine">engine</a>
+            <a href="#roadmap">roadmap</a>
+        </nav>
     </header>
 
-    <section id="about" class="section">
-        <div class="container">
-            <h2 class="section-title">OCR API</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>이 프로젝트는 FastAPI를 기반으로 한 OCR 서비스로, 이미지나 스캔된 문서에서 텍스트를 추출하여 제공합니다. <br/>Naver Clova OCR, EasyOCR, PaddleOCR 엔진을 활용하여 텍스트 추출이 가능하며, 다양한 이미지 형식을 지원합니다.</p>
-                </div>
+    <main class="page">
 
-                <!-- <div class="about-image">
-                    <img src="ocr_preview.png" alt="프로젝트 미리보기" class="project-image">
-                </div> -->
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-meta">
+                <span class="tag tag-version">v0.1.0</span>
+                <span class="tag tag-status"><span class="dot"></span>stable</span>
+                <span class="tag">python 3.11</span>
+                <span class="tag">fastapi 0.135</span>
+                <span class="tag">celery 5.6</span>
             </div>
-        </div>
-    </section>
+            <h1 class="hero-title">
+                fastapi<span class="dim">-</span>ocr<span class="cursor">_</span>
+            </h1>
+            <p class="hero-tagline">
+                <span class="kw">→</span> Multi-engine OCR API <span class="sep">·</span> Sync &amp; Async dual mode <span class="sep">·</span> Celery-backed job pipeline
+            </p>
+            <p class="hero-summary">
+                EasyOCR · PaddleOCR · Naver Clova OCR을 단일 인터페이스로 추상화하고, 무거운 추론은
+                <code>Celery</code> 워커로 분리해 API 응답성을 유지합니다.
+                <code>ocr_jobs</code> 테이블이 <code>pending → started → success/failed</code> 라이프사이클을
+                추적하며, 새 엔진 추가는 클래스 1개 + 등록 1줄로 끝납니다.
+            </p>
 
-    <section id="project" class="section bg-light">
-        <div class="container">
-            <h2 class="section-title">기술 스택</h2>
-            <div class="tech-stack">
-                <div class="tech-category">
-                    <h3>백엔드</h3>
-                    <ul>
-                        <li><i class="fas fa-check"></i> Python 3.11</li>
-                        <li><i class="fas fa-check"></i> FastAPI</li>
-                        <li><i class="fas fa-check"></i> Pydantic</li>
-                    </ul>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-num">3</div>
+                    <div class="stat-label">OCR engines</div>
                 </div>
-                <div class="tech-category">
-                    <h3>OCR 엔진</h3>
-                    <ul>
-                        <li><i class="fas fa-check"></i> Naver CLOVA OCR</li>
-                        <li><i class="fas fa-check"></i> EasyOCR</li>
-                        <li><i class="fas fa-check"></i> PaddleOCR</li>
-                    </ul>
+                <div class="stat">
+                    <div class="stat-num">2</div>
+                    <div class="stat-label">processing modes</div>
                 </div>
-                <div class="tech-category">
-                    <h3>DevOps</h3>
-                    <ul>
-                        <li><i class="fas fa-check"></i> Docker</li>
-                        <li><i class="fas fa-check"></i> pytest</li>
-                    </ul>
+                <div class="stat">
+                    <div class="stat-num">5</div>
+                    <div class="stat-label">compose services</div>
                 </div>
-            </div>
-
-            <h2 class="section-title mt-40">주요 기능</h2>
-            <div class="features">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-image"></i>
-                    </div>
-                    <h3>이미지 텍스트 추출</h3>
-                    <p>이미지에서 텍스트를 정확하게 인식하고 추출합니다. 다양한 이미지 형식(jpg, png, pdf 등)을 지원합니다.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-language"></i>
-                    </div>
-                    <h3>다국어 지원</h3>
-                    <p>한국어, 영어, 일본어, 중국어 등 다양한 언어의 텍스트 인식을 지원합니다.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-magic"></i>
-                    </div>
-                    <h3>이미지 전처리</h3>
-                    <p>노이즈 제거, 명암 조정 등 이미지 품질 개선을 통한 정확도 향상</p>
+                <div class="stat">
+                    <div class="stat-num">2</div>
+                    <div class="stat-label">DB session strategies</div>
                 </div>
             </div>
+        </section>
 
-            <div class="screenshots mt-60">
-                <h2 class="section-title">스크린샷</h2>
-                <div class="screenshot-grid">
-                    <div class="screenshot">
-                        <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-ocr/main/storage/screenshots/sample.png" alt="샘플 이미지">
-                        <p>샘플 이미지</p>
+        <!-- 01 OVERVIEW -->
+        <section id="overview" class="section">
+            <header class="section-head">
+                <span class="section-id">01</span>
+                <span class="section-kw">// overview</span>
+            </header>
+            <h2 class="section-title">왜 두 가지 모드를 함께 두었나</h2>
+
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <div class="overview-tag">sync</div>
+                    <code class="overview-route">POST /api/v1/ocr/</code>
+                    <p>
+                        가벼운 단일 이미지. 요청 → 추론 → 응답이 한 번에 이뤄지는 단순 경로.
+                        <code>asyncio.to_thread</code>로 추론을 별도 스레드에 위임해 이벤트 루프 블로킹을 차단합니다.
+                    </p>
+                </div>
+                <div class="overview-divider">
+                    <span>vs</span>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-tag accent">async</div>
+                    <code class="overview-route">POST /api/v1/ocr/jobs</code>
+                    <p>
+                        대용량/PDF/배치 워크로드. 즉시 <code>job_id</code> 발급 후
+                        Celery 워커가 백그라운드 처리. 클라이언트는 <code>GET /jobs/{id}</code>로 폴링.
+                        <code>acks_late</code>·<code>reject_on_worker_lost</code>로 워커 장애에도 안전합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 02 ARCHITECTURE -->
+        <section id="architecture" class="section">
+            <header class="section-head">
+                <span class="section-id">02</span>
+                <span class="section-kw">// architecture</span>
+            </header>
+            <h2 class="section-title">시스템 구성</h2>
+            <p class="section-sub">// API와 Worker가 같은 MySQL을 두 가지 드라이버로 공유합니다</p>
+
+            <pre class="diagram">
+                  <span class="d-fg">┌──────────────────────┐</span>
+                  <span class="d-fg">│   client (browser)    │</span>
+                  <span class="d-fg">└──────────┬────────────┘</span>
+                             <span class="d-dim">│ HTTPS</span>
+              <span class="d-fg">┌──────────────▼───────────────┐</span>
+              <span class="d-fg">│  </span><span class="d-acc">FastAPI</span><span class="d-fg"> (uvicorn :8000)      │</span>
+              <span class="d-fg">│  </span><span class="d-mute">jwt verify · sync OCR · jobs   </span><span class="d-fg">│</span>
+              <span class="d-fg">└────┬────────────────┬────────┘</span>
+                   <span class="d-dim">│aiomysql        │enqueue</span>
+                   <span class="d-fg">▼</span>                <span class="d-fg">▼</span>
+          <span class="d-fg">┌──────────────┐    ┌──────────────┐</span>
+          <span class="d-fg">│  </span><span class="d-acc2">MySQL 5.7</span><span class="d-fg">    │    │  </span><span class="d-acc2">Redis 7</span><span class="d-fg">      │</span>
+          <span class="d-fg">│  ocr_jobs     │    │  broker(0)    │</span>
+          <span class="d-fg">│  table        │    │  result(1)    │</span>
+          <span class="d-fg">└──────▲───────┘    └──────┬───────┘</span>
+                  <span class="d-dim">│pymysql            │ pull</span>
+                  <span class="d-fg">│                    ▼</span>
+          <span class="d-fg">┌───────┴────────────────────────┐</span>
+          <span class="d-fg">│  </span><span class="d-acc">Celery worker</span><span class="d-fg"> (-Q ocr c=2)    │</span>
+          <span class="d-fg">│  run_ocr · sync Session         │</span>
+          <span class="d-fg">└─────────────────┬──────────────┘</span>
+                            <span class="d-dim">│ observe</span>
+                       <span class="d-fg">┌────▼─────┐</span>
+                       <span class="d-fg">│  </span><span class="d-acc3">Flower</span><span class="d-fg">  │</span>
+                       <span class="d-fg">│  :5555   │</span>
+                       <span class="d-fg">└──────────┘</span></pre>
+
+            <div class="arch-notes">
+                <div class="arch-note">
+                    <span class="arch-note-key">async path</span>
+                    <span class="arch-note-val">aiomysql · AsyncSession · <code>asyncio.to_thread</code>로 sync 엔진 호출</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">sync path</span>
+                    <span class="arch-note-val">pymysql · Session · <code>session.get(OcrJob, id)</code> + STARTED 즉시 commit</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">queue policy</span>
+                    <span class="arch-note-val"><code>prefetch=1</code> · <code>acks_late</code> · <code>max_tasks_per_child=200</code></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 03 STACK -->
+        <section id="stack" class="section">
+            <header class="section-head">
+                <span class="section-id">03</span>
+                <span class="section-kw">// stack</span>
+            </header>
+            <h2 class="section-title">의존성 트리</h2>
+            <p class="section-sub">$ uv tree --depth 1</p>
+
+            <div class="stack-block">
+                <div class="stack-row">
+                    <span class="stack-key">[ web ]</span>
+                    <span class="stack-val">python <span class="ver">3.11</span> <span class="sep">·</span> fastapi <span class="ver">0.135.3</span> <span class="sep">·</span> uvicorn <span class="ver">0.44.0</span> <span class="sep">·</span> pydantic <span class="ver">2.13</span></span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ ocr ]</span>
+                    <span class="stack-val">easyocr <span class="ver">1.7.2</span> <span class="sep">·</span> paddleocr <span class="ver">2.9.1</span> <span class="sep">·</span> paddlepaddle <span class="ver">2.6.2</span> <span class="sep">·</span> clova-ocr (api)</span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ task ]</span>
+                    <span class="stack-val">celery <span class="ver">5.6.3</span> <span class="sep">·</span> redis <span class="ver">7.4.0</span> <span class="sep">·</span> flower <span class="ver">2.0.1</span></span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ db ]</span>
+                    <span class="stack-val">sqlalchemy <span class="ver">2.0.49</span> <span class="sep">·</span> aiomysql <span class="ver">0.3.2</span> <span class="sep">·</span> pymysql <span class="ver">1.1.2</span> <span class="sep">·</span> alembic <span class="ver">1.18</span></span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ auth ]</span>
+                    <span class="stack-val">python-jose <span class="sep">·</span> oauth2-bearer <span class="sep">·</span> jwt(HS256)</span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ infra ]</span>
+                    <span class="stack-val">docker compose <span class="sep">·</span> uv (lockfile) <span class="sep">·</span> mysql 5.7 <span class="sep">·</span> nginx-ready</span>
+                </div>
+                <div class="stack-row">
+                    <span class="stack-key">[ test ]</span>
+                    <span class="stack-val">pytest <span class="ver">9.0.3</span> <span class="sep">·</span> pytest-asyncio <span class="ver">1.3.0</span></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 04 HIGHLIGHTS -->
+        <section id="highlights" class="section">
+            <header class="section-head">
+                <span class="section-id">04</span>
+                <span class="section-kw">// highlights</span>
+            </header>
+            <h2 class="section-title">기술적 의사결정</h2>
+
+            <div class="highlights">
+                <article class="highlight">
+                    <div class="highlight-num">001</div>
+                    <div class="highlight-body">
+                        <h3>OCR 엔진 추상화 + Lazy 팩토리</h3>
+                        <p>
+                            <code>BaseEngine</code> ABC가 <code>recognize(file_path: Path) → dict</code> 한 가지 시그니처로 통일.
+                            <code>OcrModule._FACTORIES</code>가 첫 호출 시점에만 모델을 메모리로 올려, 사용하지 않는 엔진은
+                            워커 RSS에서 제외됩니다. 새 엔진 추가는 클래스 1개 + 팩토리 dict에 1줄.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">ABC</span>
+                            <span class="mini-tag">lazy init</span>
+                            <span class="mini-tag">memory</span>
+                        </div>
                     </div>
-                    <div class="screenshot">
-                        <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-ocr/main/storage/screenshots/clovaocr.PNG" alt="Naver Clova OCR 추출 결과">
-                        <p>Naver Clova OCR 추출 결과</p>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">002</div>
+                    <div class="highlight-body">
+                        <h3>이중 DB 세션 — async/sync 공존</h3>
+                        <p>
+                            FastAPI는 <code>aiomysql</code> 기반 <code>AsyncSession</code>을, Celery 워커와 Alembic은
+                            <code>pymysql</code> 기반 <code>Session</code>을 같은 MySQL에 병존시킵니다.
+                            컨텍스트별 최적 드라이버를 선택하되, <code>pool_pre_ping</code>·<code>pool_recycle</code>로
+                            <code>wait_timeout</code> 끊김을 자동 회복.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">aiomysql</span>
+                            <span class="mini-tag">pymysql</span>
+                            <span class="mini-tag">pool</span>
+                        </div>
                     </div>
-                    <div class="screenshot">
-                        <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-ocr/main/storage/screenshots/easyocr.PNG" alt="EasyOCR 추출 결과">
-                        <p>EasyOCR 추출 결과</p>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">003</div>
+                    <div class="highlight-body">
+                        <h3>잡 라이프사이클 + 멱등성</h3>
+                        <p>
+                            <code>ocr_jobs</code> 테이블에 상태 전이를 영속화. STARTED는 즉시 commit해 외부 가시성을
+                            확보하고, 추론 부분만 try/except로 감싸 SUCCESS/FAILED를 분기 commit한 뒤 <code>raise</code>로
+                            Celery에 결과를 정확히 전달합니다. 같은 <code>job_id</code>로 재실행되어도 같은 row를 갱신만
+                            하므로 <code>acks_late</code> + <code>reject_on_worker_lost</code>와 정합.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">idempotent</span>
+                            <span class="mini-tag">acks_late</span>
+                            <span class="mini-tag">retry-safe</span>
+                        </div>
                     </div>
-                    <div class="screenshot">
-                        <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-ocr/main/storage/screenshots/paddleocr.PNG" alt="PaddleOCR 추출 결과">
-                        <p>PaddleOCR 추출 결과</p>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">004</div>
+                    <div class="highlight-body">
+                        <h3>이벤트 루프 보호 — to_thread</h3>
+                        <p>
+                            EasyOCR/PaddleOCR은 본질적으로 <em>동기·CPU bound</em> 추론입니다. async 엔드포인트에서
+                            그대로 호출하면 FastAPI 이벤트 루프 전체가 멈춥니다. <code>asyncio.to_thread(engine.recognize, path)</code>로
+                            별도 스레드에 위임해 동시 요청 처리 능력을 유지합니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">asyncio</span>
+                            <span class="mini-tag">CPU bound</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">005</div>
+                    <div class="highlight-body">
+                        <h3>큐/워커 정책 튜닝</h3>
+                        <p>
+                            <code>worker_prefetch_multiplier=1</code>로 무거운 추론의 선점 분산,
+                            <code>task_acks_late=True</code>로 워커 장애 시 broker 재할당,
+                            <code>worker_max_tasks_per_child=200</code>으로 OCR 모델 메모리 누수 방지,
+                            <code>task_time_limit=5min</code>·<code>soft_time_limit=4min</code>으로 멈춘 잡의 워커 점유 차단.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">prefetch</span>
+                            <span class="mini-tag">soft-limit</span>
+                            <span class="mini-tag">memory-leak</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">006</div>
+                    <div class="highlight-body">
+                        <h3>전역 예외 → 통일된 응답 봉투</h3>
+                        <p>
+                            <code>HTTPException</code>·<code>RequestValidationError</code>·<code>JWTError</code>·<code>BusinessException</code>·
+                            그 외 모든 <code>Exception</code>이 <code>{code, message, errors[]}</code> 봉투로 정규화됩니다.
+                            라우터/서비스 레이어는 비즈니스 예외만 던지면 끝.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">global handler</span>
+                            <span class="mini-tag">consistency</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 05 API -->
+        <section id="api" class="section">
+            <header class="section-head">
+                <span class="section-id">05</span>
+                <span class="section-kw">// api surface</span>
+            </header>
+            <h2 class="section-title">엔드포인트</h2>
+
+            <div class="endpoints">
+                <div class="endpoint endpoint-head">
+                    <span>method</span>
+                    <span>path</span>
+                    <span>auth</span>
+                    <span>desc</span>
+                </div>
+                <div class="endpoint">
+                    <span class="m post">POST</span>
+                    <span class="p">/api/v1/token/</span>
+                    <span class="a public">public</span>
+                    <span class="d">JWT access token 발급</span>
+                </div>
+                <div class="endpoint">
+                    <span class="m post">POST</span>
+                    <span class="p">/api/v1/ocr/</span>
+                    <span class="a">bearer</span>
+                    <span class="d">동기 OCR — 즉시 응답</span>
+                </div>
+                <div class="endpoint">
+                    <span class="m post">POST</span>
+                    <span class="p">/api/v1/ocr/jobs</span>
+                    <span class="a">bearer</span>
+                    <span class="d">잡 등록 — 202 + job_id</span>
+                </div>
+                <div class="endpoint">
+                    <span class="m get">GET</span>
+                    <span class="p">/api/v1/ocr/jobs/{id}</span>
+                    <span class="a">bearer</span>
+                    <span class="d">잡 상태 / 결과 조회</span>
+                </div>
+            </div>
+
+            <div class="terminal">
+                <div class="term-head">
+                    <span class="term-dot red"></span>
+                    <span class="term-dot yellow"></span>
+                    <span class="term-dot green"></span>
+                    <span class="term-title">~/fastapi-ocr — bash</span>
+                </div>
+                <div class="term-body">
+<span class="t-comment"># 1. 토큰 발급</span>
+<span class="t-prompt">$</span> TOKEN=$(curl -sX POST :9093/api/v1/token/ | jq -r .access_token)
+
+<span class="t-comment"># 2. 비동기 잡 등록 → 202 {job_id}</span>
+<span class="t-prompt">$</span> JOB=$(curl -sX POST :9093/api/v1/ocr/jobs \
+       -H <span class="t-str">"Authorization: Bearer $TOKEN"</span> \
+       -F engine=paddleocr -F file=@receipt.jpg | jq -r .job_id)
+
+<span class="t-comment"># 3. 결과 폴링</span>
+<span class="t-prompt">$</span> curl :9093/api/v1/ocr/jobs/$JOB -H <span class="t-str">"Authorization: Bearer $TOKEN"</span>
+<span class="t-out">{ <span class="t-key">"status"</span>: <span class="t-str">"success"</span>, <span class="t-key">"result"</span>: { ... } }</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 06 ENGINE -->
+        <section id="engine" class="section">
+            <header class="section-head">
+                <span class="section-id">06</span>
+                <span class="section-kw">// engine</span>
+            </header>
+            <h2 class="section-title">엔진 추가하기 — 3 steps</h2>
+            <p class="section-sub">// app/module/ocr/&lt;your_engine&gt;.py</p>
+
+            <div class="codeblock">
+                <div class="code-tabs">
+                    <span class="tab active">myocr.py</span>
+                    <span class="tab">module.py</span>
+                    <span class="tab">enums.py</span>
+                </div>
+                <pre class="code"><span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">from</span> app.module.ocr.base <span class="kw">import</span> BaseEngine
+
+
+<span class="kw">class</span> <span class="cls">MyOcr</span>(<span class="cls">BaseEngine</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>):
+        <span class="self">self</span>.client = ...  <span class="cmt"># 모델 로드 / API 클라이언트</span>
+
+    <span class="kw">def</span> <span class="fn">recognize</span>(<span class="self">self</span>, file_path: <span class="cls">Path</span>) -> <span class="cls">dict</span>:
+        raw = <span class="self">self</span>.client.run(<span class="cls">str</span>(file_path))
+        <span class="kw">return</span> <span class="self">self</span>.convert_to_json(raw)
+
+    <span class="kw">def</span> <span class="fn">convert_to_json</span>(<span class="self">self</span>, raw) -> <span class="cls">dict</span>:
+        <span class="kw">return</span> {<span class="str">"images"</span>: [...]}
+</pre>
+                <div class="code-foot">
+                    <span class="step">→ step 2: <code>OcrModule._FACTORIES["myocr"] = MyOcr</code></span>
+                    <span class="step">→ step 3: <code>OcrEngine.myocr = "myocr"</code></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 07 ROADMAP -->
+        <section id="roadmap" class="section">
+            <header class="section-head">
+                <span class="section-id">07</span>
+                <span class="section-kw">// roadmap</span>
+            </header>
+            <h2 class="section-title">다음에 다룰 것들</h2>
+
+            <div class="roadmap">
+                <div class="rm-item">
+                    <span class="rm-pri high">P0</span>
+                    <div class="rm-body">
+                        <h4>폴링 → SSE / WebSocket 푸시</h4>
+                        <p>워커 완료 시점에 즉시 결과 전달. 클라이언트 폴링 부담과 평균 응답 지연 동시 해결.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">SSE</span>
+                            <span class="mini-tag">WebSocket</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri high">P0</span>
+                    <div class="rm-body">
+                        <h4>잡 소유권(인가) 검증</h4>
+                        <p>JWT의 <code>sub</code>를 <code>ocr_jobs.user_id</code>와 매칭. 타 사용자 <code>job_id</code> 조회 차단 + 감사 로그.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">authz</span>
+                            <span class="mini-tag">multi-tenant</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri med">P1</span>
+                    <div class="rm-body">
+                        <h4>Celery retry 정책 정교화</h4>
+                        <p>Clova API의 5xx/429/Timeout만 선별 재시도. <code>autoretry_for</code> + 지수 백오프 + 지터.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">backoff</span>
+                            <span class="mini-tag">jitter</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri med">P1</span>
+                    <div class="rm-body">
+                        <h4>임시 파일/잡 정리 배치</h4>
+                        <p>24시간 경과 업로드 파일 삭제 + 잡 보존 기간 정책. <code>celery beat</code>로 스케줄.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">celery beat</span>
+                            <span class="mini-tag">storage</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri low">P2</span>
+                    <div class="rm-body">
+                        <h4>구조화 로깅 + OpenTelemetry</h4>
+                        <p>JSON 로그 + trace ID 전파(API → 워커 → DB). Prometheus 메트릭(엔진별 처리 시간/실패율) + Grafana.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">OTel</span>
+                            <span class="mini-tag">Prometheus</span>
+                            <span class="mini-tag">Grafana</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 프로젝트 상세 -->
-    <section id="details" class="section">
-        <div class="container">
-            <h2 class="section-title">프로젝트 상세</h2>
+        <!-- 08 GALLERY -->
+        <section id="gallery" class="section">
+            <header class="section-head">
+                <span class="section-id">08</span>
+                <span class="section-kw">// gallery</span>
+            </header>
+            <h2 class="section-title">엔진별 추출 결과</h2>
 
-            <div class="details-grid">
-                <!-- 구현 상세 -->
-                <div class="detail-card">
-                    <div class="detail-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <h3>구현 상세</h3>
-                    <div class="feature-list">
-                        <div class="feature-item">
-                            <i class="fas fa-server"></i>
-                            <div>
-                                <h4>FastAPI 백엔드</h4>
-                                <p>비동기 처리가 가능한 FastAPI를 사용하여 고성능 RESTful API 서버를 구축했습니다. Swagger UI를 통한 API 문서화를 자동화하여 개발 생산성을 높였습니다.</p>
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-image"></i>
-                            <div>
-                                <h4>OCR 엔진 모듈화</h4>
-                                <p>Naver CLOVA OCR, EasyOCR, PaddleOCR 모듈화를 통한 다양한 OCR 엔진을 구축 용이하도록 개발하였습니다.</p>
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-language"></i>
-                            <div>
-                                <h4>다국어 지원</h4>
-                                <p>한국어, 영어, 일본어, 중국어 등 다양한 언어를 지원합니다. 사용자가 선택한 언어에 따라 자동으로 적절한 OCR 모델을 로드하여 처리합니다.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 향후 계획 -->
-                <div class="detail-card">
-                    <div class="detail-icon">
-                        <i class="fas fa-rocket"></i>
-                    </div>
-                    <h3>향후 개선 계획</h3>
-                    <div class="improvement-list">
-                        <div class="improvement-item">
-                            <div class="improvement-header">
-                                <span class="improvement-badge">정확도 향상</span>
-                                <h4>딥러닝 기반 OCR 모델 적용</h4>
-                            </div>
-                            <p>기존 Tesseract 엔진에 더해 딥러닝 기반의 최신 OCR 모델을 적용하여 낮은 품질의 이미지에서도 높은 정확도를 보장할 계획입니다.</p>
-                            <div class="improvement-tags">
-                                <span>딥러닝</span>
-                                <span>정확도 향상</span>
-                            </div>
-                        </div>
-                        <div class="improvement-item">
-                            <div class="improvement-header">
-                                <span class="improvement-badge">기능 확장</span>
-                                <h4>테이블 및 양식 인식</h4>
-                            </div>
-                            <p>이미지 내의 표나 양식 구조를 인식하여 구조화된 데이터로 변환하는 기능을 추가할 예정입니다. 이를 통해 영수증, 명함, 신청서 등의 문서를 자동으로 처리할 수 있을 것입니다.</p>
-                            <div class="improvement-tags">
-                                <span>테이블 인식</span>
-                                <span>양식 처리</span>
-                            </div>
-                        </div>
-                        <div class="improvement-item">
-                            <div class="improvement-header">
-                                <span class="improvement-badge">사용자 경험</span>
-                                <h4>실시간 미리보기 및 편집</h4>
-                            </div>
-                            <p>웹 인터페이스에서 실시간으로 텍스트 추출 결과를 확인하고 수정할 수 있는 기능을 추가할 계획입니다. 드래그 앤 드롭으로 이미지를 업로드하고 즉시 결과를 확인할 수 있는 직관적인 UI를 구현할 예정입니다.</p>
-                            <div class="improvement-tags">
-                                <span>사용자 인터페이스</span>
-                                <span>실시간 처리</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="gallery">
+                <figure class="shot">
+                    <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-ocr/main/storage/screenshots/sample.png" alt="샘플 이미지">
+                    <figcaption><span class="cap-key">input</span> sample.png</figcaption>
+                </figure>
+                <figure class="shot">
+                    <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-ocr/main/storage/screenshots/clovaocr.PNG" alt="Clova OCR 결과">
+                    <figcaption><span class="cap-key">engine</span> clovaocr</figcaption>
+                </figure>
+                <figure class="shot">
+                    <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-ocr/main/storage/screenshots/easyocr.PNG" alt="EasyOCR 결과">
+                    <figcaption><span class="cap-key">engine</span> easyocr</figcaption>
+                </figure>
+                <figure class="shot">
+                    <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-ocr/main/storage/screenshots/paddleocr.PNG" alt="PaddleOCR 결과">
+                    <figcaption><span class="cap-key">engine</span> paddleocr</figcaption>
+                </figure>
             </div>
-        </div>
-    </section>
-
-    <!-- 연락처 -->
-    <section id="contact" class="section bg-light">
-        <div class="container">
-            <h2 class="section-title">GitHub</h2>
-            <div class="features">
-                <!-- <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <h3>이메일</h3>
-                    <a href="mailto:qwertys1347@gmail.com" class="contact-link">qwertys1347@gmail.com</a>
-                </div> -->
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fab fa-github"></i>
-                    </div>
-                    <!-- <h3>GitHub 프로젝트</h3> -->
-                    <a href="https://github.com/qwerty1347/fastapi-ocr" target="_blank" class="contact-link">
-                        https://github.com/qwerty1347/fastapi-ocr
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Agent 챗봇 프로젝트. All rights reserved.</p>
-        </div>
-    </footer> -->
+        </section>
+    </main>
 </body>
 </html>
