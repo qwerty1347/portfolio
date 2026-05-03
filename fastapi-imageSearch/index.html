@@ -21,7 +21,7 @@
         <nav class="nav">
             <a href="#overview">overview</a>
             <a href="#architecture">arch</a>
-            <a href="#stack">stack</a>
+            <a href="#directory">directory</a>
             <a href="#highlights">highlights</a>
             <a href="#api">api</a>
             <a href="#pipeline">pipeline</a>
@@ -49,7 +49,7 @@
             </p>
             <p class="hero-summary">
                 <code>YOLOv8</code> 객체 검출 → <code>CLIP ViT-L/14</code> 768차원 임베딩 →
-                <code>Qdrant</code> 코사인 유사도 검색을 단일 API로 묶었습니다. 모델은
+                <code>Qdrant</code> 코사인 유사도 검색을 단일 API를 구현했습니다. 모델은
                 <code>lru_cache</code> + lifespan으로 프로세스당 한 번만 로드되고, 동기 추론은
                 <code>asyncio.to_thread</code>로 감싸 이벤트 루프를 보호합니다. Celery 워커는
                 <code>uuid5</code> 결정적 ID로 멱등 임베딩을 보장합니다.
@@ -81,7 +81,7 @@
                 <span class="section-id">01</span>
                 <span class="section-kw">// overview</span>
             </header>
-            <h2 class="section-title">두 가지 진입 경로, 같은 모델 캐시</h2>
+            <h2 class="section-title">Celery 워커를 사용한 이유</h2>
 
             <div class="overview-grid">
                 <div class="overview-card">
@@ -115,35 +115,10 @@
                 <span class="section-kw">// architecture</span>
             </header>
             <h2 class="section-title">시스템 구성</h2>
-            <p class="section-sub">// FastAPI와 Celery가 같은 lru_cache 함수로 모델·클라이언트를 공유합니다</p>
 
-            <pre class="diagram">
-                  <span class="d-fg">┌──────────────────────┐</span>
-                  <span class="d-fg">│   client (browser)    │</span>
-                  <span class="d-fg">└──────────┬────────────┘</span>
-                             <span class="d-dim">│ multipart upload</span>
-              <span class="d-fg">┌──────────────▼───────────────┐</span>
-              <span class="d-fg">│  </span><span class="d-acc">FastAPI</span><span class="d-fg"> (uvicorn :8000)      │</span>
-              <span class="d-fg">│  Depends(FruitSearchService)  │</span>
-              <span class="d-fg">└────┬───────┬───────┬──────────┘</span>
-            <span class="d-dim">to_thread│       │       │</span>
-                   <span class="d-fg">▼       ▼       ▼</span>
-          <span class="d-fg">┌─────────┐ ┌────────┐ ┌──────────────┐</span>
-          <span class="d-fg">│ </span><span class="d-acc3">YOLOv8</span><span class="d-fg">  │ │ </span><span class="d-acc3">CLIP</span><span class="d-fg">   │ │  </span><span class="d-acc2">Qdrant</span><span class="d-fg">       │</span>
-          <span class="d-fg">│ detect  │ │ encode │ │  fruits coll │</span>
-          <span class="d-fg">│ bbox    │ │ 768d   │ │  cosine      │</span>
-          <span class="d-fg">└─────────┘ └────────┘ └──────▲───────┘</span>
-                                          <span class="d-dim">│ upsert</span>
-                                   <span class="d-fg">┌──────┴────────┐</span>
-                                   <span class="d-fg">│ </span><span class="d-acc">Celery worker</span><span class="d-fg">  │</span>
-                                   <span class="d-fg">│ -Q embedding   │</span>
-                                   <span class="d-fg">│ uuid5 id       │</span>
-                                   <span class="d-fg">└──────▲────────┘</span>
-                                          <span class="d-dim">│ scan</span>
-                                  <span class="d-fg">┌───────┴────────┐</span>
-                                  <span class="d-fg">│ storage/images │</span>
-                                  <span class="d-fg">│   /fruits      │</span>
-                                  <span class="d-fg">└────────────────┘</span></pre>
+            <figure class="shot shot-architecture">
+                <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-imageSearch/main/storage/screenshots/architecture.png" alt="시스템 아키텍처 다이어그램">
+            </figure>
 
             <div class="arch-notes">
                 <div class="arch-note">
@@ -165,8 +140,114 @@
             </div>
         </section>
 
+        <!-- 03 DIRECTORY STRUCTURE -->
+        <section id="directory" class="section">
+            <header class="section-head">
+                <span class="section-id">03</span>
+                <span class="section-kw">// directory structure</span>
+            </header>
+            <h2 class="section-title">프로젝트 구조</h2>
+
+            <pre class="diagram">
+fastapi-imageSearch/
+├── app/
+│   ├── api/
+│   │   ├── __init__.py
+│   │   └── v1/
+│   │       ├── __init__.py
+│   │       └── image_search/
+│   │           ├── __init__.py
+│   │           └── router.py
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── logging.py
+│   │   ├── dependencies/
+│   │   │   ├── common.py
+│   │   │   └── image_search.py
+│   │   ├── exceptions/
+│   │   │   ├── custom.py
+│   │   │   └── handler.py
+│   │   └── utils/
+│   │       ├── image.py
+│   │       ├── response.py
+│   │       └── url.py
+│   ├── infrastructure/
+│   │   ├── storage/image.py
+│   │   └── vectordb/qdrant.py
+│   ├── schemas/
+│   │   ├── common.py
+│   │   └── image_search/response.py
+│   ├── services/
+│   │   └── fruit/
+│   │       ├── point.py
+│   │       └── search.py
+│   ├── worker/
+│   │   ├── celery_app.py
+│   │   └── tasks/
+│   │       ├── __init__.py
+│   │       ├── add.py
+│   │       └── embedding.py
+│   └── main.py
+├── config/
+│   └── embedding_model.py
+├── storage/
+│   ├── images/fruits/
+│   └── screenshots/
+├── notebooks/
+├── tests/
+├── docker-compose.yml
+├── pyproject.toml
+├── uv.lock
+├── yolov8n-oiv7.pt
+└── README.md
+            </pre>
+
+            <div class="arch-notes">
+                <div class="arch-note">
+                    <span class="arch-note-key">app/api/</span>
+                    <span class="arch-note-val">API 엔드포인트 정의 (v1 버전, pkgutil 자동 수집)</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">app/core/</span>
+                    <span class="arch-note-val">코어 컴포넌트 (설정, 의존성, 예외 처리, 로깅, 유틸리티)</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">app/core/dependencies/</span>
+                    <span class="arch-note-val">Qdrant · 임베딩 모델 · YOLO 모델 (lru_cache 싱글톤)</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">app/infrastructure/</span>
+                    <span class="arch-note-val">Qdrant 벡터DB 클라이언트 · 이미지 저장소</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">app/services/fruit/</span>
+                    <span class="arch-note-val">FruitPointService (특징점 추출) · FruitSearchService (검색 파이프라인)</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">app/worker/</span>
+                    <span class="arch-note-val">Celery 태스크 (embedding queue, acks_late, uuid5 멱등성)</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">config/</span>
+                    <span class="arch-note-val">CLIP 모델 메타 (ViT-B/32, ViT-L/14)</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">storage/images/fruits/</span>
+                    <span class="arch-note-val">임베딩 대상 데이터셋</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">notebooks/</span>
+                    <span class="arch-note-val">Jupyter 탐색 노트북</span>
+                </div>
+                <div class="arch-note">
+                    <span class="arch-note-key">yolov8n-oiv7.pt</span>
+                    <span class="arch-note-val">YOLO 모델 가중치 (Open Images v7)</span>
+                </div>
+            </div>
+        </section>
+
         <!-- 03 STACK -->
-        <section id="stack" class="section">
+        <!-- <section id="stack" class="section">
             <header class="section-head">
                 <span class="section-id">03</span>
                 <span class="section-kw">// stack</span>
@@ -204,7 +285,7 @@
                     <span class="stack-val">pytest <span class="sep">·</span> pytest-asyncio <span class="sep">·</span> dependency_overrides</span>
                 </div>
             </div>
-        </section>
+        </section> -->
 
         <!-- 04 HIGHLIGHTS -->
         <section id="highlights" class="section">
@@ -336,12 +417,6 @@
                     <span>path</span>
                     <span>auth</span>
                     <span>desc</span>
-                </div>
-                <div class="endpoint">
-                    <span class="m get">GET</span>
-                    <span class="p">/</span>
-                    <span class="a public">public</span>
-                    <span class="d">헬스체크 — Hello FastAPI</span>
                 </div>
                 <div class="endpoint">
                     <span class="m post">POST</span>

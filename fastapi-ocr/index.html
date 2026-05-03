@@ -21,7 +21,7 @@
         <nav class="nav">
             <a href="#overview">overview</a>
             <a href="#architecture">arch</a>
-            <a href="#stack">stack</a>
+            <a href="#directory">directory</a>
             <a href="#highlights">highlights</a>
             <a href="#api">api</a>
             <a href="#engine">engine</a>
@@ -47,9 +47,7 @@
                 <span class="kw">→</span> Multi-engine OCR API <span class="sep">·</span> Sync &amp; Async dual mode <span class="sep">·</span> Celery-backed job pipeline
             </p>
             <p class="hero-summary">
-                EasyOCR · PaddleOCR · Naver Clova OCR을 단일 인터페이스로 추상화하여 추가 확장이 용이한 구조로 설계했습니다
-                <br/>무거운 추론은 <code>Celery</code> 워커로 분리해 API 응답 지연을 방지하고 비동기 처리 구조를 구현했습니다.
-                <br/><code>ocr_jobs</code> 테이블이 <code>pending → started → success/failed</code> 라이프사이클을 관리하며 안정적인 처리 흐름을 구현했습니다.
+                EasyOCR · PaddleOCR · Naver Clova OCR을 단일 인터페이스로 추상화하여 추가 확장이 용이한 구조로 설계했습니다. 무거운 추론은 <code>Celery</code> 워커로 분리해 API 응답 지연을 방지하고 비동기 처리 구조를 구현했습니다. <code>pending → started → success/failed</code> 라이프사이클을 관리하며 안정적인 처리 흐름을 구현했습니다.
             </p>
 
             <div class="hero-stats">
@@ -139,7 +137,6 @@
                 <span class="section-kw">// directory structure</span>
             </header>
             <h2 class="section-title">프로젝트 구조</h2>
-            <p class="section-sub">$ tree -I '.venv|__pycache__'</p>
 
             <pre class="diagram">
 fastapi-ocr/
