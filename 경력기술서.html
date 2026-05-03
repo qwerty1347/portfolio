@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경력기술서</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --text-color: #2b2d42;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 헤더 스타일 */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(255,255,255,0.1)" d="M30,10L50,30L70,10L90,30L70,50L90,70L70,90L50,70L30,90L10,70L30,50L10,30L30,10Z"/></svg>');
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .name {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .title {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+
+        .contact {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .contact a {
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .contact a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 카드 스타일 */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            font-size: 1.2em;
+        }
+
+        /* 경력 & 프로젝트 아이템 */
+        .item {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .company, .project-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .period {
+            color: #666;
+            font-size: 0.9rem;
+            background: #f0f4f8;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .position {
+            font-weight: 500;
+            color: var(--secondary-color);
+            margin-bottom: 0.8rem;
+            display: inline-block;
+        }
+
+        ul {
+            padding-left: 1.5rem;
+            margin: 0.8rem 0;
+        }
+
+        ul li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        ul li::before {
+            content: '▹';
+            position: absolute;
+            left: -1.3rem;
+            color: var(--accent-color);
+        }
+
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 2rem 1rem;
+            }
+
+            .name {
+                font-size: 2.2rem;
+            }
+
+            .contact {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.8rem;
+            }
+
+            .skills-container {
+                grid-template-columns: 1fr;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .item-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .period {
+                align-self: flex-start;
+            }
+        }
+
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(6) { animation-delay: 0.6s; }
+
+        /* 다크 모드 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #4cc9f0;
+                --secondary-color: #4895ef;
+                --accent-color: #4361ee;
+                --text-color: #f8f9fa;
+                --light-bg: #121212;
+                --card-bg: #1e1e1e;
+            }
+
+            body {
+                background-color: var(--light-bg);
+                color: #e0e0e0;
+            }
+
+            .card {
+                background-color: #252525;
+                border-left-color: var(--primary-color);
+            }
+
+            .skill-category {
+                background: #2a2a2a;
+                border-color: #3a3a3a;
+            }
+
+            .skill-tag {
+                background: #2a2a2a;
+                color: var(--primary-color);
+                border-color: #3a3a3a;
+            }
+
+            .period {
+                background: #2a2a2a;
+                color: #b0b0b0;
+            }
+
+            .portfolio-item {
+                background: #252525;
+                border-color: #3a3a3a;
+            }
+
+            .portfolio-image {
+                background: #2a2a2a;
+                color: #555;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 섹션 -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="name">이건희</h1>
+                <div class="title">백엔드 개발자</div>
+                <div class="contact">
+                    <a href="mailto:qwerty1347@naver.com"><i class="fas fa-envelope"></i> qwerty1347@naver.com</a>
+                    <a href="tel:010-2915-6854"><i class="fas fa-phone"></i> 010-2915-6854</a>
+                    <a href="https://github.com/qwerty1347" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- 경력 섹션 -->
+        <section class="card">
+            <h2 class="section-title"><i class="fas fa-briefcase"></i> 경력 사항</h2>
+
+            <div class="item">
+                <div class="item-header">
+                    <span class="company">지앤지커머스</span>
+                    <span class="period">2024.07 - 현재</span>
+                </div>
+                <div class="position">
+                    백엔드 개발자
+                    <span style="font-weight:normal; color:#666;">|  Laravel8 / MySQL / MongoDB / GitLab</span>
+                </div>
+                <ul>
+                    <li>이커머스 플랫폼의 API 개발 및 유지보수, 신규 기능 설계 및 서비스 고도화 담당</li>
+                    <li>JWT 기반 REST API 개발 및 Swagger를 활용한 API 문서화</li>
+                    <li>Firebase Cloud Messaging(FCM) 연동 API 설계 및 푸시 알림·토큰 관리 기능 개발</li>
+                    <li>GraphQL Query/Mutation 구조를 기반으로 사용자 정보 조회 및 설정 관리 기능 개발</li>
+                </ul>
+            </div>
+
+            <div class="item">
+                <div class="item-header">
+                    <span class="company">온채널</span>
+                    <span class="period">2021.12 - 2024.02</span>
+                </div>
+                <div class="position">
+                    백엔드 개발자
+                    <span style="font-weight:normal; color:#666;">|  Laravel8 / MySQL / Kafka / GitLab</span>
+                </div>
+                <ul>
+                    <li>이커머스 사이트(사용자/관리자) 개발·유지보수 담당</li>
+                    <li>JWT 기반 REST API 개발 및 Swagger를 활용한 문서화</li>
+                    <li>쿠팡·셀러허브 API 연동으로 주문 수집 및 상태 동기화 시스템 개발</li>
+                    <li>페이플 PG 간편결제·앱카드 결제·취소 및 포인트 자동 증감 기능 개발</li>
+                    <li>외부 API 기반 상품 키워드 추천 및 구독 시스템 개발</li>
+                </ul>
+            </div>
+
+            <div class="item">
+                <div class="item-header">
+                    <span class="company">이파트</span>
+                    <span class="period">2019.11 - 2020.11</span>
+                </div>
+                <div class="position">
+                    백엔드 개발자
+                    <span style="font-weight:normal; color:#666;">| Laravel7 / MySQL / AWS(EC2, S3, SES) / GitHub</span>
+                </div>
+                <ul>
+                    <li>PHP 웹사이트 개발 및 유지보수, 레거시 코드 리팩토링 업무 담당</li>
+                    <li>‘아이엠스쿨’ 및 ‘키즈노트’ 기능을 참고하여 알림장 서비스 개발</li>
+                    <li>사용자용 웹사이트와 관리자용 웹사이트 기능 개발 및 커스터마이징</li>
+                </ul>
+            </div>
+
+            <div class="item">
+                <div class="item-header">
+                    <span class="company">아이파이브</span>
+                    <span class="period">2018.02 - 2019.05</span>
+                </div>
+                <div class="position">
+                    백엔드 개발자
+                </div>
+                <ul>
+                    <li>ASP 및 PHP 웹사이트 개발 및 유지보수</li>
+                    <li>자체 CMS를 활용한 쇼핑몰, 기업, 공공기관, 대학, 전시회 등 개발 및 커스터마이징</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 프로젝트 섹션 -->
+        <!-- <section class="card">
+            <h2 class="section-title"><i class="fas fa-project-diagram"></i> 프로젝트</h2>
+
+            <div class="item">
+                <div class="item-header">
+                    <span class="project-name">실시간 주식 거래 플랫폼</span>
+                    <span class="period">2023.01 - 2023.06</span>
+                </div>
+                <div class="skills">
+                    <span class="skill-tag">Java 17</span>
+                    <span class="skill-tag">Spring Boot</span>
+                    <span class="skill-tag">Kafka</span>
+                    <span class="skill-tag">Kubernetes</span>
+                    <span class="skill-tag">gRPC</span>
+                </div>
+                <ul>
+                    <li>초당 10,000건 이상의 주문을 처리할 수 있는 고성능 거래 엔진 개발</li>
+                    <li>Kafka를 활용한 이벤트 드리븐 아키텍처 구현</li>
+                    <li>gRPC를 이용한 서비스 간 통신으로 지연 시간 70% 감소</li>
+                    <li>Kubernetes 기반의 자동 확장 시스템 구축</li>
+                </ul>
+            </div>
+
+            <div class="item">
+                <div class="item-header">
+                    <span class="project-name">AI 기반 개인화 추천 시스템</span>
+                    <span class="period">2022.07 - 2022.12</span>
+                </div>
+                <div class="skills">
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">FastAPI</span>
+                    <span class="skill-tag">TensorFlow</span>
+                    <span class="skill-tag">Redis</span>
+                    <span class="skill-tag">Docker</span>
+                </div>
+                <ul>
+                    <li>사용자 행동 기반의 실시간 추천 시스템 개발</li>
+                    <li>Redis를 활용한 캐싱 전략으로 API 응답 시간 90% 단축</li>
+                    <li>도커 컨테이너 기반의 개발 환경 표준화</li>
+                    <li>A/B 테스트를 통한 추천 알고리즘 성능 검증</li>
+                </ul>
+            </div>
+        </section> -->
+    </div>
+</body>
+</html>
