@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이건희 - backend engineer portfolio</title>
+    <title>이건희 - Backend Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -598,10 +598,40 @@
             margin-bottom: 14px;
             max-width: 600px;
         }
+        .project-rationale {
+            background: var(--bg-soft);
+            border-left: 3px solid var(--acc);
+            padding: 12px 16px;
+            border-radius: 0 var(--r-sm) var(--r-sm) 0;
+            font-size: 14px !important;
+            line-height: 1.7 !important;
+            margin-top: -2px !important;
+        }
+        .project-rationale::before {
+            content: '// 설계 의도';
+            display: block;
+            font-family: var(--mono);
+            color: var(--acc-dark);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            margin-bottom: 6px;
+        }
         .project-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
+            align-items: center;
+            margin-top: 14px;
+        }
+        .project-tags-label {
+            font-family: var(--mono);
+            color: var(--acc-dark);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            margin-right: 4px;
+            white-space: nowrap;
         }
         .project-tag {
             font-family: var(--mono);
@@ -825,10 +855,9 @@
         </button>
         <nav class="nav" id="navLinks">
             <a href="#about">About</a>
-            <a href="#stack">Stack</a>
             <a href="#projects">Projects</a>
             <a href="#focus">Focus</a>
-            <a href="#contact" class="nav-cta">Contact ↗</a>
+            <!-- <a href="#contact" class="nav-cta">Contact ↗</a> -->
         </nav>
     </header>
 
@@ -836,27 +865,25 @@
 
         <!-- HERO -->
         <section class="hero">
-            <span class="hero-eyebrow">
+            <!-- <span class="hero-eyebrow">
                 <span class="dot"></span>
                 Open to work · Backend Engineer
-            </span>
+            </span> -->
 
             <h1 class="hero-name">
                 Backend engineer<span class="cursor"></span><br>
             </h1>
 
-            <p class="hero-role">
+            <!-- <p class="hero-role">
                 <span class="arrow">→</span> Python · FastAPI <span class="sep">·</span> Async pipelines <span class="sep">·</span> AI integration <span class="sep">·</span> Distributed systems
-            </p>
+            </p> -->
 
-            <p class="hero-bio">
-                견고한 <strong>API 경계</strong>와 <strong>비동기 파이프라인</strong>을 설계하는 백엔드 개발자입니다.
-                FastAPI · Celery · SQLAlchemy 스택을 중심으로 동기/비동기 트레이드오프, 큐 멱등성,
-                DB 세션 분리, 모델 싱글톤 같은 운영 디테일에 익숙합니다. 요즘은 <strong>RAG 에이전트</strong>와
-                <strong>벡터 검색</strong>을 백엔드 시스템에 매끄럽게 녹여내는 구조에 관심이 많습니다.
-            </p>
+            <!-- <p class="hero-bio">
+                <strong>Python · FastAPI</strong> 비동기 백엔드에 <strong>LangChain · Qdrant · Celery · Playwright</strong> 를 결합해
+                <strong>AI · 외부 자원을 안정적으로 운영하는 시스템</strong>을 설계하는 백엔드 개발자입니다.
+            </p> -->
 
-            <div class="hero-stats">
+            <!-- <div class="hero-stats">
                 <div class="stat">
                     <div class="stat-num">4<span class="num-acc">+</span></div>
                     <div class="stat-label">production projects</div>
@@ -873,7 +900,7 @@
                     <div class="stat-num">∞</div>
                     <div class="stat-label">commits to come</div>
                 </div>
-            </div>
+            </div> -->
         </section>
 
         <!-- 01 ABOUT -->
@@ -890,22 +917,20 @@
             <div class="about-grid">
                 <div class="about-bio">
                     <p>
-                        FastAPI · Laravel · Django를 가로지르며 <strong>다중 언어 백엔드</strong>를 다뤄왔고,
-                        최근에는 Python 비동기 생태계에 집중하고 있습니다. 라우터를 얇게 유지하고,
-                        도메인 로직을 서비스 계층으로, 외부 자원 경계를 infrastructure 계층으로 분리하는 식의
-                        명확한 책임 구분을 선호합니다.
+                        PHP · Python <strong>다중 언어 백엔드</strong>를 다뤄왔고,
+                        최근에는 FastAPI 비동기 백엔드와 AI 를 활용해 운영하는 시스템 설계에 집중하고 있습니다. 라우터는 얇게, 도메인 로직은 서비스 계층으로, 외부 자원은 별도 모듈로 분리하는 식의 명확한 책임 구분을 선호합니다.
                     </p>
                     <p>
-                        가벼운 단발 요청과 무거운 배치 워크로드를 같은 시스템에서 함께 처리해야 하는 상황에서
-                        <strong>큐 · 워커 · 잡 라이프사이클 추적</strong>을 어떻게 구성해야 멱등성과 가시성을
-                        동시에 잡을 수 있는지 고민하고 정리하는 것을 좋아합니다.
-                        문서로 남기지 않은 결정은 휘발된다고 믿어, README와 docs를 가꾸는 데 시간을 씁니다.
+                        가벼운 단발 요청과 무거운 배치 잡이 한 시스템에 공존할 때,
+                        <strong>큐 · 워커 · 잡 라이프사이클</strong>을 어떻게 설계해야 멱등성과 가시성을
+                        동시에 챙길 수 있는지 풀어내는 작업을 좋아합니다.
+                        문서로 남기지 않은 결정은 휘발된다는 생각에, README · docs 도 코드와 같은 무게로 다룹니다.
                     </p>
                     <p>
-                        AI 영역에서는 <strong>RAG 에이전트 · 벡터 임베딩 · OCR 파이프라인</strong>처럼
-                        백엔드와 가까운 부분에 직접 손을 대는 편이며, SDK를 그대로 호출하기보다
-                        <em>이벤트 루프 보호 · DI · 모델 싱글톤 · 워커 분리</em>같은 운영 측면을
-                        함께 설계하려고 노력합니다.
+                        AI 영역에서는 <strong>RAG 에이전트 · 벡터 임베딩 · OCR · 브라우저 자동화</strong>처럼
+                        백엔드와 맞닿은 부분을 직접 다룹니다. SDK 를 그대로 호출하기보다
+                        <em>이벤트 루프 보호 · DI · 모델 싱글톤 · 워커 분리</em> 같은 운영 측면까지
+                        함께 설계합니다.
                     </p>
                 </div>
 
@@ -917,17 +942,17 @@
                         <span class="about-row-key">name</span>
                         <span class="about-row-val">이건희</span>
                     </div>
-                    <div class="about-row">
+                    <!-- <div class="about-row">
                         <span class="about-row-key">handle</span>
                         <span class="about-row-val">qwerty1347</span>
-                    </div>
+                    </div> -->
                     <div class="about-row">
                         <span class="about-row-key">role</span>
                         <span class="about-row-val">Backend Engineer</span>
                     </div>
                     <div class="about-row">
                         <span class="about-row-key">focus</span>
-                        <span class="about-row-val">Backend architecture<br>· AI pipelines</span>
+                        <span class="about-row-val">Backend architecture<br>· AI</span>
                     </div>
                     <div class="about-row">
                         <span class="about-row-key">education</span>
@@ -939,145 +964,25 @@
                             <a href="https://github.com/qwerty1347" target="_blank">github.com/qwerty1347</a>
                         </span>
                     </div>
-                    <div class="about-row">
+                    <!-- <div class="about-row">
                         <span class="about-row-key">status</span>
                         <span class="about-row-val">
                             <span class="status-online">open to work</span>
                         </span>
-                    </div>
+                    </div> -->
                 </aside>
             </div>
         </section>
 
-        <!-- 02 STACK -->
-        <section id="stack" class="section">
-            <header class="section-head">
-                <span class="section-id">02</span>
-                <span class="section-tag">stack</span>
-            </header>
-            <h2 class="section-title">기술 스택<span class="dot">.</span></h2>
-            <!-- <p class="section-lead">
-                카테고리별로 분류한 사용 기술. <strong style="color:var(--fg);">진한 칩</strong>은
-                주력 스택, 일반 칩은 실무·프로젝트에서 활용한 도구입니다.
-            </p> -->
-
-            <div class="stack-grid">
-                <article class="stack-card cat-lang">
-                    <div class="stack-card-head">
-                        <span class="stack-icon"><i class="fas fa-code"></i></span>
-                        <h3 class="stack-card-title">Backend</h3>
-                        <span class="stack-card-count">2</span>
-                    </div>
-                    <div class="stack-pills">
-                        <span class="pill primary">Python</span>
-                        <span class="pill primary">PHP</span>
-                    </div>
-                </article>
-
-                <article class="stack-card cat-front">
-                    <div class="stack-card-head">
-                        <span class="stack-icon"><i class="fas fa-laptop-code"></i></span>
-                        <h3 class="stack-card-title">Frontend</h3>
-                        <span class="stack-card-count">4</span>
-                    </div>
-                    <div class="stack-pills">
-                        <span class="pill primary">JavaScript</span>
-                        <span class="pill primary">jQuery</span>
-                        <span class="pill primary">Bootstrap</span>
-                        <span class="pill primary">HTML / CSS</span>
-                    </div>
-                </article>
-
-                <article class="stack-card cat-web">
-                    <div class="stack-card-head">
-                        <span class="stack-icon"><i class="fas fa-server"></i></span>
-                        <h3 class="stack-card-title">Web Frameworks</h3>
-                        <span class="stack-card-count">4</span>
-                    </div>
-                    <div class="stack-pills">
-                        <span class="pill primary">FastAPI</span>
-                        <span class="pill primary">Laravel</span>
-                        <span class="pill primary">Django</span>
-                        <span class="pill primary">Streamlit</span>
-                    </div>
-                </article>
-
-                <article class="stack-card cat-queue">
-                    <div class="stack-card-head">
-                        <span class="stack-icon"><i class="fas fa-list-check"></i></span>
-                        <h3 class="stack-card-title">Task Queue &amp; Messaging</h3>
-                        <span class="stack-card-count">3</span>
-                    </div>
-                    <div class="stack-pills">
-                        <span class="pill primary">Celery</span>
-                        <span class="pill primary">Redis</span>
-                        <span class="pill primary">Kafka</span>
-                        <!-- <span class="pill">Flower</span> -->
-                    </div>
-                </article>
-
-                <article class="stack-card cat-db">
-                    <div class="stack-card-head">
-                        <span class="stack-icon"><i class="fas fa-database"></i></span>
-                        <h3 class="stack-card-title">Databases</h3>
-                        <span class="stack-card-count">3</span>
-                    </div>
-                    <div class="stack-pills">
-                        <span class="pill primary">MySQL</span>
-                        <span class="pill primary">MongoDB</span>
-                        <span class="pill primary">VectorDB(Qdrant)</span>
-                    </div>
-                </article>
-
-                <article class="stack-card cat-auth">
-                    <div class="stack-card-head">
-                        <span class="stack-icon"><i class="fas fa-shield-halved"></i></span>
-                        <h3 class="stack-card-title">Auth &amp; Security</h3>
-                        <span class="stack-card-count">2</span>
-                    </div>
-                    <div class="stack-pills">
-                        <span class="pill primary">JWT</span>
-                        <span class="pill primary">OAuth2</span>
-                    </div>
-                </article>
-
-                <article class="stack-card cat-test">
-                    <div class="stack-card-head">
-                        <span class="stack-icon"><i class="fas fa-flask"></i></span>
-                        <h3 class="stack-card-title">Testing</h3>
-                        <span class="stack-card-count">2</span>
-                    </div>
-                    <div class="stack-pills">
-                        <span class="pill primary">pytest</span>
-                        <span class="pill primary">PHPUnit</span>
-                    </div>
-                </article>
-
-                <article class="stack-card cat-ops">
-                    <div class="stack-card-head">
-                        <span class="stack-icon"><i class="fab fa-docker"></i></span>
-                        <h3 class="stack-card-title">Containers &amp; Infra</h3>
-                        <span class="stack-card-count">4</span>
-                    </div>
-                    <div class="stack-pills">
-                        <span class="pill primary">Docker</span>
-                        <span class="pill primary">Linux</span>
-                        <span class="pill primary">Nginx</span>
-                        <span class="pill primary">Apache</span>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <!-- 03 PROJECTS -->
+        <!-- 02 PROJECTS -->
         <section id="projects" class="section">
             <header class="section-head">
-                <span class="section-id">03</span>
+                <span class="section-id">02</span>
                 <span class="section-tag">projects</span>
             </header>
             <h2 class="section-title">프로젝트<span class="dot">.</span></h2>
             <p class="section-lead">
-                각 프로젝트는 별도 페이지에서 아키텍처 · 기술적 의사결정 · 코드 디테일을 자세히 다룹니다.
+                각각의 프로젝트 별도 페이지에서 아키텍처 · 코드 디테일 등을 자세히 다룹니다.
             </p>
 
             <div class="projects">
@@ -1087,16 +992,24 @@
                     <div class="project-body">
                         <h3><span class="arrow">→</span> fastapi-scraper</h3>
                         <p>
-                            뉴스 스크래핑 → LLM 요약 → 티스토리 자동 발행을 묶은 큐레이션
-                            자동 포스팅 파이프라인. <code>Playwright</code>로 카카오 OAuth 세션을
-                            <code>storage_state</code>로 보존해 자동 로그인하고, 마크다운 모드의
-                            CodeMirror에 본문을 직접 주입한 뒤 캘린더 UI를 클릭해 예약 발행까지 처리합니다.
+                            <code>Playwright</code>로 뉴스를 스크래핑하고, <code>LLM</code>으로 블로그 콘텐츠로 가공한 뒤
+                            티스토리에 자동 발행하는 큐레이션 파이프라인. 카카오 OAuth 세션을 관리하며
+                            마크다운 모드 본문 작성과 예약 발행까지 처리합니다.
+                        </p>
+                        <p class="project-rationale">
+                            매번 카카오 OAuth(2FA · 캡차)를 자동화하는 것은 비현실적이라,
+                            <strong>첫 로그인만 수동으로 받고 <code>storage_state</code>에 세션을 저장하고 이후 운영을 가능하게 만들었습니다.
                         </p>
                         <div class="project-tags">
+                            <span class="project-tags-label">// 스킬스택</span>
+                            <span class="project-tag">Python</span>
                             <span class="project-tag">FastAPI</span>
                             <span class="project-tag">Playwright</span>
-                            <span class="project-tag">Groq LLM</span>
-                            <span class="project-tag">Async</span>
+                            <span class="project-tag">LLM</span>
+                            <span class="project-tag">MySQL</span>
+                            <span class="project-tag">MongoDB</span>
+                            <span class="project-tag">Redis</span>
+                            <span class="project-tag">pytest</span>
                             <span class="project-tag">Docker</span>
                         </div>
                     </div>
@@ -1119,16 +1032,24 @@
                     <div class="project-body">
                         <h3><span class="arrow">→</span> fastapi-chatbot</h3>
                         <p>
-                            LangChain 기반 RAG 에이전트 챗봇. VectorDB 임베딩 검색과 Google 웹 검색을 자동으로
-                            라우팅하며, Streamlit UI와 LangSmith 모니터링이 함께 묶여 있습니다.
-                            비동기 처리 기반 아키텍처로 안정적인 응답을 제공합니다.
+                            LangChain <code>ReAct</code> 에이전트 기반 RAG 챗봇. <code>LLM</code>이 질문을 일상 대화 / 정보 요청인지 분류한 뒤
+                            정보 요청은 <code>벡터DB 검색</code> 과 <code>웹 검색</code> 도구를 자율 선택해 호출합니다.
+                            <code>deque(maxlen=10)</code> 기반 단기 메모리로 컨텍스트 연속성을 유지합니다.
+                        </p>
+                        <p class="project-rationale">
+                            모든 질의에 ReAct + 도구 호출을 거치면 인사·잡담에도 불필요한 지연과 토큰 비용이 발생합니다.
+                            <code>lru_cache</code> + lifespan 워밍업으로 프로세스당 1회만 로드해 첫 요청 지연을 제거했습니다.
                         </p>
                         <div class="project-tags">
+                            <span class="project-tags-label">// 스킬스택</span>
+                            <span class="project-tag">Python</span>
                             <span class="project-tag">FastAPI</span>
                             <span class="project-tag">LangChain</span>
+                            <span class="project-tag">LLM</span>
                             <span class="project-tag">VectorDB</span>
                             <span class="project-tag">Streamlit</span>
-                            <span class="project-tag">RAG</span>
+                            <span class="project-tag">Celery</span>
+                            <span class="project-tag">Redis</span>
                             <span class="project-tag">Docker</span>
                         </div>
                     </div>
@@ -1151,17 +1072,26 @@
                     <div class="project-body">
                         <h3><span class="arrow">→</span> fastapi-imageSearch</h3>
                         <p>
-                            YOLOv8 객체 검출 → CLIP 768d 임베딩 → Qdrant 코사인 유사도 검색을 단일 API로 묶은
-                            CV 백엔드. <code>lru_cache</code> + lifespan으로 모델 싱글톤화하고,
-                            동기 추론은 <code>asyncio.to_thread</code>로 격리해 이벤트 루프를 보호합니다.
+                            업로드한 이미지의 객체를 판별하여 가장 유사 이미지들을 반환합니다.
+                            <code>YOLOv8</code> 객체 검출 → <code>CLIP ViT-L/14</code> 768차원 임베딩 → <code>Qdrant</code> 코사인 유사도 검색 API
+                            <code>Celery 워커</code> 백그라운드에서 처리해 API 응답 경로에 영향을 주지 않도록 분리하였습니다.
+                        </p>
+                        <p class="project-rationale">
+                            YOLO · CLIP 같은 무거운 모델을 요청마다 로딩하면 첫 응답이 수십 초 지연되고,
+                            동기 추론을 async 라우터에서 그대로 호출하면 이벤트 루프가 멈춰 다른 요청까지 막힙니다.
+                            <strong><code>lru_cache</code> + lifespan 워밍업으로 프로세스당 1회만 로드</strong>해 첫 요청부터 즉시 응답하고,
+                            <strong><code>asyncio.to_thread</code>로 동기 추론을 워커 스레드에 격리</strong>해 동시 처리 능력을 유지하도록 설계했습니다.
                         </p>
                         <div class="project-tags">
+                            <span class="project-tags-label">// 스킬스택</span>
+                            <span class="project-tag">Python</span>
                             <span class="project-tag">FastAPI</span>
-                            <span class="project-tag">Qdrant</span>
+                            <span class="project-tag">YOLOv8</span>
                             <span class="project-tag">CLIP</span>
-                            <span class="project-tag">YOLO</span>
+                            <span class="project-tag">Qdrant</span>
                             <span class="project-tag">PyTorch</span>
                             <span class="project-tag">Celery</span>
+                            <span class="project-tag">Redis</span>
                             <span class="project-tag">Docker</span>
                         </div>
                     </div>
@@ -1184,11 +1114,18 @@
                     <div class="project-body">
                         <h3><span class="arrow">→</span> fastapi-ocr</h3>
                         <p>
-                            EasyOCR · PaddleOCR · Naver Clova OCR을 단일 인터페이스로 추상화한 멀티 엔진 API.
-                            동기/비동기 이중 모드 — 가벼운 요청은 즉시 응답, 무거운 잡은 Celery 워커로 분리하고
-                            <code>ocr_jobs</code> 테이블에 라이프사이클을 추적합니다. JWT 인증 적용.
+                            <code>EasyOCR · PaddleOCR · Naver Clova</code> OCR을 단일 인터페이스로 추상화한 멀티 엔진 API.
+                            동기 / 비동기 이중 엔드포인트로 가벼운 요청은 즉시 응답하고, 무거운 잡은 <code>Celery 워커</code> 백그라운드에서
+                            <code>ocr_jobs</code> 테이블에서 잡 라이프사이클을 추적합니다.
+                        </p>
+                        <p class="project-rationale">
+                            OCR은 단일 이미지(밀리초)부터 다중 페이지 PDF(수십 초)까지 처리 시간 편차가 큽니다.
+                            모두 동기 라우터에서 처리하면 무거운 잡이 게이트웨이 타임아웃을 유발하고 가벼운 요청까지 대기시킵니다.
+                            엔진은 ABC로 추상화해 신규 엔진 추가가 클래스 1개로 끝나게 설계했습니다.
                         </p>
                         <div class="project-tags">
+                            <span class="project-tags-label">// 스킬스택</span>
+                            <span class="project-tag">Python</span>
                             <span class="project-tag">FastAPI</span>
                             <span class="project-tag">Celery</span>
                             <span class="project-tag">Redis</span>
@@ -1217,18 +1154,27 @@
                     <div class="project-body">
                         <h3><span class="arrow">→</span> laravel8-cms</h3>
                         <p>
-                            Laravel 기반 관리자 CMS. Google · Naver · Kakao 소셜 로그인과 자체 회원가입을
-                            모두 지원하며, 확장 가능한 컨텐츠 관리와 관리자 대시보드를 구현했습니다.
-                            유닛/기능 테스트로 안정성을 확보.
+                            Laravel 기반 관리자 CMS. <code>Google · Naver · Kakao</code> 소셜 로그인과 자체 회원가입을 모두 지원하며,
+                            확장 가능한 컨텐츠 관리와 관리자 대시보드를 구현했습니다. PHPUnit 유닛·기능 테스트로 안정성을 확보.
+                        </p>
+                        <p class="project-rationale">
+                            단일 OAuth provider만 지원하면 가입 장벽이 커지고, 3개 소셜을 if-else로 구현하면 라우팅·예외 처리 분기가 폭발합니다.
+                            <strong>OAuth provider를 Strategy 패턴으로 추상화</strong>해 신규 제공자 추가가 클래스 1개로 끝나게 했고,
+                            관리자 대시보드도 도메인별 모듈로 분리해 새 컨텐츠 타입 추가 시 기존 코드 영향을 최소화했습니다.
+                            <strong>PHPUnit 테스트는 리팩토링 시 회귀를 잡아내는 안전망</strong>으로 활용해 장기 유지보수 비용을 줄였습니다.
                         </p>
                         <div class="project-tags">
+                            <span class="project-tags-label">// 스킬스택</span>
+                            <span class="project-tag">PHP</span>
                             <span class="project-tag">Laravel</span>
                             <span class="project-tag">MySQL</span>
                             <span class="project-tag">MongoDB</span>
-                            <span class="project-tag">OAuth</span>
+                            <span class="project-tag">OAuth2</span>
+                            <span class="project-tag">JWT</span>
                             <span class="project-tag">jQuery</span>
-                            <span class="project-tag">Docker</span>
+                            <span class="project-tag">Bootstrap</span>
                             <span class="project-tag">PHPUnit</span>
+                            <span class="project-tag">Docker</span>
                         </div>
                     </div>
                     <div class="project-actions">
@@ -1313,7 +1259,7 @@
         </section> -->
 
         <!-- 05 CONTACT -->
-        <section id="contact" class="section">
+        <!-- <section id="contact" class="section">
             <header class="section-head">
                 <span class="section-id">04</span>
                 <span class="section-tag">contact</span>
@@ -1350,7 +1296,7 @@
                     </a>
                 </div>
             </div>
-        </section>
+        </section> -->
 
     </main>
 
