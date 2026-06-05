@@ -33,20 +33,9 @@
 
         <!-- HERO -->
         <section class="hero">
-            <div class="hero-meta">
-                <span class="tag tag-version">v0.1.0</span>
-                <span class="tag tag-status"><span class="dot"></span>in-progress</span>
-                <span class="tag">python 3.11</span>
-                <span class="tag">fastapi 0.135</span>
-                <span class="tag">langchain 0.3</span>
-                <span class="tag">groq llama-3.1</span>
-            </div>
             <h1 class="hero-title">
                 LLM 에이전트 챗봇<span class="cursor">_</span>
             </h1>
-            <p class="hero-tagline">
-                <span class="kw">→</span> ReAct agent <span class="sep">·</span> RAG + Web search <span class="sep">·</span> Chitchat-aware routing
-            </p>
             <p class="hero-summary">
                 <code>Groq Llama 3.1-8B</code>가 사용자의 질문을 일상 대화/정보 요청으로 1차 분류한 뒤,
                 정보 요청이면 <code>LangChain ReAct</code> 에이전트가 <code>Qdrant</code> 벡터 검색과
@@ -54,28 +43,9 @@
                 <code>@lru_cache</code> + lifespan으로 프로세스당 1회만 로드되고, 동기 LLM 호출은
                 <code>asyncio.to_thread</code>로 격리되어 이벤트 루프를 보호합니다.
             </p>
-
-            <div class="hero-stats">
-                <div class="stat">
-                    <div class="stat-num">384</div>
-                    <div class="stat-label">embedding dim</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">2</div>
-                    <div class="stat-label">react tools</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">1×</div>
-                    <div class="stat-label">executor / proc</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">10</div>
-                    <div class="stat-label">short-term turns</div>
-                </div>
-            </div>
         </section>
 
-        <!-- 01 OVERVIEW -->
+        <!-- 01 PIPELINE -->
         <section id="overview" class="section">
             <header class="section-head">
                 <span class="section-id">01</span>
@@ -112,196 +82,13 @@
         <section id="architecture" class="section">
             <header class="section-head">
                 <span class="section-id">02</span>
-                <span class="section-kw">// architecture</span>
+                <span class="section-kw">architecture</span>
             </header>
             <h2 class="section-title">시스템 구성</h2>
-            <p class="section-sub">// chitchat은 LLM 한 번, retrieval은 ReAct executor가 두 도구를 자율 선택해 호출합니다</p>
 
-            <pre class="diagram diagram-arch">
-                <span class="d-fg">┌──────────────────────────┐</span>
-                <span class="d-fg">│     client (browser)     │</span>
-                <span class="d-fg">└─────────────┬────────────┘</span>
-                              <span class="d-dim">│ POST /api/v1/chat/  { query }</span>
-              <span class="d-fg">┌───────────────▼─────────────────┐</span>
-              <span class="d-fg">│  </span><span class="d-acc">FastAPI</span><span class="d-fg"> (uvicorn :8000)        │</span>
-              <span class="d-fg">│  Depends(</span><span class="d-acc">ChatAgentService</span><span class="d-fg">)     │</span>
-              <span class="d-fg">└───────────────┬─────────────────┘</span>
-                              <span class="d-dim">│ asyncio.to_thread</span>
-                              <span class="d-fg">▼</span>
-              <span class="d-fg">┌─────────────────────────────────┐</span>
-              <span class="d-fg">│  </span><span class="d-acc">ChatAgentService</span><span class="d-fg">.handle_agent  │</span>
-              <span class="d-fg">│  + </span><span class="d-acc4">ShortTermMemory</span><span class="d-fg"> deque(10)    │</span>
-              <span class="d-fg">└──┬───────────────────────────┬──┘</span>
-                 <span class="d-dim">│ chitchat                  │ retrieval</span>
-                 <span class="d-fg">▼                           ▼</span>
-         <span class="d-fg">┌──────────────┐          ┌──────────────────┐</span>
-         <span class="d-fg">│  </span><span class="d-acc3">Groq LLM</span><span class="d-fg">    │          │ </span><span class="d-acc3">AgentExecutor</span><span class="d-fg">    │</span>
-         <span class="d-fg">│  (chitchat)  │          │  (ReAct, tools)  │</span>
-         <span class="d-fg">└──────────────┘          └──┬────────────┬──┘</span>
-                                      <span class="d-fg">│            │</span>
-                                      <span class="d-fg">▼            ▼</span>
-                               <span class="d-fg">┌──────────┐   ┌──────────┐</span>
-                               <span class="d-fg">│ </span><span class="d-acc4">use_db_</span><span class="d-fg">  │   │ </span><span class="d-acc4">use_web_</span><span class="d-fg"> │</span>
-                               <span class="d-fg">│  tool    │   │  tool    │</span>
-                               <span class="d-fg">└────┬─────┘   └─────┬────┘</span>
-                                    <span class="d-fg">▼               ▼</span>
-                           <span class="d-fg">┌──────────────┐    ┌──────────┐</span>
-                           <span class="d-fg">│   </span><span class="d-acc2">Qdrant</span><span class="d-fg">     │    │ </span><span class="d-acc3">SerpAPI</span><span class="d-fg">  │</span>
-                           <span class="d-fg">│ board_notice │    │  Google  │</span>
-                           <span class="d-fg">│  384d Cosine │    └──────────┘</span>
-                           <span class="d-fg">└──────▲───────┘</span>
-                                  <span class="d-dim">│ upsert</span>
-                           <span class="d-fg">┌──────┴────────┐</span>
-                           <span class="d-fg">│ </span><span class="d-acc">Celery worker</span><span class="d-fg"> │</span>
-                           <span class="d-fg">│ -Q embedding  │</span>
-                           <span class="d-fg">│ embed_notice_ │</span>
-                           <span class="d-fg">│    board      │</span>
-                           <span class="d-fg">└───────────────┘</span></pre>
-
-            <div class="arch-notes">
-                <div class="arch-note">
-                    <span class="arch-note-key">model cache</span>
-                    <span class="arch-note-val"><code>@lru_cache(maxsize=1)</code> · Qdrant client · SentenceTransformer · Groq · 프로세스당 1회 로드</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">lifespan</span>
-                    <span class="arch-note-val"><code>asynccontextmanager</code> 부팅 시 모델 워밍업 · 종료 시 Qdrant client close</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">DI tree</span>
-                    <span class="arch-note-val"><code>core/dependencies/chat.py</code>가 DBSearch · WebSearch · Tool 목록 · ChatAgentService 계층 조립</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">tool factory</span>
-                    <span class="arch-note-val">클로저로 의존성 캡처 · LLM에는 <code>query: str</code>만 노출 · <code>build_db_search</code> / <code>build_web_search</code></span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">react cache</span>
-                    <span class="arch-note-val"><code>hub.pull("hwchase17/react")</code> 모듈 1회 · <code>AgentExecutor</code> <code>__init__</code> 1회 생성</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">async safety</span>
-                    <span class="arch-note-val">동기 Groq 호출은 <code>asyncio.to_thread</code> 위임 · 이벤트 루프 블로킹 차단</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">queue</span>
-                    <span class="arch-note-val">Celery <code>-Q embedding</code> · 게시판 공지 청킹 · all-MiniLM-L6-v2 임베딩 · Qdrant <code>board_notice</code> upsert</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 03 DIRECTORY -->
-        <section id="directory" class="section">
-            <header class="section-head">
-                <span class="section-id">03</span>
-                <span class="section-kw">// directory structure</span>
-            </header>
-            <h2 class="section-title">프로젝트 구조</h2>
-
-            <pre class="diagram">
-fastapi-chatbot/
-├── app/
-│   ├── api/
-│   │   ├── __init__.py
-│   │   └── v1/
-│   │       ├── __init__.py
-│   │       └── chat/
-│   │           ├── __init__.py
-│   │           └── router.py
-│   ├── core/
-│   │   ├── config.py
-│   │   ├── logging.py
-│   │   ├── dependencies/
-│   │   │   ├── common.py
-│   │   │   └── chat.py
-│   │   ├── exceptions/
-│   │   │   ├── custom.py
-│   │   │   └── handler.py
-│   │   └── utils/
-│   │       └── response.py
-│   ├── infrastructure/
-│   │   ├── storage/board.py
-│   │   └── vectordb/qdrant.py
-│   ├── modules/
-│   │   ├── llm/groq.py
-│   │   ├── memory/short_term.py
-│   │   ├── prompt/chat.py
-│   │   ├── search/serp.py
-│   │   └── tools/
-│   │       ├── db_search.py
-│   │       ├── web_search.py
-│   │       └── tool.py
-│   ├── schemas/
-│   │   └── chat/request.py
-│   ├── services/
-│   │   ├── agent/chat.py
-│   │   └── point/notice_board.py
-│   ├── worker/
-│   │   ├── celery_app.py
-│   │   └── tasks/
-│   │       ├── __init__.py
-│   │       ├── embedding.py
-│   │       └── test.py
-│   └── main.py
-├── config/
-│   ├── embedding_model.py
-│   └── llm_model.py
-├── docs/
-│   └── 01 refactoring.md
-├── storage/
-│   ├── embedding/board/notice.py
-│   ├── serp/response.json
-│   └── screenshots/
-├── notebooks/
-├── tests/
-├── docker-compose.yml
-├── pyproject.toml
-├── uv.lock
-└── README.md
-            </pre>
-
-            <div class="arch-notes">
-                <div class="arch-note">
-                    <span class="arch-note-key">app/api/</span>
-                    <span class="arch-note-val">API 엔드포인트 정의 (v1 버전, pkgutil 자동 수집)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/core/dependencies/</span>
-                    <span class="arch-note-val">common.py — Qdrant·임베딩·Groq lru_cache 싱글톤 · chat.py — Service 계층 조립</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/modules/llm/</span>
-                    <span class="arch-note-val">Groq 래퍼 (<code>get_chat_model()</code> getter 로 leaky abstraction 차단)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/modules/memory/</span>
-                    <span class="arch-note-val">ShortTermMemory — <code>deque(maxlen=10)</code> 기반 대화 히스토리</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/modules/search/</span>
-                    <span class="arch-note-val">Serp — SerpAPI 호출 + 응답 파싱 (knowledge_graph / organic_results)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/modules/tools/</span>
-                    <span class="arch-note-val">DBSearch · WebSearch · <code>build_*_search</code> 클로저 팩토리 (@tool)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/services/agent/</span>
-                    <span class="arch-note-val">ChatAgentService — chitchat 분기 + 캐시된 AgentExecutor</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/worker/</span>
-                    <span class="arch-note-val">Celery 태스크 (embedding queue) · embed_notice_board</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">config/</span>
-                    <span class="arch-note-val">임베딩(all-MiniLM-L6-v2) · LLM(llama-3.1-8b-instant) 메타</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">docs/</span>
-                    <span class="arch-note-val">리팩토링 분석 및 진행 체크리스트 (P0~P3)</span>
-                </div>
-            </div>
+            <figure class="shot shot-architecture">
+                <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-chatbot/main/storage/screenshots/architecture.png" alt="시스템 아키텍처 다이어그램">
+            </figure>
         </section>
 
         <!-- 04 HIGHLIGHTS -->
@@ -310,7 +97,7 @@ fastapi-chatbot/
                 <span class="section-id">04</span>
                 <span class="section-kw">// highlights</span>
             </header>
-            <h2 class="section-title">기술적 의사결정</h2>
+            <h2 class="section-title">기술적 결정</h2>
 
             <div class="highlights">
                 <article class="highlight">
@@ -400,170 +187,6 @@ fastapi-chatbot/
                         </div>
                     </div>
                 </article>
-
-                <article class="highlight">
-                    <div class="highlight-num">006</div>
-                    <div class="highlight-body">
-                        <h3>Serp 어댑터 통합</h3>
-                        <p>
-                            원래 <code>Serp</code>(호출)와 <code>SerpService</code>(파싱)가 분리되어 있었지만
-                            의존성이 0개인 순수 파서를 <code>services/</code> 계층에 두는 게 어색했다.
-                            <code>Serp</code> 한 클래스로 통합하여 <code>WebSearch</code>의 DI를 <code>(serp)</code>
-                            한 개로 축소하고 <code>app/services/search/</code> 디렉터리를 삭제.
-                        </p>
-                        <div class="tag-row">
-                            <span class="mini-tag">refactor</span>
-                            <span class="mini-tag">cohesion</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="highlight">
-                    <div class="highlight-num">007</div>
-                    <div class="highlight-body">
-                        <h3>이벤트 루프 보호 — to_thread</h3>
-                        <p>
-                            Groq <code>ChatGroq.invoke</code>는 동기 호출이라 비동기 라우터에서 직접
-                            부르면 이벤트 루프가 막힌다. <code>handle_agent</code>의 chitchat 분류, chitchat
-                            응답, 결과 출력 LLM 호출을 모두 <code>asyncio.to_thread(self.llm.run, ...)</code>로
-                            워커 스레드에 위임해 동시 요청 처리 가능.
-                        </p>
-                        <div class="tag-row">
-                            <span class="mini-tag">asyncio</span>
-                            <span class="mini-tag">non-blocking</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="highlight">
-                    <div class="highlight-num">008</div>
-                    <div class="highlight-body">
-                        <h3>Groq 래퍼의 leaky abstraction 제거</h3>
-                        <p>
-                            기존엔 <code>self.llm.llm</code>으로 내부 <code>ChatGroq</code>을 직접 꺼내
-                            <code>create_react_agent</code>에 넘기는 코드가 있었다. 내부 필드를
-                            <code>_llm</code>으로 캡슐화하고 <code>get_chat_model() -> ChatGroq</code> getter를
-                            노출해 외부에 LangChain Runnable 인터페이스를 명시적으로 공개.
-                        </p>
-                        <div class="tag-row">
-                            <span class="mini-tag">encapsulation</span>
-                            <span class="mini-tag">getter</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <!-- 05 API -->
-        <section id="api" class="section">
-            <header class="section-head">
-                <span class="section-id">05</span>
-                <span class="section-kw">// api surface</span>
-            </header>
-            <h2 class="section-title">엔드포인트</h2>
-
-            <div class="endpoints">
-                <div class="endpoint endpoint-head">
-                    <span>method</span>
-                    <span>path</span>
-                    <span>auth</span>
-                    <span>desc</span>
-                </div>
-                <div class="endpoint">
-                    <span class="m post">POST</span>
-                    <span class="p">/api/v1/chat/</span>
-                    <span class="a public">public</span>
-                    <span class="d">자연어 질문 → chitchat/RAG 자동 분기 → LLM 답변</span>
-                </div>
-                <div class="endpoint">
-                    <span class="m get">GET</span>
-                    <span class="p">/</span>
-                    <span class="a public">public</span>
-                    <span class="d">헬스체크</span>
-                </div>
-            </div>
-
-            <div class="terminal">
-                <div class="term-head">
-                    <span class="term-dot red"></span>
-                    <span class="term-dot yellow"></span>
-                    <span class="term-dot green"></span>
-                    <span class="term-title">~/fastapi-chatbot — bash</span>
-                </div>
-                <div class="term-body">
-<span class="t-comment"># 1. 게시판 공지 임베딩 (Celery 워커가 처리)</span>
-<span class="t-prompt">$</span> docker compose exec celery uv run python -c \
-       <span class="t-str">"from app.worker.tasks.embedding import embed_notice_board; embed_notice_board.delay()"</span>
-
-<span class="t-comment"># 2. 일상 대화 (chitchat 분기)</span>
-<span class="t-prompt">$</span> curl -sX POST :9098/api/v1/chat/ \
-       -H <span class="t-str">"Content-Type: application/json"</span> \
-       -d <span class="t-str">'{"query": "안녕?"}'</span> | jq .
-<span class="t-out">{
-  <span class="t-key">"code"</span>: <span class="t-str">"200"</span>,
-  <span class="t-key">"data"</span>: <span class="t-str">"안녕! 😊 좋은 하루 보내고 있어? 오늘 무슨 일있어?"</span>
-}</span>
-
-<span class="t-comment"># 3. 정보 검색 (RAG 분기 — use_db_tool)</span>
-<span class="t-prompt">$</span> curl -sX POST :9098/api/v1/chat/ \
-       -H <span class="t-str">"Content-Type: application/json"</span> \
-       -d <span class="t-str">'{"query": "도매꾹 배송 정책 알려줘"}'</span> | jq .</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 06 PIPELINE -->
-        <section id="pipeline" class="section">
-            <header class="section-head">
-                <span class="section-id">06</span>
-                <span class="section-kw">// pipeline</span>
-            </header>
-            <h2 class="section-title">에이전트 처리 흐름 — 핵심 코드</h2>
-            <p class="section-sub">// app/services/agent/chat.py · chitchat 분기 + 캐시된 ReAct Executor</p>
-
-            <div class="codeblock">
-                <div class="code-tabs">
-                    <span class="tab active">chat.py</span>
-                    <span class="tab">tool.py</span>
-                    <span class="tab">chat (deps).py</span>
-                </div>
-                <pre class="code"><span class="cmt"># 모듈 로드 시 1회 — 네트워크 hub.pull 비용 제거</span>
-<span class="cls">REACT_PROMPT</span> = hub.pull(<span class="str">"hwchase17/react"</span>)
-
-
-<span class="kw">class</span> <span class="cls">ChatAgentService</span>:
-    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="self">self</span>, agent_tools, llm: <span class="cls">Groq</span>, max_iterations: <span class="cls">int</span> = <span class="num">1</span>):
-        <span class="self">self</span>.agent_tools = agent_tools
-        <span class="self">self</span>.llm = llm
-        <span class="self">self</span>.short_term_memory = <span class="cls">ShortTermMemory</span>()
-        <span class="cmt"># __init__에서 1회 — 요청마다 재생성하지 않음</span>
-        <span class="self">self</span>.agent_executor = <span class="self">self</span>._build_agent_executor(max_iterations)
-
-    <span class="kw">async def</span> <span class="fn">handle_agent</span>(<span class="self">self</span>, user_input: <span class="cls">str</span>):
-        <span class="self">self</span>.short_term_memory.buffer.append({<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: user_input})
-
-        <span class="cmt"># 1. chitchat 여부 1차 분류 (LLM)</span>
-        chitchat_output = <span class="kw">await</span> asyncio.to_thread(
-            <span class="self">self</span>.llm.run, chitchat_prompt, user_input,
-        )
-
-        <span class="kw">if</span> <span class="self">self</span>.is_chitchat(chitchat_output):
-            <span class="cmt"># 2a. 일상 대화 — 친근체 응답만 생성</span>
-            agent_output = <span class="kw">await</span> asyncio.to_thread(<span class="self">self</span>.llm.run, ...)
-        <span class="kw">else</span>:
-            <span class="cmt"># 2b. 정보 요청 — ReAct Executor가 도구 자율 선택</span>
-            result = <span class="kw">await</span> <span class="self">self</span>.agent_executor.ainvoke({<span class="str">"input"</span>: user_input})
-            tool_result = [obs <span class="kw">for</span> _, obs <span class="kw">in</span> result[<span class="str">"intermediate_steps"</span>]]
-            agent_output = <span class="kw">await</span> asyncio.to_thread(
-                <span class="self">self</span>.llm.run, result_prompt, user_input,
-                context=tool_result, history=short_term_history,
-            )
-        <span class="kw">return</span> getattr(agent_output, <span class="str">"content"</span>, <span class="str">""</span>)
-</pre>
-                <div class="code-foot">
-                    <span class="step">→ <code>core/dependencies/chat.py</code>가 DBSearch · WebSearch · Tool 목록 · Service 까지 계층 조립</span>
-                    <span class="step">→ Tool 의 내부 의존성(qdrant·embed)은 클로저로 캡처, LLM 시그니처는 <code>query: str</code>만</span>
-                </div>
             </div>
         </section>
 
@@ -667,6 +290,7 @@ fastapi-chatbot/
             <h2 class="section-title">UI & 기능 스크린샷</h2>
 
             <div class="gallery">
+                <!-- 한 줄당 하나의 이미지만 나오게 -->
                 <figure class="shot">
                     <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-chatbot/main/storage/screenshots/ui.png" alt="챗봇 대화 UI">
                     <figcaption><span class="cap-key">view</span> chat ui</figcaption>
@@ -681,23 +305,6 @@ fastapi-chatbot/
                 </figure>
             </div>
         </section>
-
-        <!-- 09 CONTACT -->
-        <section id="contact" class="section section-footer">
-            <header class="section-head">
-                <span class="section-id">09</span>
-                <span class="section-kw">// contact</span>
-            </header>
-            <h2 class="section-title">git remote -v</h2>
-
-            <div class="contact">
-                <div class="git-output">
-<span class="t-prompt">$</span> git remote get-url origin
-<span class="t-out"><a class="git-link" href="https://github.com/qwerty1347/fastapi-chatbot" target="_blank">https://github.com/qwerty1347/fastapi-chatbot</a><span class="cursor">_</span></span>
-                </div>
-            </div>
-        </section>
-
     </main>
 </body>
 </html>

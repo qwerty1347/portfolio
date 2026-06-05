@@ -33,53 +33,22 @@
 
         <!-- HERO -->
         <section class="hero">
-            <div class="hero-meta">
-                <span class="tag tag-version">v0.1.0</span>
-                <span class="tag tag-status"><span class="dot"></span>stable</span>
-                <span class="tag">python 3.11</span>
-                <span class="tag">fastapi 0.136</span>
-                <span class="tag">qdrant 1.15</span>
-                <span class="tag">torch 2.11</span>
-            </div>
             <h1 class="hero-title">
                 유사 이미지 검색<span class="cursor">_</span>
             </h1>
-            <p class="hero-tagline">
-                <span class="kw">→</span> Multi-stage CV pipeline <span class="sep">·</span> Vector similarity search <span class="sep">·</span> Async-safe inference
-            </p>
             <p class="hero-summary">
+                업로드한 이미지의 객체를 판별하여 가장 유사한 이미지들을 반환합니다.
                 <code>YOLOv8</code> 객체 검출 → <code>CLIP ViT-L/14</code> 768차원 임베딩 →
-                <code>Qdrant</code> 코사인 유사도 검색을 단일 API를 구현했습니다. 모델은
-                <code>lru_cache</code> + lifespan으로 프로세스당 한 번만 로드되고, 동기 추론은
-                <code>asyncio.to_thread</code>로 감싸 이벤트 루프를 보호합니다. Celery 워커는
-                <code>uuid5</code> 결정적 ID로 멱등 임베딩을 보장합니다.
+                <code>Qdrant</code> 코사인 유사도 검색을 단일 API를 구현했하였습니다.
+                <code>lru_cache</code> + lifespan으로 프로세스당 한 번만 로드하였습니다.
             </p>
-
-            <div class="hero-stats">
-                <div class="stat">
-                    <div class="stat-num">768</div>
-                    <div class="stat-label">CLIP vector dim</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">1×</div>
-                    <div class="stat-label">model load / proc</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">Top-5</div>
-                    <div class="stat-label">cosine search</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">3</div>
-                    <div class="stat-label">inference stages</div>
-                </div>
-            </div>
         </section>
 
-        <!-- 01 OVERVIEW -->
+        <!-- 01 PIPELINE -->
         <section id="overview" class="section">
             <header class="section-head">
                 <span class="section-id">01</span>
-                <span class="section-kw">// overview</span>
+                <span class="section-kw">overview</span>
             </header>
             <h2 class="section-title">Celery 워커를 사용한 이유</h2>
 
@@ -140,160 +109,13 @@
             </div>
         </section>
 
-        <!-- 03 DIRECTORY STRUCTURE -->
-        <section id="directory" class="section">
-            <header class="section-head">
-                <span class="section-id">03</span>
-                <span class="section-kw">// directory structure</span>
-            </header>
-            <h2 class="section-title">프로젝트 구조</h2>
-
-            <pre class="diagram">
-fastapi-imageSearch/
-├── app/
-│   ├── api/
-│   │   ├── __init__.py
-│   │   └── v1/
-│   │       ├── __init__.py
-│   │       └── image_search/
-│   │           ├── __init__.py
-│   │           └── router.py
-│   ├── core/
-│   │   ├── config.py
-│   │   ├── logging.py
-│   │   ├── dependencies/
-│   │   │   ├── common.py
-│   │   │   └── image_search.py
-│   │   ├── exceptions/
-│   │   │   ├── custom.py
-│   │   │   └── handler.py
-│   │   └── utils/
-│   │       ├── image.py
-│   │       ├── response.py
-│   │       └── url.py
-│   ├── infrastructure/
-│   │   ├── storage/image.py
-│   │   └── vectordb/qdrant.py
-│   ├── schemas/
-│   │   ├── common.py
-│   │   └── image_search/response.py
-│   ├── services/
-│   │   └── fruit/
-│   │       ├── point.py
-│   │       └── search.py
-│   ├── worker/
-│   │   ├── celery_app.py
-│   │   └── tasks/
-│   │       ├── __init__.py
-│   │       ├── add.py
-│   │       └── embedding.py
-│   └── main.py
-├── config/
-│   └── embedding_model.py
-├── storage/
-│   ├── images/fruits/
-│   └── screenshots/
-├── notebooks/
-├── tests/
-├── docker-compose.yml
-├── pyproject.toml
-├── uv.lock
-├── yolov8n-oiv7.pt
-└── README.md
-            </pre>
-
-            <div class="arch-notes">
-                <div class="arch-note">
-                    <span class="arch-note-key">app/api/</span>
-                    <span class="arch-note-val">API 엔드포인트 정의 (v1 버전, pkgutil 자동 수집)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/core/</span>
-                    <span class="arch-note-val">코어 컴포넌트 (설정, 의존성, 예외 처리, 로깅, 유틸리티)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/core/dependencies/</span>
-                    <span class="arch-note-val">Qdrant · 임베딩 모델 · YOLO 모델 (lru_cache 싱글톤)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/infrastructure/</span>
-                    <span class="arch-note-val">Qdrant 벡터DB 클라이언트 · 이미지 저장소</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/services/fruit/</span>
-                    <span class="arch-note-val">FruitPointService (특징점 추출) · FruitSearchService (검색 파이프라인)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/worker/</span>
-                    <span class="arch-note-val">Celery 태스크 (embedding queue, acks_late, uuid5 멱등성)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">config/</span>
-                    <span class="arch-note-val">CLIP 모델 메타 (ViT-B/32, ViT-L/14)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">storage/images/fruits/</span>
-                    <span class="arch-note-val">임베딩 대상 데이터셋</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">notebooks/</span>
-                    <span class="arch-note-val">Jupyter 탐색 노트북</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">yolov8n-oiv7.pt</span>
-                    <span class="arch-note-val">YOLO 모델 가중치 (Open Images v7)</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 03 STACK -->
-        <!-- <section id="stack" class="section">
-            <header class="section-head">
-                <span class="section-id">03</span>
-                <span class="section-kw">// stack</span>
-            </header>
-            <h2 class="section-title">의존성 트리</h2>
-            <p class="section-sub">$ uv tree --depth 1</p>
-
-            <div class="stack-block">
-                <div class="stack-row">
-                    <span class="stack-key">[ web ]</span>
-                    <span class="stack-val">python <span class="ver">3.11</span> <span class="sep">·</span> fastapi <span class="ver">0.136.0</span> <span class="sep">·</span> uvicorn <span class="ver">0.44.0</span> <span class="sep">·</span> pydantic <span class="ver">2.13</span></span>
-                </div>
-                <div class="stack-row">
-                    <span class="stack-key">[ vision ]</span>
-                    <span class="stack-val">ultralytics <span class="ver">8.4.40</span> <span class="sep">·</span> sentence-transformers <span class="ver">5.4.1</span> <span class="sep">·</span> torch <span class="ver">2.11.0</span></span>
-                </div>
-                <div class="stack-row">
-                    <span class="stack-key">[ vector ]</span>
-                    <span class="stack-val">qdrant-client <span class="ver">1.17.1</span> <span class="sep">·</span> qdrant-server <span class="ver">1.15.4</span> <span class="sep">·</span> cosine</span>
-                </div>
-                <div class="stack-row">
-                    <span class="stack-key">[ task ]</span>
-                    <span class="stack-val">celery <span class="ver">5.6.3</span> <span class="sep">·</span> redis <span class="ver">7.4.0</span> <span class="sep">·</span> flower <span class="ver">2.0.1</span></span>
-                </div>
-                <div class="stack-row">
-                    <span class="stack-key">[ image ]</span>
-                    <span class="stack-val">pillow <span class="ver">12.2.0</span> <span class="sep">·</span> numpy <span class="ver">2.4.4</span> <span class="sep">·</span> python-multipart</span>
-                </div>
-                <div class="stack-row">
-                    <span class="stack-key">[ infra ]</span>
-                    <span class="stack-val">docker compose <span class="sep">·</span> uv (lockfile) <span class="sep">·</span> pydantic-settings</span>
-                </div>
-                <div class="stack-row">
-                    <span class="stack-key">[ test ]</span>
-                    <span class="stack-val">pytest <span class="sep">·</span> pytest-asyncio <span class="sep">·</span> dependency_overrides</span>
-                </div>
-            </div>
-        </section> -->
-
         <!-- 04 HIGHLIGHTS -->
         <section id="highlights" class="section">
             <header class="section-head">
                 <span class="section-id">04</span>
                 <span class="section-kw">// highlights</span>
             </header>
-            <h2 class="section-title">기술적 의사결정</h2>
+            <h2 class="section-title">기술적 결정</h2>
 
             <div class="highlights">
                 <article class="highlight">
@@ -303,14 +125,8 @@ fastapi-imageSearch/
                         <p>
                             <code>get_qdrant_client</code> · <code>get_embedding_model</code> · <code>get_yolo_model</code>을
                             <code>@lru_cache(maxsize=1)</code>로 감싸 프로세스당 1회만 로드. FastAPI는
-                            <code>Depends</code>로, Celery는 같은 캐시 함수를 직접 호출하여 <em>완전히 동일한</em>
-                            객체를 재사용합니다. 라우터 import만으로 890MB 모델이 끌려오지 않습니다.
+                            <code>Depends</code>로, Celery는 같은 캐시 함수를 직접 호출하여 객체를 재사용하였습니다.
                         </p>
-                        <div class="tag-row">
-                            <span class="mini-tag">lru_cache</span>
-                            <span class="mini-tag">DI</span>
-                            <span class="mini-tag">singleton</span>
-                        </div>
                     </div>
                 </article>
 
@@ -323,64 +139,6 @@ fastapi-imageSearch/
                             CLIP · YOLO를 미리 로드. 첫 요청에 추론 + 모델 로드가 동시에 발생해 응답이
                             느려지는 콜드 스타트를 차단합니다. 종료 시 Qdrant client를 명시적으로 close.
                         </p>
-                        <div class="tag-row">
-                            <span class="mini-tag">lifespan</span>
-                            <span class="mini-tag">cold-start</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="highlight">
-                    <div class="highlight-num">003</div>
-                    <div class="highlight-body">
-                        <h3>이벤트 루프 보호 — to_thread</h3>
-                        <p>
-                            YOLO 추론, CLIP <code>encode</code>, Qdrant <code>find_points</code> 모두
-                            <em>동기·CPU/GPU bound</em> 호출입니다. <code>FruitSearchService.get_similarity_images</code>
-                            내부에서 모든 동기 호출을 <code>asyncio.to_thread(...)</code>로 워커 스레드에 위임해
-                            FastAPI 이벤트 루프가 멈추는 사고를 차단했습니다.
-                        </p>
-                        <div class="tag-row">
-                            <span class="mini-tag">asyncio</span>
-                            <span class="mini-tag">GPU bound</span>
-                            <span class="mini-tag">non-blocking</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="highlight">
-                    <div class="highlight-num">004</div>
-                    <div class="highlight-body">
-                        <h3>Celery 멱등 임베딩</h3>
-                        <p>
-                            <code>embed_fruit_images</code> 태스크는 파일 경로 기반의
-                            <code>uuid5(NAMESPACE_URL, path)</code>를 PointID로 사용합니다. 같은 이미지가
-                            재처리되어도 같은 ID로 upsert 되므로 중복 포인트가 생기지 않으며,
-                            <code>acks_late</code> + <code>reject_on_worker_lost</code>와 정합됩니다.
-                        </p>
-                        <div class="tag-row">
-                            <span class="mini-tag">idempotent</span>
-                            <span class="mini-tag">uuid5</span>
-                            <span class="mini-tag">upsert</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="highlight">
-                    <div class="highlight-num">005</div>
-                    <div class="highlight-body">
-                        <h3>레이어 분리 + 테스트 친화성</h3>
-                        <p>
-                            <code>api / core / infrastructure / services / worker</code>로 책임을 분리.
-                            라우터는 얇게 유지하고, 서비스 계층이 도메인 로직을, infrastructure는 외부 자원
-                            경계만 담당합니다. <code>app.dependency_overrides</code>로 Qdrant·CLIP·YOLO를
-                            mock으로 바꿔 단위 테스트 가능.
-                        </p>
-                        <div class="tag-row">
-                            <span class="mini-tag">layered</span>
-                            <span class="mini-tag">testable</span>
-                            <span class="mini-tag">overrides</span>
-                        </div>
                     </div>
                 </article>
 
@@ -393,107 +151,8 @@ fastapi-imageSearch/
                             <code>min_size=10px</code> · <code>min_ratio=0.01</code> 임계치로 사전 필터링하고,
                             미달 시 <code>BusinessException</code>으로 422를 반환해 노이즈가 벡터DB에 들어가지 않게 합니다.
                         </p>
-                        <div class="tag-row">
-                            <span class="mini-tag">validation</span>
-                            <span class="mini-tag">bbox</span>
-                            <span class="mini-tag">data quality</span>
-                        </div>
                     </div>
                 </article>
-            </div>
-        </section>
-
-        <!-- 05 API -->
-        <section id="api" class="section">
-            <header class="section-head">
-                <span class="section-id">05</span>
-                <span class="section-kw">// api surface</span>
-            </header>
-            <h2 class="section-title">엔드포인트</h2>
-
-            <div class="endpoints">
-                <div class="endpoint endpoint-head">
-                    <span>method</span>
-                    <span>path</span>
-                    <span>auth</span>
-                    <span>desc</span>
-                </div>
-                <div class="endpoint">
-                    <span class="m post">POST</span>
-                    <span class="p">/api/v1/image</span>
-                    <span class="a public">public</span>
-                    <span class="d">유사 이미지 검색 — multipart upload → Top-5</span>
-                </div>
-            </div>
-
-            <div class="terminal">
-                <div class="term-head">
-                    <span class="term-dot red"></span>
-                    <span class="term-dot yellow"></span>
-                    <span class="term-dot green"></span>
-                    <span class="term-title">~/fastapi-imageSearch — bash</span>
-                </div>
-                <div class="term-body">
-<span class="t-comment"># 1. 데이터셋 임베딩 (Celery 워커가 처리)</span>
-<span class="t-prompt">$</span> docker compose exec celery uv run python -c \
-       <span class="t-str">"from app.worker.tasks.embedding import embed_fruit_images; embed_fruit_images.delay()"</span>
-
-<span class="t-comment"># 2. 유사 이미지 검색</span>
-<span class="t-prompt">$</span> curl -sX POST :9100/api/v1/image -F file=@apple.jpg | jq .
-<span class="t-out">{
-  <span class="t-key">"code"</span>: 200,
-  <span class="t-key">"data"</span>: [
-    { <span class="t-key">"id"</span>: <span class="t-str">"8f1d..."</span>, <span class="t-key">"score"</span>: 0.8721,
-      <span class="t-key">"image_path"</span>: <span class="t-str">"/static/images/fruits/apple_01.jpg"</span>,
-      <span class="t-key">"bbox"</span>: [12, 34, 220, 240] },
-    ...
-  ]
-}</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 06 PIPELINE -->
-        <section id="pipeline" class="section">
-            <header class="section-head">
-                <span class="section-id">06</span>
-                <span class="section-kw">// pipeline</span>
-            </header>
-            <h2 class="section-title">검색 파이프라인 — 핵심 코드</h2>
-            <p class="section-sub">// app/services/fruit/search.py · 동기 호출은 모두 to_thread로 격리</p>
-
-            <div class="codeblock">
-                <div class="code-tabs">
-                    <span class="tab active">search.py</span>
-                    <span class="tab">point.py</span>
-                    <span class="tab">common.py</span>
-                </div>
-                <pre class="code"><span class="kw">async def</span> <span class="fn">get_similarity_images</span>(<span class="self">self</span>, file: <span class="cls">UploadFile</span>) -> <span class="cls">list</span>[<span class="cls">dict</span>]:
-    image = <span class="kw">await</span> save_temp_image(file)
-
-    <span class="cmt"># 1. YOLO — 가장 신뢰도 높은 객체 1개 추출</span>
-    detection = <span class="kw">await</span> asyncio.to_thread(
-        <span class="self">self</span>.yolo.detect_top, image,
-    )
-    <span class="kw">if not</span> <span class="self">self</span>._is_valid_bbox(detection.bbox):
-        <span class="kw">raise</span> <span class="cls">BusinessException</span>(<span class="num">422</span>, <span class="str">"object too small"</span>)
-
-    <span class="cmt"># 2. CLIP — 크롭 영역 → 768d 벡터</span>
-    vector = <span class="kw">await</span> asyncio.to_thread(
-        <span class="self">self</span>.embed.encode, detection.cropped,
-    )
-
-    <span class="cmt"># 3. Qdrant — 코사인 유사도 Top-5</span>
-    points = <span class="kw">await</span> asyncio.to_thread(
-        <span class="self">self</span>.qdrant.find_points,
-        collection=<span class="str">"fruits"</span>, vector=vector, limit=<span class="num">5</span>,
-    )
-    <span class="kw">return</span> [<span class="self">self</span>._to_response(p) <span class="kw">for</span> p <span class="kw">in</span> points]
-</pre>
-                <div class="code-foot">
-                    <span class="step">→ 의존성: <code>FruitSearchService(qdrant, embed, yolo)</code> ← <code>Depends</code> 주입</span>
-                    <span class="step">→ 모든 추론 호출이 <code>to_thread</code>로 격리되어 동시 요청 처리 가능</span>
-                </div>
             </div>
         </section>
 

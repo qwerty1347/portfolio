@@ -32,44 +32,15 @@
 
         <!-- HERO -->
         <section class="hero">
-            <div class="hero-meta">
-                <span class="tag tag-version">v0.1.0</span>
-                <span class="tag tag-status"><span class="dot"></span>stable</span>
-                <span class="tag">python 3.12</span>
-                <span class="tag">fastapi 0.133</span>
-                <span class="tag">playwright 1.58</span>
-            </div>
             <h1 class="hero-title">
                 블로그 자동 포스팅<span class="cursor">_</span>
             </h1>
-            <p class="hero-tagline">
-                <span class="kw">→</span> 금융 뉴스 자동 큐레이션 <span class="sep">·</span> Playwright 자동화 <span class="sep">·</span> Groq LLM 가공 → 티스토리 자동 발행
-            </p>
             <p class="hero-summary">
                 네이버 금융의 랭킹 뉴스를 <code>Playwright</code>로 스크래핑하고, <code>LLM</code> 으로 블로그용 콘텐츠로 가공한 뒤 티스토리에 자동 발행하는 큐레이션 파이프라인입니다. 카카오 OAuth 세션을 <code>storage_state</code>로 보존해 재인증을 우회하고, 마크다운 모드 <code>CodeMirror</code> 에디터에 본문을 직접 주입하며, 캘린더 UI 클릭 시뮬레이션으로 예약 발행까지 처리합니다.
             </p>
-
-            <div class="hero-stats">
-                <div class="stat">
-                    <div class="stat-num">3</div>
-                    <div class="stat-label">pipeline stages</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">2</div>
-                    <div class="stat-label">publish modes</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">5</div>
-                    <div class="stat-label">compose services</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">1</div>
-                    <div class="stat-label">LLM backend</div>
-                </div>
-            </div>
         </section>
 
-        <!-- 01 OVERVIEW -->
+        <!-- 01 PIPELINE -->
         <section id="overview" class="section">
             <header class="section-head">
                 <span class="section-id">01</span>
@@ -122,138 +93,6 @@
             <figure class="shot shot-architecture">
                 <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-scraper/main/storage/screenshots/architecture.png" alt="시스템 아키텍처 다이어그램">
             </figure>
-
-            <div class="arch-notes">
-                <div class="arch-note">
-                    <span class="arch-note-key">scrape path</span>
-                    <span class="arch-note-val">Playwright chromium · <code>headless=False</code> · 새 탭 본문 추출 후 close</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">llm path</span>
-                    <span class="arch-note-val">AsyncGroq · <code>asyncio.gather</code> 병렬 요약 · JSON 강제</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">publish path</span>
-                    <span class="arch-note-val">storage_state 로 세션 재사용 · dialog 자동 분기 · CodeMirror JS API 주입</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">notebook bridge</span>
-                    <span class="arch-note-val">Windows + Jupyter 환경용 <code>run_async</code> 백그라운드 ProactorEventLoop</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 03 DIRECTORY STRUCTURE -->
-        <section id="directory" class="section">
-            <header class="section-head">
-                <span class="section-id">03</span>
-                <span class="section-kw">// directory structure</span>
-            </header>
-            <h2 class="section-title">프로젝트 구조</h2>
-
-            <pre class="diagram">
-fastapi-scraper/
-├── app/
-│   ├── api/
-│   │   └── v1/
-│   │       └── tistory/
-│   │           ├── __init__.py
-│   │           └── router.py
-│   ├── core/
-│   │   ├── config.py
-│   │   ├── logger.py
-│   │   ├── dependencies/
-│   │   │   └── tistory.py
-│   │   ├── exceptions/
-│   │   │   ├── custom.py
-│   │   │   └── handlers.py
-│   │   └── utils/
-│   │       ├── error.py
-│   │       ├── file.py
-│   │       ├── log.py
-│   │       ├── notebook.py
-│   │       └── response.py
-│   ├── modules/
-│   │   ├── browser/
-│   │   │   └── playwright.py
-│   │   └── llm/
-│   │       ├── groq.py
-│   │       └── prompt.py
-│   ├── schemas/
-│   │   └── common.py
-│   ├── services/
-│   │   ├── scraper/
-│   │   │   └── finance_news.py
-│   │   ├── llm/
-│   │   │   └── news_summarize.py
-│   │   └── tistory/
-│   │       ├── login.py
-│   │       ├── post.py
-│   │       └── news_post.py
-│   └── main.py
-├── config/
-│   └── llm.py
-├── notebooks/
-│   ├── scraper/finance_news.ipynb
-│   ├── llm/groq.ipynb
-│   └── tistory/
-│       ├── login.ipynb
-│       ├── post.ipynb
-│       └── news_post.ipynb
-├── storage/
-│   ├── tistory/browser_context.json
-│   └── logs/
-├── docker-compose.yml
-├── pyproject.toml
-└── README.md
-            </pre>
-
-            <div class="arch-notes">
-                <div class="arch-note">
-                    <span class="arch-note-key">app/api/v1/tistory/</span>
-                    <span class="arch-note-val">FastAPI 라우터 (pkgutil 자동 수집으로 /api/v1/.. 등록)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/core/logger.py</span>
-                    <span class="arch-note-val">전역 logger 객체 + setup_logging (stderr 핸들러)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/core/utils/log.py</span>
-                    <span class="arch-note-val">save_log — 카테고리별 일자 파일 로그</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/core/utils/notebook.py</span>
-                    <span class="arch-note-val">run_async — Windows + Playwright + Jupyter 호환용 백그라운드 루프</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/modules/browser/</span>
-                    <span class="arch-note-val">PlaywrightManager (start / close / create_context with storage_state)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/modules/llm/</span>
-                    <span class="arch-note-val">AsyncGroq 클라이언트 + FINANCE_NEWS_SYSTEM_PROMPT</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/services/scraper/</span>
-                    <span class="arch-note-val">네이버 금융 뉴스 스크래퍼</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/services/llm/</span>
-                    <span class="arch-note-val">기사 요약 서비스 (summarize_one / summarize_many)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">app/services/tistory/</span>
-                    <span class="arch-note-val">로그인 · 글쓰기 · 예약 발행 자동화</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">storage/tistory/</span>
-                    <span class="arch-note-val">카카오 OAuth 세션 (browser_context.json)</span>
-                </div>
-                <div class="arch-note">
-                    <span class="arch-note-key">notebooks/</span>
-                    <span class="arch-note-val">단계별 디버깅용 Jupyter 노트북</span>
-                </div>
-            </div>
         </section>
 
         <!-- 04 HIGHLIGHTS -->
@@ -300,24 +139,6 @@ fastapi-scraper/
                 </article>
 
                 <article class="highlight">
-                    <div class="highlight-num">003</div>
-                    <div class="highlight-body">
-                        <h3>CodeMirror 본문 주입 패턴</h3>
-                        <p>
-                            <code>setValue()</code> 만으로는 티스토리 폼이 변경을 감지 못 해 빈 본문으로 저장됩니다.
-                            <code>setValue</code> → <code>save</code> → 숨겨진 textarea 에 <code>input/change</code>
-                            이벤트 dispatch → 추가로 키보드 입력(End → space → Backspace) 트리거. 4단계 조합으로
-                            "사용자가 직접 입력한" 상태로 폼이 인식되도록 처리.
-                        </p>
-                        <div class="tag-row">
-                            <span class="mini-tag">CodeMirror</span>
-                            <span class="mini-tag">event dispatch</span>
-                            <span class="mini-tag">form sync</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="highlight">
                     <div class="highlight-num">004</div>
                     <div class="highlight-body">
                         <h3>예약 발행 캘린더 UI 클릭</h3>
@@ -353,24 +174,6 @@ fastapi-scraper/
                 </article>
 
                 <article class="highlight">
-                    <div class="highlight-num">006</div>
-                    <div class="highlight-body">
-                        <h3>노트북 친화 비동기 — run_async</h3>
-                        <p>
-                            Windows + Jupyter 환경에서 Playwright(<code>ProactorEventLoop</code> 필요)가 기본
-                            <code>SelectorEventLoop</code> 위에서 동작 안 함. 별도 백그라운드 스레드에 Proactor 루프를
-                            띄워두고 <code>asyncio.run_coroutine_threadsafe</code> 로 코루틴 위임. 노트북 셀 간에도
-                            Browser/Context/Page 객체가 살아남아 단계별 디버깅이 자유로움.
-                        </p>
-                        <div class="tag-row">
-                            <span class="mini-tag">asyncio</span>
-                            <span class="mini-tag">ProactorEventLoop</span>
-                            <span class="mini-tag">Jupyter</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="highlight">
                     <div class="highlight-num">007</div>
                     <div class="highlight-body">
                         <h3>전역 logger + 카테고리 파일 로그</h3>
@@ -386,66 +189,6 @@ fastapi-scraper/
                         </div>
                     </div>
                 </article>
-            </div>
-        </section>
-
-        <!-- 05 API -->
-        <section id="api" class="section">
-            <header class="section-head">
-                <span class="section-id">05</span>
-                <span class="section-kw">// api surface</span>
-            </header>
-            <h2 class="section-title">엔드포인트</h2>
-
-            <div class="endpoints">
-                <div class="endpoint endpoint-head">
-                    <span>method</span>
-                    <span>path</span>
-                    <span>auth</span>
-                    <span>desc</span>
-                </div>
-                <div class="endpoint">
-                    <span class="m get">GET</span>
-                    <span class="p">/api/v1/scraper/</span>
-                    <span class="a public">public</span>
-                    <span class="d">헬스체크</span>
-                </div>
-                <div class="endpoint">
-                    <span class="m post">POST</span>
-                    <span class="p">/api/v1/scraper/run</span>
-                    <span class="a public">public</span>
-                    <span class="d">스크랩 → 요약 → 발행 전체 파이프라인 실행</span>
-                </div>
-                <div class="endpoint">
-                    <span class="m post">POST</span>
-                    <span class="p">/api/v1/scraper/schedule</span>
-                    <span class="a public">public</span>
-                    <span class="d">지정 일시에 예약 발행</span>
-                </div>
-            </div>
-
-            <div class="terminal">
-                <div class="term-head">
-                    <span class="term-dot red"></span>
-                    <span class="term-dot yellow"></span>
-                    <span class="term-dot green"></span>
-                    <span class="term-title">~/fastapi-scraper — bash</span>
-                </div>
-                <div class="term-body">
-<span class="t-comment"># 1. 헬스체크</span>
-<span class="t-prompt">$</span> curl :9095/api/v1/scraper/
-
-<span class="t-comment"># 2. 즉시 발행 (스크랩 2건 → 요약 → 티스토리 발행)</span>
-<span class="t-prompt">$</span> curl -X POST :9095/api/v1/scraper/run \
-       -H <span class="t-str">"Content-Type: application/json"</span> \
-       -d <span class="t-str">'{"max_articles": 2}'</span>
-
-<span class="t-comment"># 3. 예약 발행 (2026-06-15 09:00 KST)</span>
-<span class="t-prompt">$</span> curl -X POST :9095/api/v1/scraper/schedule \
-       -H <span class="t-str">"Content-Type: application/json"</span> \
-       -d <span class="t-str">'{"date": "2026-06-15", "time": "09:00", "type": "fixed"}'</span>
-<span class="t-out">{ <span class="t-key">"status"</span>: <span class="t-str">"scheduled"</span>, <span class="t-key">"published_at"</span>: <span class="t-str">"2026-06-15T09:00"</span> }</span>
-                </div>
             </div>
         </section>
 
