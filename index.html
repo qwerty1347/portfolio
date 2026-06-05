@@ -198,15 +198,15 @@
         .page {
             max-width: 1100px;
             margin: 0 auto;
-            padding: 80px 36px 120px;
+            padding: 80px 36px 48px;
         }
-        @media (max-width: 760px) { .page { padding: 56px 20px 80px; } }
+        @media (max-width: 760px) { .page { padding: 56px 20px 32px; } }
 
         /* ============== hero ============== */
         .hero {
-            padding-bottom: 96px;
+            padding-bottom: 40px;
             border-bottom: 1px solid var(--line);
-            margin-bottom: 80px;
+            margin-bottom: 32px;
         }
 
         .hero-name {
@@ -215,7 +215,7 @@
             font-weight: 800;
             letter-spacing: -.05em;
             line-height: .92;
-            margin-bottom: 56px;
+            margin-bottom: 0;
             color: var(--fg);
         }
         .hero-name .cursor {
@@ -230,8 +230,8 @@
         @keyframes blink { 50% { opacity: 0; } }
 
         /* ============== section heads ============== */
-        .section { padding: 80px 0; border-bottom: 1px solid var(--line); }
-        .section:last-of-type { border-bottom: none; }
+        .section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+        .section:last-of-type { border-bottom: none; padding-bottom: 24px; }
 
         .section-head {
             display: flex;
@@ -473,6 +473,50 @@
             .project-num { padding-top: 0; }
         }
 
+        /* ============== scroll to top ============== */
+        .scroll-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--fg);
+            color: var(--acc);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            box-shadow: 0 8px 24px -6px rgba(10, 10, 10, .25);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: opacity .25s, transform .25s, background .15s, color .15s;
+            z-index: 99;
+        }
+        .scroll-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+        .scroll-top:hover {
+            background: var(--acc-dark);
+            color: var(--bg-card);
+        }
+        .scroll-top:active {
+            transform: translateY(0) scale(.95);
+        }
+        @media (max-width: 760px) {
+            .scroll-top {
+                bottom: 18px;
+                right: 18px;
+                width: 42px;
+                height: 42px;
+            }
+        }
+
         /* ============== footer ============== */
         .footer {
             padding: 40px 36px 32px;
@@ -508,7 +552,7 @@
         <!-- HERO -->
         <section class="hero">
             <h1 class="hero-name">
-                Backend engineer<span class="cursor"></span><br>
+                Backend Engineer<span class="cursor"></span><br>
             </h1>
         </section>
 
@@ -557,7 +601,7 @@
                     </div>
                     <div class="about-row">
                         <span class="about-row-key">focus</span>
-                        <span class="about-row-val">Backend architecture<br>· AI</span>
+                        <span class="about-row-val">architecture<br>· AI</span>
                     </div>
                     <div class="about-row">
                         <span class="about-row-key">education</span>
@@ -589,14 +633,14 @@
                 <article class="project">
                     <div class="project-num">001</div>
                     <div class="project-body">
-                        <h3><span class="arrow">→</span> fastapi-scraper</h3>
+                        <h3><span class="arrow">→</span> 블로그 자동 포스팅</h3>
                         <p>
                             <code>Playwright</code>로 뉴스를 스크래핑하고, <code>LLM</code>으로 블로그 콘텐츠로 가공한 뒤
                             티스토리에 자동 발행하는 큐레이션 파이프라인. 카카오 OAuth 세션을 관리하며
                             마크다운 모드 본문 작성과 예약 발행까지 처리합니다.
                         </p>
                         <p class="project-rationale">
-                            매번 카카오 OAuth(2FA · 캡차)를 자동화하는 것은 비현실적이라,
+                            매번 카카오 OAuth를 자동화하는 것은 비현실적이라,
                             <strong>첫 로그인만 수동으로 받고 <code>storage_state</code>에 세션을 저장하고 이후 운영을 가능하게 만들었습니다.
                         </p>
                         <div class="project-tags">
@@ -604,9 +648,6 @@
                             <span class="project-tag">FastAPI</span>
                             <span class="project-tag">Playwright</span>
                             <span class="project-tag">LLM</span>
-                            <span class="project-tag">MySQL</span>
-                            <span class="project-tag">MongoDB</span>
-                            <span class="project-tag">Redis</span>
                             <span class="project-tag">pytest</span>
                             <span class="project-tag">Docker</span>
                         </div>
@@ -628,7 +669,7 @@
                 <article class="project">
                     <div class="project-num">002</div>
                     <div class="project-body">
-                        <h3><span class="arrow">→</span> fastapi-chatbot</h3>
+                        <h3><span class="arrow">→</span> LLM 에이전트 챗봇</h3>
                         <p>
                             LangChain <code>ReAct</code> 에이전트 기반 RAG 챗봇. <code>LLM</code>이 질문을 일상 대화 / 정보 요청인지 분류한 뒤
                             정보 요청은 <code>벡터DB 검색</code> 과 <code>웹 검색</code> 도구를 자율 선택해 호출합니다.
@@ -667,7 +708,7 @@
                 <article class="project">
                     <div class="project-num">003</div>
                     <div class="project-body">
-                        <h3><span class="arrow">→</span> fastapi-imageSearch</h3>
+                        <h3><span class="arrow">→</span> 유사 이미지 검색</h3>
                         <p>
                             업로드한 이미지의 객체를 판별하여 가장 유사 이미지들을 반환합니다.
                             <code>YOLOv8</code> 객체 검출 → <code>CLIP ViT-L/14</code> 768차원 임베딩 → <code>Qdrant</code> 코사인 유사도 검색 API
@@ -708,7 +749,7 @@
                 <article class="project">
                     <div class="project-num">004</div>
                     <div class="project-body">
-                        <h3><span class="arrow">→</span> fastapi-ocr</h3>
+                        <h3><span class="arrow">→</span> 멀티 엔진 OCR</h3>
                         <p>
                             <code>EasyOCR · PaddleOCR · Naver Clova</code> OCR을 단일 인터페이스로 추상화한 멀티 엔진 API.
                             동기 / 비동기 이중 엔드포인트로 가벼운 요청은 즉시 응답하고, 무거운 잡은 <code>Celery 워커</code> 백그라운드에서
@@ -747,7 +788,7 @@
                 <article class="project">
                     <div class="project-num">005</div>
                     <div class="project-body">
-                        <h3><span class="arrow">→</span> laravel8-cms</h3>
+                        <h3><span class="arrow">→</span> 관리자 CMS</h3>
                         <p>
                             Laravel 기반 관리자 CMS. <code>Google · Naver · Kakao</code> 소셜 로그인과 자체 회원가입을 모두 지원하며,
                             확장 가능한 컨텐츠 관리와 관리자 대시보드를 구현했습니다. PHPUnit 유닛·기능 테스트로 안정성을 확보.
@@ -756,7 +797,7 @@
                             단일 OAuth provider만 지원하면 가입 장벽이 커지고, 3개 소셜을 if-else로 구현하면 라우팅·예외 처리 분기가 폭발합니다.
                             <strong>OAuth provider를 Strategy 패턴으로 추상화</strong>해 신규 제공자 추가가 클래스 1개로 끝나게 했고,
                             관리자 대시보드도 도메인별 모듈로 분리해 새 컨텐츠 타입 추가 시 기존 코드 영향을 최소화했습니다.
-                            <strong>PHPUnit 테스트는 리팩토링 시 회귀를 잡아내는 안전망</strong>으로 활용해 장기 유지보수 비용을 줄였습니다.
+                            <strong>PHPUnit 테스트를 활용해 장기 유지보수 비용을 줄였습니다.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">PHP</span>
@@ -794,6 +835,10 @@
         © 2025 qwerty1347 · built with <span class="heart">♥</span> &amp; mono fonts
     </footer>
 
+    <button class="scroll-top" id="scrollTop" aria-label="맨 위로 가기">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <script>
         const toggle = document.getElementById('menuToggle');
         const links  = document.getElementById('navLinks');
@@ -801,6 +846,19 @@
         document.querySelectorAll('.nav a').forEach(a =>
             a.addEventListener('click', () => links.classList.remove('open'))
         );
+
+        // 스크롤 시 맨 위로 버튼 표시/숨김
+        const scrollTopBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     </script>
 </body>
 </html>
