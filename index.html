@@ -138,9 +138,6 @@
             font-size: 12px;
             letter-spacing: -.02em;
         }
-        .brand-name .at { color: var(--fg-faint); }
-        .brand-name .num { color: var(--acc-dark); }
-
         .nav {
             display: flex;
             gap: 4px;
@@ -191,7 +188,7 @@
             .nav.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
             .nav a { width: 100%; padding: 10px 14px; }
             .menu-toggle { display: inline-flex; align-items: center; }
-            .topbar { padding: 14px 24px; position: relative; }
+            .topbar { padding: 14px 24px; }
         }
 
         /* ============== page ============== */
@@ -385,30 +382,12 @@
             line-height: 1.7 !important;
             margin-top: -2px !important;
         }
-        .project-rationale::before {
-            display: block;
-            font-family: var(--mono);
-            color: var(--acc-dark);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: .08em;
-            margin-bottom: 6px;
-        }
         .project-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
             align-items: center;
             margin-top: 14px;
-        }
-        .project-tags-label {
-            font-family: var(--mono);
-            color: var(--acc-dark);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: .08em;
-            margin-right: 4px;
-            white-space: nowrap;
         }
         .project-tag {
             font-family: var(--mono);
@@ -575,13 +554,11 @@
                     </p>
                     <p>
                         가벼운 단발 요청과 무거운 배치 잡이 한 시스템에 공존할 때,
-                        <strong>큐 · 워커 · 잡 라이프사이클</strong>을 어떻게 설계해야 멱등성과 가시성을
-                        동시에 챙길 수 있는지 풀어내는 작업을 좋아합니다.
-                        문서로 남기지 않은 결정은 휘발된다는 생각에, README · docs 도 코드와 같은 무게로 다룹니다.
+                        <strong>큐 · 워커 · 잡 라이프사이클</strong>을 어떻게 설계해야 고민하고 풀어내는 작업을 좋아합니다.
                     </p>
                     <p>
-                        AI 영역에서는 <strong>RAG 에이전트 · 벡터 임베딩 · OCR · 브라우저 자동화</strong>처럼
-                        백엔드와 맞닿은 부분을 직접 다룹니다. SDK 를 그대로 호출하기보다
+                        AI 영역에서는 <strong>RAG 에이전트 · 벡터 임베딩 · OCR · 스크래핑 자동화</strong>처럼
+                        백엔드와 맞닿은 부분을 직접 다룹니다.
                         <em>이벤트 루프 보호 · DI · 모델 싱글톤 · 워커 분리</em> 같은 운영 측면까지
                         함께 설계합니다.
                     </p>
@@ -601,7 +578,7 @@
                     </div>
                     <div class="about-row">
                         <span class="about-row-key">focus</span>
-                        <span class="about-row-val">architecture<br>· AI</span>
+                        <span class="about-row-val">Architecture<br>· AI</span>
                     </div>
                     <div class="about-row">
                         <span class="about-row-key">education</span>
@@ -625,7 +602,7 @@
             </header>
             <h2 class="section-title">프로젝트<span class="dot">.</span></h2>
             <p class="section-lead">
-                각각의 프로젝트 별도 페이지에서 아키텍처 · 코드 디테일 등을 자세히 다룹니다.
+                각각의 프로젝트 별도 페이지에서 아키텍처 · 디테일 등을 자세히 다룹니다.
             </p>
 
             <div class="projects">
@@ -641,7 +618,7 @@
                         </p>
                         <p class="project-rationale">
                             매번 카카오 OAuth를 자동화하는 것은 비현실적이라,
-                            <strong>첫 로그인만 수동으로 받고 <code>storage_state</code>에 세션을 저장하고 이후 운영을 가능하게 만들었습니다.
+                            <strong>첫 로그인만 수동으로 받고 <code>storage_state</code>에 세션을 저장</strong>하고 이후 운영을 가능하게 만들었습니다.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">Python</span>
@@ -797,7 +774,7 @@
                             단일 OAuth provider만 지원하면 가입 장벽이 커지고, 3개 소셜을 if-else로 구현하면 라우팅·예외 처리 분기가 폭발합니다.
                             <strong>OAuth provider를 Strategy 패턴으로 추상화</strong>해 신규 제공자 추가가 클래스 1개로 끝나게 했고,
                             관리자 대시보드도 도메인별 모듈로 분리해 새 컨텐츠 타입 추가 시 기존 코드 영향을 최소화했습니다.
-                            <strong>PHPUnit 테스트를 활용해 장기 유지보수 비용을 줄였습니다.
+                            <strong>PHPUnit 테스트를 활용</strong>해 장기 유지보수 비용을 줄였습니다.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">PHP</span>
@@ -832,7 +809,7 @@
     </main>
 
     <footer class="footer">
-        © 2025 qwerty1347 · built with <span class="heart">♥</span> &amp; mono fonts
+        © 2025 qwerty1347 <span class="heart">♥</span>
     </footer>
 
     <button class="scroll-top" id="scrollTop" aria-label="맨 위로 가기">

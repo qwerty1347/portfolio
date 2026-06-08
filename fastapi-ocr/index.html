@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>멀티 엔진 OCR · fastapi-ocr</title>
+    <title>멀티 엔진 OCR</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,16 +16,14 @@
 
     <header class="topbar">
         <a class="brand" href="../../index.html">
-            <span class="brand-prompt">~/</span><span>portfolio</span><span class="brand-sep">/</span><span class="brand-cur">fastapi-ocr</span>
+            <span class="brand-prompt">~/</span><span>portfolio</span><span class="brand-sep">/</span><span class="brand-cur">멀티 엔진 OCR</span>
         </a>
         <nav class="nav">
-            <a href="#overview">overview</a>
             <a href="#architecture">arch</a>
-            <a href="#directory">directory</a>
+            <a href="#overview">overview</a>
             <a href="#highlights">highlights</a>
-            <a href="#api">api</a>
-            <a href="#engine">engine</a>
             <a href="#roadmap">roadmap</a>
+            <a href="#gallery">gallery</a>
         </nav>
     </header>
 
@@ -33,7 +31,6 @@
 
         <!-- HERO -->
         <section class="hero">
-            <!-- 글자크기 너무 큼 -->
             <h1 class="hero-title">
                 멀티 엔진 OCR<span class="cursor">_</span>
             </h1>
@@ -42,31 +39,10 @@
             </p>
         </section>
 
-        <!-- 01 PIPELINE -->
-        <section id="overview" class="section">
-            <header class="section-head">
-                <span class="section-id">01</span>
-                <span class="section-kw">overview</span>
-            </header>
-            <h2 class="section-title">Celery 워커 비동기로 구현한 이유</h2>
-
-            <div class="overview-grid">
-                <div class="overview-card">
-                    <div class="overview-tag accent">async</div>
-                    <code class="overview-route">POST /api/v1/ocr/jobs</code>
-                    <p>
-                        대용량/PDF/배치 워크로드. 즉시 <code>job_id</code> 발급 후
-                        Celery 워커가 백그라운드 처리. 클라이언트는 <code>GET /jobs/{id}</code>로 폴링.
-                        <code>acks_late</code>·<code>reject_on_worker_lost</code>로 워커 장애에도 안전합니다.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- 02 ARCHITECTURE -->
+        <!-- 01 ARCHITECTURE -->
         <section id="architecture" class="section">
             <header class="section-head">
-                <span class="section-id">02</span>
+                <span class="section-id">01</span>
                 <span class="section-kw">architecture</span>
             </header>
             <h2 class="section-title">시스템 구성</h2>
@@ -76,12 +52,79 @@
             </figure>
         </section>
 
+        <!-- 02 PIPELINE -->
+        <section id="overview" class="section">
+            <header class="section-head">
+                <span class="section-id">02</span>
+                <span class="section-kw">overview</span>
+            </header>
+            <h2 class="section-title">동기 / 비동기 두 가지 처리 흐름</h2>
 
+            <p class="section-lead">
+                단발성 가벼운 요청은 <code>POST /ocr/</code> 로 즉시 응답하고,
+                무거운 추론·배치는 <code>POST /ocr/jobs</code> 로 잡을 등록해 Celery 워커가 백그라운드 처리합니다.
+                응답성과 처리량을 양립시키기 위한 분리입니다.
+            </p>
 
-        <!-- 04 HIGHLIGHTS -->
+            <h3 class="diagram-title">동기 OCR 흐름 · <code>POST /api/v1/ocr/</code></h3>
+            <pre class="diagram">
+[Client]                [FastAPI]                [OCR Engine]
+   │                       │                          │
+   │ POST /api/v1/ocr/     │                          │
+   │ (file, engine)        │                          │
+   ├──────────────────────►│                          │
+   │                       │ JWT verify               │
+   │                       │ file validate            │
+   │                       │ save temp                │
+   │                       │                          │
+   │                       │ asyncio.to_thread()      │
+   │                       ├─────────────────────────►│
+   │                       │   engine.recognize()     │
+   │                       │   → result               │
+   │                       │◄─────────────────────────┤
+   │                       │ delete temp              │
+   │                       │                          │
+   │ { code, data:{images}}│                          │
+   │◄──────────────────────┤                          │
+</pre>
+            <p class="diagram-note">
+                EasyOCR · PaddleOCR 은 sync · CPU bound. async 라우터에서 직접 호출하면 이벤트 루프가 멈추므로
+                <code>asyncio.to_thread()</code> 로 워커 스레드에 위임해 동시 요청 처리 능력을 유지합니다.
+            </p>
+
+            <h3 class="diagram-title">비동기 잡 흐름 · <code>POST /api/v1/ocr/jobs</code></h3>
+            <pre class="diagram">
+[Client]            [API]               [MySQL]            [Redis]            [Worker]
+   │ POST /jobs       │                    │                  │                  │
+   ├─────────────────►│                    │                  │                  │
+   │                  │ INSERT pending     │                  │                  │
+   │                  ├───────────────────►│                  │                  │
+   │                  │ enqueue run_ocr    │                  │                  │
+   │                  ├──────────────────────────────────────►│                  │
+   │ 202 {job_id}     │                    │                  │ pull             │
+   │◄─────────────────┤                    │                  ├─────────────────►│
+   │                  │                    │ UPDATE started   │                  │
+   │                  │                    │◄─────────────────────────────────── │
+   │                  │                    │                  │  do OCR (3~30s)  │
+   │                  │                    │ UPDATE success   │                  │
+   │                  │                    │◄─────────────────────────────────── │
+   │ GET /jobs/{id}   │                    │                  │                  │
+   ├─────────────────►│ SELECT             │                  │                  │
+   │                  ├───────────────────►│                  │                  │
+   │ {status, result} │                    │                  │                  │
+   │◄─────────────────┤                    │                  │                  │
+</pre>
+            <p class="diagram-note">
+                <code>STARTED</code> 즉시 commit 으로 외부 가시성 확보 → 추론 → <code>SUCCESS/FAILED</code> 분기 commit.
+                같은 <code>job_id</code> 로 재실행되어도 같은 row 를 갱신만 하므로
+                <code>acks_late</code> + <code>reject_on_worker_lost</code> 와 정합합니다.
+            </p>
+        </section>
+
+        <!-- 03 HIGHLIGHTS -->
         <section id="highlights" class="section">
             <header class="section-head">
-                <span class="section-id">04</span>
+                <span class="section-id">03</span>
                 <span class="section-kw">highlights</span>
             </header>
             <h2 class="section-title">기술적 결정</h2>
@@ -92,13 +135,24 @@
                     <div class="highlight-body">
                         <h3>celery 워커 비동기 처리</h3>
                         <p>
-                            설명필요
+                            EasyOCR · PaddleOCR · Clova OCR 은 한 장당 3~30초가 걸리는 무거운 추론. 동기 라우터에서
+                            직접 호출하면 워커 프로세스가 그 시간만큼 점유되어 동시 요청 처리량이 떨어집니다.
+                            <code>POST /ocr/jobs</code> 로 잡을 등록하면 즉시 <code>job_id</code> 를 반환하고
+                            실제 추론은 Celery 워커가 백그라운드에서 처리. 무거운 추론에 맞춰
+                            <code>worker_prefetch_multiplier=1</code> 로 잡이 한 워커에 몰리지 않게 분배하고,
+                            <code>worker_max_tasks_per_child=200</code> 으로 모델 메모리 누수를 방어합니다.
                         </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">celery</span>
+                            <span class="mini-tag">redis</span>
+                            <span class="mini-tag">prefetch=1</span>
+                            <span class="mini-tag">background job</span>
+                        </div>
                     </div>
                 </article>
 
                 <article class="highlight">
-                    <div class="highlight-num">003</div>
+                    <div class="highlight-num">002</div>
                     <div class="highlight-body">
                         <h3>잡 라이프사이클 + 멱등성</h3>
                         <p>
@@ -116,22 +170,31 @@
                 </article>
 
                 <article class="highlight">
-                    <div class="highlight-num">001</div>
+                    <div class="highlight-num">003</div>
                     <div class="highlight-body">
                         <h3>OCR 엔진 모듈화</h3>
                         <p>
-                            설명필요
+                            세 엔진(EasyOCR · PaddleOCR · Clova OCR)을 <code>BaseEngine</code> ABC 로 통합해
+                            <code>recognize(file_path)</code> + <code>convert_to_json(raw)</code> 시그니처를 강제했습니다.
+                            라우터·워커는 엔진별 구현을 알 필요 없이 추상 인터페이스만 호출하면 되고,
+                            신규 엔진 추가는 <code>app/module/ocr/</code> 에 클래스 1개 작성 + <code>OcrModule.OCR_ENGINES</code>
+                            딕셔너리에 한 줄 등록으로 끝납니다. 결과 JSON 도 통일되어 클라이언트 입장에서 엔진 교체가 무비용.
                         </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">ABC</span>
+                            <span class="mini-tag">strategy pattern</span>
+                            <span class="mini-tag">open/closed</span>
+                        </div>
                     </div>
                 </article>
             </div>
         </section>
 
-        <!-- 07 ROADMAP -->
+        <!-- 04 ROADMAP -->
         <section id="roadmap" class="section">
             <header class="section-head">
-                <span class="section-id">07</span>
-                <span class="section-kw">// roadmap</span>
+                <span class="section-id">04</span>
+                <span class="section-kw">roadmap</span>
             </header>
             <h2 class="section-title">다음에 다룰 것들</h2>
 
@@ -162,10 +225,9 @@
                     <span class="rm-pri med">P1</span>
                     <div class="rm-body">
                         <h4>Celery retry 정책 정교화</h4>
-                        <p>Clova API의 5xx/429/Timeout만 선별 재시도. <code>autoretry_for</code> + 지수 백오프 + 지터.</p>
+                        <p>Clova API의 5xx/429/Timeout만 선별 재시도</p>
                         <div class="tag-row">
                             <span class="mini-tag">backoff</span>
-                            <span class="mini-tag">jitter</span>
                         </div>
                     </div>
                 </div>
@@ -180,31 +242,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="rm-item">
-                    <span class="rm-pri low">P2</span>
-                    <div class="rm-body">
-                        <h4>구조화 로깅 + OpenTelemetry</h4>
-                        <p>JSON 로그 + trace ID 전파(API → 워커 → DB). Prometheus 메트릭(엔진별 처리 시간/실패율) + Grafana.</p>
-                        <div class="tag-row">
-                            <span class="mini-tag">OTel</span>
-                            <span class="mini-tag">Prometheus</span>
-                            <span class="mini-tag">Grafana</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
 
-        <!-- 08 GALLERY -->
+        <!-- 05 GALLERY -->
         <section id="gallery" class="section">
             <header class="section-head">
-                <span class="section-id">08</span>
-                <span class="section-kw">// gallery</span>
+                <span class="section-id">05</span>
+                <span class="section-kw">gallery</span>
             </header>
             <h2 class="section-title">엔진별 추출 결과</h2>
 
             <div class="gallery">
-                <!-- 여기 이미지들 한줄에 한개씩 노출되도록 수정 -->
                 <figure class="shot">
                     <img src="https://raw.githubusercontent.com/qwerty1347/fastapi-ocr/main/storage/screenshots/sample.png" alt="샘플 이미지">
                     <figcaption><span class="cap-key">input</span> sample.png</figcaption>
@@ -224,5 +273,23 @@
             </div>
         </section>
     </main>
+
+    <button class="scroll-top" id="scrollTop" aria-label="맨 위로 가기">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        const scrollTopBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
 </body>
 </html>
