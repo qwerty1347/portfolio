@@ -195,15 +195,15 @@
         .page {
             max-width: 1100px;
             margin: 0 auto;
-            padding: 80px 36px 48px;
+            padding: 80px 36px 0;
         }
-        @media (max-width: 760px) { .page { padding: 56px 20px 32px; } }
+        @media (max-width: 760px) { .page { padding: 56px 20px 0; } }
 
         /* ============== hero ============== */
         .hero {
-            padding-bottom: 40px;
+            padding-bottom: 20px;
             border-bottom: 1px solid var(--line);
-            margin-bottom: 32px;
+            margin-bottom: 0;
         }
 
         .hero-name {
@@ -228,7 +228,7 @@
 
         /* ============== section heads ============== */
         .section { padding: 56px 0; border-bottom: 1px solid var(--line); }
-        .section:last-of-type { border-bottom: none; padding-bottom: 24px; }
+        .section:last-of-type { border-bottom: none; padding-bottom: 0; }
 
         .section-head {
             display: flex;
@@ -351,7 +351,18 @@
             font-weight: 600;
             transition: color .2s;
         }
+        .project-num::after {
+            content: '→';
+            display: block;
+            margin-top: 6px;
+            font-family: var(--mono);
+            color: var(--acc-dark);
+            font-size: 18px;
+            letter-spacing: 0;
+            transition: transform .2s;
+        }
         .project:hover .project-num { color: var(--acc-dark); }
+        .project:hover .project-num::after { transform: translateX(4px); }
 
         .project-body h3 {
             font-family: var(--sans);
@@ -360,11 +371,6 @@
             margin-bottom: 10px;
             color: var(--fg);
             font-weight: 700;
-        }
-        .project-body h3 .arrow {
-            font-family: var(--mono);
-            color: var(--acc-dark);
-            margin-right: 8px;
         }
         .project-body p {
             color: var(--fg-mute);
@@ -498,13 +504,12 @@
 
         /* ============== footer ============== */
         .footer {
-            padding: 40px 36px 32px;
+            padding: 24px 36px;
             text-align: center;
             color: var(--fg-faint);
             font-family: var(--mono);
             font-size: 12px;
             letter-spacing: .03em;
-            border-top: 1px solid var(--line);
         }
         .footer .heart { color: var(--acc-dark); }
     </style>
@@ -514,7 +519,6 @@
 
     <header class="topbar">
         <a class="brand" href="#">
-            <span class="brand-mark">{ }</span>
             <span class="brand-name">이건희</span>
         </a>
         <button class="menu-toggle" id="menuToggle" aria-label="menu">
@@ -578,7 +582,7 @@
                     </div>
                     <div class="about-row">
                         <span class="about-row-key">focus</span>
-                        <span class="about-row-val">Architecture<br>· AI</span>
+                        <span class="about-row-val">Architecture · AI</span>
                     </div>
                     <div class="about-row">
                         <span class="about-row-key">education</span>
@@ -610,7 +614,7 @@
                 <article class="project">
                     <div class="project-num">001</div>
                     <div class="project-body">
-                        <h3><span class="arrow">→</span> 블로그 자동 포스팅</h3>
+                        <h3>블로그 자동 포스팅</h3>
                         <p>
                             <code>Playwright</code>로 뉴스를 스크래핑하고, <code>LLM</code>으로 블로그 콘텐츠로 가공한 뒤
                             티스토리에 자동 발행하는 큐레이션 파이프라인. 카카오 OAuth 세션을 관리하며
@@ -646,7 +650,7 @@
                 <article class="project">
                     <div class="project-num">002</div>
                     <div class="project-body">
-                        <h3><span class="arrow">→</span> LLM 에이전트 챗봇</h3>
+                        <h3>LLM 에이전트 챗봇</h3>
                         <p>
                             LangChain <code>ReAct</code> 에이전트 기반 RAG 챗봇. <code>LLM</code>이 질문을 일상 대화 / 정보 요청인지 분류한 뒤
                             정보 요청은 <code>벡터DB 검색</code> 과 <code>웹 검색</code> 도구를 자율 선택해 호출합니다.
@@ -685,7 +689,7 @@
                 <article class="project">
                     <div class="project-num">003</div>
                     <div class="project-body">
-                        <h3><span class="arrow">→</span> 유사 이미지 검색</h3>
+                        <h3>유사 이미지 검색</h3>
                         <p>
                             업로드한 이미지의 객체를 판별하여 가장 유사 이미지들을 반환합니다.
                             <code>YOLOv8</code> 객체 검출 → <code>CLIP ViT-L/14</code> 768차원 임베딩 → <code>Qdrant</code> 코사인 유사도 검색 API
@@ -726,7 +730,7 @@
                 <article class="project">
                     <div class="project-num">004</div>
                     <div class="project-body">
-                        <h3><span class="arrow">→</span> 멀티 엔진 OCR</h3>
+                        <h3>멀티 엔진 OCR</h3>
                         <p>
                             <code>EasyOCR · PaddleOCR · Naver Clova</code> OCR을 단일 인터페이스로 추상화한 멀티 엔진 API.
                             동기 / 비동기 이중 엔드포인트로 가벼운 요청은 즉시 응답하고, 무거운 잡은 <code>Celery 워커</code> 백그라운드에서
@@ -765,7 +769,7 @@
                 <article class="project">
                     <div class="project-num">005</div>
                     <div class="project-body">
-                        <h3><span class="arrow">→</span> 관리자 CMS</h3>
+                        <h3>관리자 CMS</h3>
                         <p>
                             Laravel 기반 관리자 CMS. <code>Google · Naver · Kakao</code> 소셜 로그인과 자체 회원가입을 모두 지원하며,
                             확장 가능한 컨텐츠 관리와 관리자 대시보드를 구현했습니다. PHPUnit 유닛·기능 테스트로 안정성을 확보.
