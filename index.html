@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4M5DQQL91X"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4M5DQQL91X');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이건희 - Backend Portfolio</title>
@@ -672,7 +682,6 @@
                             <code>deque(maxlen=10)</code> 기반 단기 메모리로 컨텍스트 연속성을 유지합니다.
                         </p>
                         <p class="project-rationale">
-                            모든 질의에 ReAct + 도구 호출을 거치면 인사·잡담에도 불필요한 지연과 토큰 비용이 발생합니다.
                             <code>lru_cache</code> + lifespan 워밍업으로 프로세스당 1회만 로드해 첫 요청 지연을 제거했습니다.
                         </p>
                         <div class="project-tags">
