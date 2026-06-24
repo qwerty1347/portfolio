@@ -35,7 +35,7 @@
                 블로그 자동 포스팅<span class="cursor">_</span>
             </h1>
             <p class="hero-summary">
-                네이버 금융의 랭킹 뉴스를 <code>Playwright</code> 로 스크래핑하고,
+                <strong>금융·연예</strong> 랭킹 뉴스를 <code>Playwright</code> 로 스크래핑하고,
                 <code>LLM</code> 으로 블로그용 콘텐츠로 가공한 뒤 티스토리에 자동 발행하는 큐레이션 파이프라인입니다.
                 카카오 OAuth 세션을 <code>storage_state</code> 로 보존해 재인증을 우회하고,
                 마크다운 모드로 에디터에 본문을 직접 주입하여 예약 발행까지 처리합니다.
@@ -103,8 +103,8 @@
    │                       │                        │◄────────────────────┤
 </pre>
             <p class="diagram-note">
-                세 단계가 각각 <code>FinanceNewsScraperService</code> ·
-                <code>NewsSummarizeService</code> · <code>TistoryNewsPostService</code> 로 분리되어
+                세 단계가 각각 <code>FinanceNewsScrapService</code> ·
+                <code>NewsSummarizeService</code> · <code>TistoryPostService</code> 로 분리되어
                 단위 실행·교체가 가능합니다. LLM 단계는 <code>response_format="json_object"</code> 강제 +
                 시스템 프롬프트의 형식 규칙 + 응답 후처리(제목 컷 / 줄바꿈 정리)로 발행 가능한 JSON 을 보장합니다.
             </p>
@@ -276,7 +276,7 @@
                     <span class="rm-pri med">P1</span>
                     <div class="rm-body">
                         <h4>비동기 큐 도입</h4>
-                        <p><code>POST /scraper/run</code> 즉시 응답 + Redis 큐 + 백그라운드 워커 처리로 전환. 클라이언트는 작업 ID 로 폴링.</p>
+                        <p><code>POST /api/v1/tistory/finance/run</code> 즉시 응답 + Redis 큐 + 백그라운드 워커 처리로 전환. 클라이언트는 작업 ID 로 폴링.</p>
                         <div class="tag-row">
                             <span class="mini-tag">Redis</span>
                             <span class="mini-tag">Celery</span>
