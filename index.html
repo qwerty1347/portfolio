@@ -4,11 +4,11 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-4M5DQQL91X"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
 
-    gtag('config', 'G-4M5DQQL91X');
+        gtag('config', 'G-4M5DQQL91X');
     </script>
 
     <meta charset="UTF-8">
@@ -408,6 +408,22 @@
             line-height: 1.7 !important;
             margin-top: -2px !important;
         }
+        .project-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: var(--acc-4-soft);
+            border: 1px solid #ddd6fe;
+            padding: 12px 16px;
+            border-radius: var(--r-sm);
+            font-size: 14px !important;
+            line-height: 1.7 !important;
+            color: var(--fg-mute) !important;
+            margin-top: 12px !important;
+        }
+        .project-note i { color: var(--acc-4); font-size: 13px; margin-top: 5px; }
+        .project-note strong { color: var(--acc-4); font-weight: 600; }
+
         .project-tags {
             display: flex;
             flex-wrap: wrap;
@@ -633,6 +649,61 @@
                 <article class="project">
                     <div class="project-num">001</div>
                     <div class="project-body">
+                        <h3>개발 노트 RAG 챗봇 — devTalk</h3>
+                        <div class="project-meta">
+                            <span class="project-meta-item"><span class="meta-key">기간</span> 2026.06 — 2026.07</span>
+                        </div>
+                        <p>
+                            개인 개발 노트 저장소를 <code>gemini-embedding-001</code>로 임베딩해 <code>Pinecone</code>에 적재하고,
+                            질문하면 <code>Gemini</code>가 그 기록만 근거로 답하는 서버리스 RAG 챗봇.
+                            문서 소스는 <code>GitHub repo · 로컬 폴더 · Google Drive</code> 중 선택·병행이 가능하며,
+                            이미 넣은 파일은 건너뛰는 증분 인덱싱으로 중단 후 재개를 지원합니다.
+                            채팅 API는 Vercel 서버리스 함수로 배포해 상시 구동 서버 없이 운영합니다.
+                        </p>
+                        <p class="project-rationale">
+                            무료 티어 쿼터가 <strong>모델별로 따로</strong> 잡힌다는 점(<code>PerProjectPerModel</code>)을 이용해
+                            <strong>모델 폴백 체인</strong>(3.5-flash-lite → 3.5-flash → 3.6-flash)과 지수 백오프 재시도를 넣어
+                            일일 한도 소진·503 혼잡에도 대화가 끊기지 않도록 했습니다.
+                            한글 파일 경로는 <strong><code>sha1</code> 기반 결정적 ASCII 벡터 ID</strong>로 변환해 재인덱싱 시 중복 없이 덮어쓰이게 했고,
+                            Pinecone · Gemini 클라이언트는 <strong>지연 초기화</strong>해 빌드 단계에서 키 없이 터지지 않게 했습니다.
+                        </p>
+                        <p class="project-note">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            <span>
+                                <strong>바이브 코딩으로 만든 프로젝트.</strong>
+                                평소 다루던 백엔드 스택이 아닌 Next.js · TypeScript 환경을 AI 페어 프로그래밍으로 빠르게 구축했습니다.
+                                대신 생성된 코드를 그대로 두지 않고, 모델 EOL·쿼터 소진·유사도 점수 해석처럼
+                                <strong>실제로 굴려봐야 드러나는 문제들을 직접 실측해 README 트러블슈팅 문서로 정리</strong>했습니다.
+                            </span>
+                        </p>
+                        <div class="project-tags">
+                            <span class="project-tag">TypeScript</span>
+                            <span class="project-tag">Next.js</span>
+                            <span class="project-tag">Gemini</span>
+                            <span class="project-tag">Pinecone</span>
+                            <span class="project-tag">RAG</span>
+                            <span class="project-tag">Vercel</span>
+                            <span class="project-tag">Serverless</span>
+                            <span class="project-tag">Vibe Coding</span>
+                        </div>
+                    </div>
+                    <div class="project-actions">
+                        <a class="project-link primary" href="https://qwerty1347.github.io/portfolio/devTalk/" target="_blank">
+                            <i class="fas fa-arrow-up-right-from-square"></i>
+                            <span>Case Study</span>
+                            <i class="fas fa-chevron-right arrow"></i>
+                        </a>
+                        <a class="project-link" href="https://github.com/qwerty1347/devTalk" target="_blank">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                            <i class="fas fa-chevron-right arrow"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="project">
+                    <div class="project-num">002</div>
+                    <div class="project-body">
                         <h3>블로그 자동 포스팅</h3>
                         <div class="project-meta">
                             <span class="project-meta-item"><span class="meta-key">기간</span> 2026.03 — 2026.05</span>
@@ -670,7 +741,7 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">002</div>
+                    <div class="project-num">003</div>
                     <div class="project-body">
                         <h3>LLM 에이전트 챗봇</h3>
                         <div class="project-meta">
@@ -711,7 +782,7 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">003</div>
+                    <div class="project-num">004</div>
                     <div class="project-body">
                         <h3>유사 이미지 검색</h3>
                         <div class="project-meta">
@@ -755,7 +826,7 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">004</div>
+                    <div class="project-num">005</div>
                     <div class="project-body">
                         <h3>멀티 엔진 OCR</h3>
                         <div class="project-meta">
@@ -797,7 +868,7 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">005</div>
+                    <div class="project-num">006</div>
                     <div class="project-body">
                         <h3>관리자 CMS</h3>
                         <div class="project-meta">

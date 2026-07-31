@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4M5DQQL91X"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4M5DQQL91X');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개발 노트 RAG 챗봇 · devTalk</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <header class="topbar">
+        <a class="brand" href="../../index.html">
+            <span class="brand-prompt">~/</span><span>portfolio</span><span class="brand-sep">/</span><span class="brand-cur">devTalk</span>
+        </a>
+        <nav class="nav">
+            <a href="#architecture">arch</a>
+            <a href="#overview">overview</a>
+            <a href="#highlights">highlights</a>
+            <a href="#workflow">workflow</a>
+            <a href="#roadmap">roadmap</a>
+            <a href="#gallery">gallery</a>
+        </nav>
+    </header>
+
+    <main class="page">
+
+        <!-- HERO -->
+        <section class="hero">
+            <h1 class="hero-title">
+                개발 노트 RAG 챗봇<span class="cursor">_</span>
+            </h1>
+            <p class="hero-summary">
+                직접 정리한 개발 노트를 <code>gemini-embedding-001</code> 로 임베딩해 <code>Pinecone</code> 에 적재하고,
+                질문하면 <code>Gemini</code> 가 <strong>그 기록만 근거로</strong> 답하는 서버리스 RAG 채팅입니다.
+                문서 소스는 <code>GitHub repo · 로컬 폴더 · Google Drive</code> 중 택일·병행이 가능하고,
+                채팅 API 는 Vercel 서버리스 함수로 배포해 상시 구동 서버 없이 운영합니다.
+                <em>바이브 코딩</em>으로 만든 프로젝트라, 생성된 코드를 그대로 두지 않고
+                무료 티어 쿼터 · 모델 EOL · 유사도 점수 분포를 직접 실측해 검증한 과정을 함께 정리했습니다.
+            </p>
+        </section>
+
+        <!-- 01 ARCHITECTURE -->
+        <section id="architecture" class="section">
+            <header class="section-head">
+                <span class="section-id">01</span>
+                <span class="section-kw">architecture</span>
+            </header>
+            <h2 class="section-title">시스템 구성</h2>
+
+            <figure class="shot shot-architecture">
+                <img src="https://raw.githubusercontent.com/qwerty1347/devTalk/main/public/architecture.png" alt="devTalk 시스템 아키텍처 다이어그램">
+            </figure>
+        </section>
+
+        <!-- 02 OVERVIEW -->
+        <section id="overview" class="section">
+            <header class="section-head">
+                <span class="section-id">02</span>
+                <span class="section-kw">overview</span>
+            </header>
+            <h2 class="section-title">쓰기와 읽기의 분리 · index → search → answer</h2>
+
+            <p class="section-lead">
+                인덱싱(쓰기)과 채팅(읽기)을 완전히 분리했습니다. 인덱싱은 노트가 늘었을 때만 로컬에서 수동으로 돌리는
+                일회성 배치이고, 서버리스 함수로 배포되는 것은 채팅 경로뿐입니다.
+                덕분에 상시 구동 서버 없이도 무거운 임베딩 작업이 사용자 요청 경로에 얹히지 않습니다.
+            </p>
+
+            <h3 class="diagram-title">인덱싱 · <code>npm run index:github</code> (로컬 수동 실행)</h3>
+            <pre class="diagram">
+   GitHub repo ─┐
+   로컬 폴더   ─┼─► 문서 수집 (.md / .txt)
+   Google Drive ┘        │
+                         ▼
+                  manifest 대조
+                         │        .indexed-github.json 에 기록된 파일은 skip → 증분 인덱싱
+                         ▼
+                  chunkText(size=1000, overlap=150)
+                         │        청크 경계에 걸친 내용도 잡히도록 150자 오버랩
+                         ▼
+                  embed(chunk, "RETRIEVAL_DOCUMENT")
+                         │        gemini-embedding-001 · 768차원 · L2 수동 정규화
+                         ▼
+                  vectorId = "gh:" + sha1(path) + ":" + i
+                         │        한글 경로 → 결정적 ASCII ID (재실행 시 덮어쓰기)
+                         ▼
+                  Pinecone upsert
+                                  100개 배치 · 파일 1개 끝날 때마다 manifest 저장
+                                  → 중간에 끊겨도 다시 돌리면 이어서 진행
+</pre>
+            <p class="diagram-note">
+                Pinecone 벡터 ID 는 ASCII 만 허용해서 한글 파일명이 그대로 들어가지 못합니다.
+                <code>sha1(path)</code> 로 결정적 ID 를 만들어, 같은 파일을 다시 인덱싱하면 새 벡터가 쌓이는 대신
+                기존 벡터를 덮어쓰도록 했습니다. 임베딩은 3072차원을 768로 줄여 받기 때문에 단위벡터가 아니라,
+                코사인 유사도가 정확히 동작하도록 <strong>직접 L2 정규화</strong>합니다.
+            </p>
+
+            <h3 class="diagram-title">채팅 · <code>POST /api/chat</code> (Vercel 서버리스 함수)</h3>
+            <pre class="diagram">
+   브라우저
+      │  ① 질문
+      ▼
+   route.ts
+      │  ② embed(question, "RETRIEVAL_QUERY")
+      │        저장은 DOCUMENT, 검색은 QUERY 로 task type 을 나눠 검색 품질 확보
+      ▼
+   Pinecone query(topK=5, includeMetadata)
+      │  ③ 관련 청크 + fileName + score
+      ▼
+   chat(question, context)
+      │        gemini-3.5-flash-lite 로 먼저 시도
+      │        ↪ 429 / 500 / 503 → withRetry 2·4·8·16s 지수 백오프 (최대 5회)
+      │        ↪ 그래도 실패 → gemini-3.5-flash → gemini-3.6-flash 로 폴백
+      ▼
+   답변(GFM 마크다운) + 출처 링크
+      │        react-markdown + remark-gfm 로 표·코드펜스 렌더링
+      │        rehype-raw 는 의도적으로 미사용 → 노트 속 HTML 은 이스케이프 (XSS 차단)
+      ▼
+   브라우저
+</pre>
+            <p class="diagram-note">
+                프롬프트에서 <strong>«자료에 없는 내용은 추측하지 말고 모른다고 답하라»</strong> 를 명시해 환각을 억제하고,
+                답변과 함께 근거가 된 노트를 출처 링크로 함께 내려 사용자가 직접 원문을 확인할 수 있게 했습니다.
+                예외는 <code>route.ts</code> 에서 사용자용 문구로 치환하고, 원문은 개발 환경에서만
+                <code>detail</code> 필드로 내려보냅니다.
+            </p>
+        </section>
+
+        <!-- 03 HIGHLIGHTS -->
+        <section id="highlights" class="section">
+            <header class="section-head">
+                <span class="section-id">03</span>
+                <span class="section-kw">highlights</span>
+            </header>
+            <h2 class="section-title">기술적 의사결정</h2>
+
+            <div class="highlights">
+                <article class="highlight">
+                    <div class="highlight-num">001</div>
+                    <div class="highlight-body">
+                        <h3>모델별 쿼터를 이용한 폴백 체인</h3>
+                        <p>
+                            무료 티어 429 응답을 뜯어보니 쿼터 ID 가
+                            <code>GenerateRequestsPerDayPerProjectPerModel</code> — 즉 <strong>모델별로 따로</strong> 잡힙니다.
+                            한 모델이 하루 20회를 소진해도 다른 모델은 살아 있다는 뜻이라,
+                            <code>CHAT_MODELS</code> 배열(3.5-flash-lite → 3.5-flash → 3.6-flash)을 순차 시도하는
+                            폴백 체인을 넣어 채팅 상한을 20회에서 <strong>약 60회</strong>로 늘렸습니다.
+                            일시적 혼잡(503)은 그 앞단의 <code>withRetry</code> 지수 백오프가 흡수합니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">quota</span>
+                            <span class="mini-tag">fallback chain</span>
+                            <span class="mini-tag">exponential backoff</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">002</div>
+                    <div class="highlight-body">
+                        <h3>클라이언트 지연 초기화</h3>
+                        <p>
+                            Pinecone · Gemini 클라이언트를 모듈 최상단에서 만들면
+                            <code>next build</code> 의 page data 수집 단계에서 환경변수가 없어 생성자가 터집니다.
+                            실제 사용 시점에 만들도록 <strong>지연 초기화</strong>로 바꿔 빌드 실패를 없앴습니다.
+                            대신 <code>PINECONE_INDEX</code> 에는 기본값 폴백을 두지 <em>않았습니다</em> —
+                            폴백이 있으면 Vercel 에 변수를 빠뜨렸을 때 존재하지 않는 인덱스를 조용히 바라보게 되므로,
+                            즉시 던지는 편이 안전합니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">lazy init</span>
+                            <span class="mini-tag">build time</span>
+                            <span class="mini-tag">fail fast</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">003</div>
+                    <div class="highlight-body">
+                        <h3>한글 경로 → 결정적 ASCII 벡터 ID</h3>
+                        <p>
+                            Pinecone 벡터 ID 는 ASCII 만 허용하는데 노트 파일명은 대부분 한글입니다.
+                            <code>vectorId(prefix, path, i) = prefix:sha1(path):i</code> 로 해싱해
+                            <strong>같은 경로 + 같은 청크 번호는 항상 같은 ID</strong> 가 되도록 했습니다.
+                            재인덱싱해도 중복이 쌓이지 않고 덮어쓰기됩니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">sha1</span>
+                            <span class="mini-tag">idempotent upsert</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">004</div>
+                    <div class="highlight-body">
+                        <h3>매니페스트 기반 증분 인덱싱</h3>
+                        <p>
+                            무료 티어에서 수십 개 문서를 임베딩하면 중간에 429 로 끊기기 쉽습니다.
+                            파일 1개를 upsert 할 때마다 <code>.indexed-github.json</code> 에 진행 상황을 기록하고,
+                            다음 실행에서 그 목록을 건너뜁니다. 끊겨도 <strong>다시 돌리면 이어서 진행</strong>되고,
+                            노트가 늘었을 때도 새 파일만 자동으로 감지합니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">manifest</span>
+                            <span class="mini-tag">resumable</span>
+                            <span class="mini-tag">incremental</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">005</div>
+                    <div class="highlight-body">
+                        <h3>GitHub API 호출 최소화</h3>
+                        <p>
+                            문서를 GitHub API 로 하나씩 받으면 rate limit 에 바로 걸립니다.
+                            <strong>API 는 기본 브랜치 조회 + 트리 조회 2회만</strong> 쓰고,
+                            실제 파일 원문은 rate limit 이 적용되지 않는
+                            <code>raw.githubusercontent.com</code> CDN 에서 받아옵니다. 공개 repo 라 인증도 불필요합니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">rate limit</span>
+                            <span class="mini-tag">CDN</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">006</div>
+                    <div class="highlight-body">
+                        <h3>에러 노출 이원화</h3>
+                        <p>
+                            Google 원문 JSON 이 사용자 화면에 그대로 뜨지 않도록
+                            <code>RESOURCE_EXHAUSTED|UNAVAILABLE|429|503</code> 패턴을 «지금 AI 서버가 혼잡하거나
+                            무료 사용량을 초과했습니다» 로 치환합니다.
+                            대신 <code>NODE_ENV !== "production"</code> 일 때만 원문을 <code>detail</code> 필드로 함께 내려
+                            <strong>터미널을 안 봐도 채팅 화면에서 500 의 원인이 바로 보이게</strong> 했습니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">error handling</span>
+                            <span class="mini-tag">DX</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 04 WORKFLOW -->
+        <section id="workflow" class="section">
+            <header class="section-head">
+                <span class="section-id">04</span>
+                <span class="section-kw">workflow</span>
+            </header>
+            <h2 class="section-title">작업 방식 · 바이브 코딩으로 만들고, 실측으로 검증하기</h2>
+
+            <p class="section-lead">
+                평소 다루던 Python · PHP 백엔드가 아닌 <strong>Next.js · TypeScript</strong> 스택을,
+                기획부터 배포까지 AI 페어 프로그래밍(바이브 코딩)으로 구축했습니다.
+                다만 «돌아가니까 됐다» 로 끝내지 않고, LLM 을 쓰는 서비스에서
+                <strong>실제로 굴려봐야 드러나는 것들</strong>을 직접 측정해 근거를 남기는 데 시간을 더 썼습니다.
+            </p>
+
+            <div class="highlights">
+                <article class="highlight">
+                    <div class="highlight-num">AI</div>
+                    <div class="highlight-body">
+                        <h3>생성에 맡긴 영역</h3>
+                        <p>
+                            App Router 보일러플레이트, 채팅 UI, GitHub · 로컬 폴더 · Google Drive 3개 소스의 로더,
+                            인덱싱 스크립트 골격. 익숙하지 않은 스택의 «관례대로 쓰면 되는» 부분에서
+                            학습 비용을 크게 줄였고, 3일이면 끝날 일을 반나절로 압축했습니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">scaffolding</span>
+                            <span class="mini-tag">unfamiliar stack</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">직접</div>
+                    <div class="highlight-body">
+                        <h3>실측으로 확인한 것들</h3>
+                        <p>
+                            <strong>모델 가용성</strong> — <code>ListModels</code> 응답에 이름이 보여도 쓸 수 있다는 뜻이 아닙니다.
+                            <code>gemini-2.5-flash</code> 는 목록에는 그대로 나오면서 <code>generateContent</code> 만 404 를 냅니다.
+                            반드시 실제 호출로 확인해야 한다는 걸 겪고, 모델 목록을 폴백 체인으로 재구성했습니다.
+                        </p>
+                        <p>
+                            <strong>모델별 응답 속도</strong> — 5회 호출 실측: 3.5-flash-lite 5초 / 3.5-flash 8초 /
+                            3.6-flash 10초 / 3.1-flash-lite 55초. 폴백 체인의 순서는 이 측정값으로 정했습니다.
+                        </p>
+                        <p>
+                            <strong>유사도 점수 분포</strong> — 관련 질문은 0.64~0.77, 완전히 무관한 질문("오늘 서울 날씨")도
+                            0.51~0.53 이 나옵니다. <code>gemini-embedding-001</code> 은 점수 범위가 압축돼 있어
+                            <strong>0% 가 아니라 50% 부근이 기준선</strong>이라는 것, 그래서 퍼센트 표기가 오해를 부르는 지표라는 것을
+                            수치로 확인했습니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">benchmark</span>
+                            <span class="mini-tag">score distribution</span>
+                            <span class="mini-tag">model EOL</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="highlight">
+                    <div class="highlight-num">기록</div>
+                    <div class="highlight-body">
+                        <h3>겪은 문제를 트러블슈팅 문서로</h3>
+                        <p>
+                            500 의 발생 위치별 확인 방법(페이지 500 은 터미널에만, API 500 은 응답 JSON 에),
+                            <code>next dev</code> 중복 실행으로 <code>.next</code> 가 깨지는 문제와 복구 절차,
+                            Git Bash 의 UTF-8 손상이 앱 버그로 오인되는 케이스까지
+                            <strong>원인 · 판별법 · 대응</strong> 세 갈래로 README 에 정리했습니다.
+                            AI 가 만든 코드일수록 «왜 이렇게 되어 있는지» 를 스스로 설명할 수 있어야 한다고 봤습니다.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">documentation</span>
+                            <span class="mini-tag">troubleshooting</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 05 ROADMAP -->
+        <section id="roadmap" class="section">
+            <header class="section-head">
+                <span class="section-id">05</span>
+                <span class="section-kw">roadmap</span>
+            </header>
+            <h2 class="section-title">다음에 다룰 것들</h2>
+
+            <div class="roadmap">
+                <div class="rm-item">
+                    <span class="rm-pri high">P0</span>
+                    <div class="rm-body">
+                        <h4>유사도 임계값 필터</h4>
+                        <p>
+                            현재 <code>route.ts</code> 는 score 와 무관하게 무조건 top-5 를 가져와,
+                            «모른다» 고 답하면서도 출처 5개가 붙습니다. 실측 분포상 경계가 0.6 부근이므로
+                            <code>MIN_SCORE = 0.6</code> 필터 + 결과 0건일 때 전용 응답으로 교체할 예정.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">threshold</span>
+                            <span class="mini-tag">relevance</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri high">P0</span>
+                    <div class="rm-body">
+                        <h4>노트 수정·삭제 반영</h4>
+                        <p>
+                            매니페스트가 «처리 여부» 만 담고 있어, 노트를 고치면 수동으로 항목을 지워야 하고
+                            삭제하면 벡터가 남습니다. 경로별 <strong>내용 해시</strong>를 저장해 변경 감지 →
+                            해당 벡터만 재적재 / 삭제되도록 개선.
+                        </p>
+                        <div class="tag-row">
+                            <span class="mini-tag">content hash</span>
+                            <span class="mini-tag">vector GC</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri med">P1</span>
+                    <div class="rm-body">
+                        <h4>접근 제어</h4>
+                        <p>개인 노트를 다루는데 배포 URL 만 알면 누구나 접근 가능합니다. 최소한의 비밀번호 또는 OAuth 로그인 추가.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">auth</span>
+                            <span class="mini-tag">middleware</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri med">P1</span>
+                    <div class="rm-body">
+                        <h4>대화 컨텍스트 유지</h4>
+                        <p>현재는 매 요청이 독립된 단발 질의응답입니다. 직전 turn 을 프롬프트에 포함해 후속 질문("그럼 그건?")이 통하도록 개선.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">multi-turn</span>
+                            <span class="mini-tag">history</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri low">P2</span>
+                    <div class="rm-body">
+                        <h4>응답 지연 단축</h4>
+                        <p>Gemini 3.x 는 thinking 모델이라 RAG 답변에는 사고량이 과합니다. <code>thinkingConfig.thinkingLevel = "low"</code> 적용 후 체감 속도 재측정.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">latency</span>
+                            <span class="mini-tag">thinking level</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-item">
+                    <span class="rm-pri low">P2</span>
+                    <div class="rm-body">
+                        <h4>PDF 소스 지원</h4>
+                        <p>현재 지원 형식은 <code>.md</code>·<code>.txt</code>·Google Docs·이미지(Drive)이고 PDF 는 건너뜁니다. 텍스트 레이어 추출 + 스캔본은 Flash 설명으로 분기.</p>
+                        <div class="tag-row">
+                            <span class="mini-tag">PDF</span>
+                            <span class="mini-tag">ingestion</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 06 GALLERY -->
+        <section id="gallery" class="section">
+            <header class="section-head">
+                <span class="section-id">06</span>
+                <span class="section-kw">gallery</span>
+            </header>
+            <h2 class="section-title">실행 결과</h2>
+
+            <div class="gallery">
+                <figure class="shot">
+                    <img src="https://raw.githubusercontent.com/qwerty1347/devTalk/main/public/screenshots/rag.gif" alt="devTalk RAG 채팅 실행 화면">
+                    <figcaption><span class="cap-key">flow</span> rag.gif · 질문 → 검색 → 답변 데모</figcaption>
+                </figure>
+                <figure class="shot">
+                    <img src="https://raw.githubusercontent.com/qwerty1347/devTalk/main/public/screenshots/rag1.png" alt="답변 화면 1">
+                    <figcaption><span class="cap-key">answer</span> rag1.png · 마크다운 답변 + 참고한 기록</figcaption>
+                </figure>
+                <figure class="shot">
+                    <img src="https://raw.githubusercontent.com/qwerty1347/devTalk/main/public/screenshots/rag2.png" alt="답변 화면 2">
+                    <figcaption><span class="cap-key">answer</span> rag2.png · 표 렌더링 (remark-gfm)</figcaption>
+                </figure>
+                <figure class="shot">
+                    <img src="https://raw.githubusercontent.com/qwerty1347/devTalk/main/public/screenshots/rag3.png" alt="답변 화면 3">
+                    <figcaption><span class="cap-key">answer</span> rag3.png · 코드블록 · 복사 버튼</figcaption>
+                </figure>
+            </div>
+        </section>
+    </main>
+
+    <button class="scroll-top" id="scrollTop" aria-label="맨 위로 가기">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        const scrollTopBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+    <!-- 네이버 애널리틱스 -->
+    <script type="text/javascript" src="//wcs.pstatic.net/wcslog.js"></script>
+    <script type="text/javascript">
+        if(!wcs_add) var wcs_add = {};
+        wcs_add["wa"] = "14fbee3bd55b980";
+        if(window.wcs) {
+            wcs_do();
+        }
+    </script>
+</body>
+</html>
