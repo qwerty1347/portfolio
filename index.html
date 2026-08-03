@@ -4,11 +4,11 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-4M5DQQL91X"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
 
-    gtag('config', 'G-4M5DQQL91X');
+        gtag('config', 'G-4M5DQQL91X');
     </script>
 
     <meta charset="UTF-8">
@@ -371,6 +371,7 @@
         .project-meta {
             display: flex;
             flex-wrap: wrap;
+            align-items: center;
             gap: 8px 16px;
             margin-bottom: 14px;
             font-family: var(--mono);
@@ -392,6 +393,46 @@
             margin-left: 1px;
             color: var(--fg-faint);
         }
+        /* 실서비스 URL 배지 */
+        .project-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: .01em;
+            color: var(--acc-dark);
+            background: var(--acc-soft);
+            border: 1px solid #d9f99d;
+            padding: 4px 11px 4px 9px;
+            border-radius: 999px;
+            transition: background .15s, border-color .15s, color .15s;
+        }
+        .project-live:hover {
+            background: var(--acc-dark);
+            border-color: var(--acc-dark);
+            color: var(--bg-card);
+        }
+        .project-live .live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--acc);
+            box-shadow: 0 0 0 0 rgba(101, 163, 13, .5);
+            animation: pulse 2s ease-out infinite;
+            flex: none;
+        }
+        .project-live:hover .live-dot { background: var(--acc-soft); animation: none; }
+        .project-live i { font-size: 10px; opacity: .7; }
+        @keyframes pulse {
+            70%  { box-shadow: 0 0 0 6px rgba(101, 163, 13, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(101, 163, 13, 0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .project-live .live-dot { animation: none; }
+        }
+
         .project-body p {
             color: var(--fg-mute);
             font-size: 15px;
@@ -408,6 +449,22 @@
             line-height: 1.7 !important;
             margin-top: -2px !important;
         }
+        .project-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: var(--acc-4-soft);
+            border: 1px solid #ddd6fe;
+            padding: 12px 16px;
+            border-radius: var(--r-sm);
+            font-size: 14px !important;
+            line-height: 1.7 !important;
+            color: var(--fg-mute) !important;
+            margin-top: 12px !important;
+        }
+        .project-note i { color: var(--acc-4); font-size: 13px; margin-top: 5px; }
+        .project-note strong { color: var(--acc-4); font-weight: 600; }
+
         .project-tags {
             display: flex;
             flex-wrap: wrap;
@@ -572,18 +629,9 @@
             <div class="about-grid">
                 <div class="about-bio">
                     <p>
-                        PHP · Python <strong>다중 언어 백엔드</strong>를 다뤄왔고,
-                        최근에는 FastAPI 비동기 백엔드와 AI 를 활용해 운영하는 시스템 설계에 집중하고 있습니다. 라우터는 얇게, 도메인 로직은 서비스 계층으로, 외부 자원은 별도 모듈로 분리하는 식의 명확한 책임 구분을 선호합니다.
-                    </p>
-                    <p>
-                        가벼운 단발 요청과 무거운 배치 잡이 한 시스템에 공존할 때,
-                        <strong>큐 · 워커 · 잡 라이프사이클</strong>을 어떻게 설계해야 고민하고 풀어내는 작업을 좋아합니다.
-                    </p>
-                    <p>
-                        AI 영역에서는 <strong>RAG 에이전트 · 벡터 임베딩 · OCR · 스크래핑 자동화</strong>처럼
-                        백엔드와 맞닿은 부분을 직접 다룹니다.
-                        <em>이벤트 루프 보호 · DI · 모델 싱글톤 · 워커 분리</em> 같은 운영 측면까지
-                        함께 설계합니다.
+                        PHP · Python · Laravel 언어를 사용하여 <strong>백엔드</strong> 개발해 왔습니다.
+                        최근에는 FastAPI 를 활용한 다양한 서비스와 Claude 를 활용한 Harness 자동화 환경에 관심을 가지며 다양한 프로젝트를 진행해 보고 있습니다.
+                        비즈니스 로직은 서비스 계층에, DB 관련 로직은 리포지토리 계층으로 나눈 디자인 패턴을 적용하여 개발하는 것을 선호합니다.
                     </p>
                 </div>
 
@@ -625,13 +673,68 @@
             </header>
             <h2 class="section-title">프로젝트<span class="dot">.</span></h2>
             <p class="section-lead">
-                각각의 프로젝트 별도 페이지에서 아키텍처 · 디테일 등을 자세히 다룹니다.
+                각 프로젝트의 아키텍처와 설계 근거는 별도 Case Study 페이지에서 다룹니다.
             </p>
 
             <div class="projects">
 
                 <article class="project">
                     <div class="project-num">001</div>
+                    <div class="project-body">
+                        <h3>개발 노트 RAG 챗봇 — devTalk</h3>
+                        <div class="project-meta">
+                            <span class="project-meta-item"><span class="meta-key">기간</span> 2026.06 — 2026.07</span>
+                            <a class="project-live" href="https://dev-talk-drab.vercel.app/" target="_blank" rel="noopener">
+                                <span class="live-dot" aria-hidden="true"></span>
+                                <span>서비스 URL</span>
+                                <i class="fas fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                        <p>
+                            개발하며 정리한 노트를 모아둔 <code>dev-notes</code> 저장소를 <code>gemini-embedding-001</code> 로 임베딩해 <code>Pinecone</code> 벡터DB 에 적재하고,
+                            사용자가 질문하면 검색하여 <code>Gemini</code> 가 근거와 함께 답변을 하는 서버리스 RAG 챗봇입니다.
+                            Vercel 서버리스 함수로 배포해 상시 구동 서버 없이 운영합니다.
+                            <code>main</code> 브랜치에 머지되면 Vercel이 빌드부터 배포까지 자동으로 처리합니다.
+                        </p>
+                        <p class="project-rationale">
+                            <strong>모델 폴백 체인</strong>(3.5-flash-lite → 3.5-flash → 3.6-flash)과 지수 백오프를 넣어,
+                            한 모델이 막혀도 다음 모델로 답변이 이어집니다.
+                            한글 파일 경로는 <code>sha1</code> 해시 ID로 바꿔 재인덱싱 때 중복 없이 덮어쓰게 했습니다.
+                        </p>
+                        <p class="project-note">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            <span>
+                                <strong>바이브 코딩으로 만든 프로젝트.</strong>
+                                평소 다루던 백엔드 스택이 아닌 Next.js · TypeScript 환경을 AI 페어 프로그래밍으로 빠르게 구축했습니다.
+                            </span>
+                        </p>
+                        <div class="project-tags">
+                            <span class="project-tag">TypeScript</span>
+                            <span class="project-tag">Next.js</span>
+                            <span class="project-tag">Gemini</span>
+                            <span class="project-tag">Pinecone</span>
+                            <span class="project-tag">RAG</span>
+                            <span class="project-tag">Vercel</span>
+                            <span class="project-tag">Serverless</span>
+                            <span class="project-tag">Vibe Coding</span>
+                        </div>
+                    </div>
+                    <div class="project-actions">
+                        <a class="project-link primary" href="https://qwerty1347.github.io/portfolio/devTalk/" target="_blank">
+                            <i class="fas fa-arrow-up-right-from-square"></i>
+                            <span>Case Study</span>
+                            <i class="fas fa-chevron-right arrow"></i>
+                        </a>
+                        <a class="project-link" href="https://github.com/qwerty1347/devTalk" target="_blank">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                            <i class="fas fa-chevron-right arrow"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="project">
+                    <div class="project-num">002</div>
                     <div class="project-body">
                         <h3>블로그 자동 포스팅</h3>
                         <div class="project-meta">
@@ -643,7 +746,6 @@
                             마크다운 모드 본문 작성과 예약 발행까지 처리합니다.
                         </p>
                         <p class="project-rationale">
-                            매번 카카오 OAuth를 자동화하는 것은 비현실적이라,
                             <strong>첫 로그인만 수동으로 받고 <code>storage_state</code>에 세션을 저장</strong>하고 이후 운영을 가능하게 만들었습니다.
                         </p>
                         <div class="project-tags">
@@ -670,7 +772,7 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">002</div>
+                    <div class="project-num">003</div>
                     <div class="project-body">
                         <h3>LLM 에이전트 챗봇</h3>
                         <div class="project-meta">
@@ -711,7 +813,7 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">003</div>
+                    <div class="project-num">004</div>
                     <div class="project-body">
                         <h3>유사 이미지 검색</h3>
                         <div class="project-meta">
@@ -719,8 +821,8 @@
                         </div>
                         <p>
                             업로드한 이미지의 객체를 판별하여 가장 유사 이미지들을 반환합니다.
-                            <code>YOLOv8</code> 객체 검출 → <code>CLIP ViT-L/14</code> 768차원 임베딩 → <code>Qdrant</code> 코사인 유사도 검색 API
-                            <code>Celery 워커</code> 백그라운드에서 처리해 API 응답 경로에 영향을 주지 않도록 분리하였습니다.
+                            <code>YOLOv8</code> 객체 검출 → <code>CLIP ViT-L/14</code> 768차원 임베딩 → <code>Qdrant</code> 벡터DB 저장, 코사인 유사도 검색하여 제공하는 API
+                            <code>Celery 워커</code> 백그라운드에서 임베딩 처리하여 API 응답 경로에 영향을 주지 않도록 분리하였습니다.
                         </p>
                         <p class="project-rationale">
                             YOLO · CLIP 같은 무거운 모델을 요청마다 로딩하면 첫 응답이 수십 초 지연되고,
@@ -755,7 +857,7 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">004</div>
+                    <div class="project-num">005</div>
                     <div class="project-body">
                         <h3>멀티 엔진 OCR</h3>
                         <div class="project-meta">
@@ -797,7 +899,7 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">005</div>
+                    <div class="project-num">006</div>
                     <div class="project-body">
                         <h3>관리자 CMS</h3>
                         <div class="project-meta">
