@@ -623,15 +623,15 @@
             </header>
             <h2 class="section-title">소개<span class="dot">.</span></h2>
             <p class="section-lead">
-                책임이 명확하게 분리된 코드와, 운영 중 마주칠 수 있는 디테일까지 담은 설계를 좋아합니다.
+                책임이 명확하게 분리된 코드와, 운영 중 마주칠 수 있는 작은 부분까지 놓치지 않는 설계를 선호합니다.
             </p>
 
             <div class="about-grid">
                 <div class="about-bio">
                     <p>
-                        PHP · Python · Laravel 언어를 사용하여 <strong>백엔드</strong> 개발해 왔습니다.
-                        최근에는 FastAPI 를 활용한 다양한 서비스와 Claude 를 활용한 Harness 자동화 환경에 관심을 가지며 다양한 프로젝트를 진행해 보고 있습니다.
-                        비즈니스 로직은 서비스 계층에, DB 관련 로직은 리포지토리 계층으로 나눈 디자인 패턴을 적용하여 개발하는 것을 선호합니다.
+                        PHP · Python 언어의 <strong>백엔드</strong> 개발 경험을 보유하고 있습니다.
+                        최근에는 Claude 를 활용하여 업무에 적용시킬 수 있는 자동화 시스템들을 개발하여 적용시켜보고
+                        FastAPI 를 활용하여 다양한 패키지들을 이용한 프로젝트를 진행해 보고 있습니다.
                     </p>
                 </div>
 
@@ -730,20 +730,15 @@
                             </a>
                         </div>
                         <p>
-                            개발하며 정리한 노트를 모아둔 <code>dev-notes</code> 저장소를 <code>gemini-embedding-001</code> 로 임베딩해 <code>Pinecone</code> 벡터DB 에 적재하고,
-                            사용자가 질문하면 검색하여 <code>Gemini</code> 가 근거와 함께 답변을 하는 서버리스 RAG 챗봇입니다.
-                            Vercel 서버리스 함수로 배포해 상시 구동 서버 없이 운영합니다.
+                            개발하며 정리한 노트를 모아둔 <code>dev-notes</code> 저장소 내 문서들을 <code>gemini-embedding-001</code> 로 임베딩 후 <code>Pinecone</code> 벡터DB 에 적재하고,
+                            사용자가 질문하면 <code>Gemini</code> 가 근거와 함께 답변을 하는 서버리스 RAG 챗봇입니다.
                             <code>main</code> 브랜치에 머지되면 Vercel이 빌드부터 배포까지 자동으로 처리합니다.
-                        </p>
-                        <p class="project-rationale">
-                            <strong>모델 폴백 체인</strong>(3.5-flash-lite → 3.5-flash → 3.6-flash)과 지수 백오프를 넣어,
-                            한 모델이 막혀도 다음 모델로 답변이 이어집니다.
-                            한글 파일 경로는 <code>sha1</code> 해시 ID로 바꿔 재인덱싱 때 중복 없이 덮어쓰게 했습니다.
+                            Vercel 서버리스 함수로 배포되어 상시 구동 서버 없이 운영합니다.
                         </p>
                         <p class="project-note">
                             <i class="fas fa-wand-magic-sparkles"></i>
                             <span>
-                                <strong>바이브 코딩으로 만든 프로젝트.</strong>
+                                <strong>바이브 코딩으로 만든 프로젝트</strong>
                                 평소 다루던 백엔드 스택이 아닌 Next.js · TypeScript 환경을 AI 페어 프로그래밍으로 빠르게 구축했습니다.
                             </span>
                         </p>
@@ -781,11 +776,10 @@
                         </div>
                         <p>
                             <code>Playwright</code>로 뉴스를 스크래핑하고, <code>LLM</code>으로 블로그 콘텐츠로 가공한 뒤
-                            티스토리에 자동 발행하는 큐레이션 파이프라인. 카카오 OAuth 세션을 관리하며
-                            마크다운 모드 본문 작성과 예약 발행까지 처리합니다.
+                            티스토리에 자동 발행하는 큐레이션 파이프라인.
                         </p>
                         <p class="project-rationale">
-                            <strong>첫 로그인만 수동으로 받고 <code>storage_state</code>에 세션을 저장</strong>하고 이후 운영을 가능하게 만들었습니다.
+                            <strong>OAuth 세션을 <code>storage_state</code>에 저장</strong>하며 본문 작성과 예약 발행까지 가능하게 만들었습니다.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">Python</span>
@@ -818,12 +812,11 @@
                             <span class="project-meta-item"><span class="meta-key">기간</span> 2025.12 — 2026.02</span>
                         </div>
                         <p>
-                            LangChain <code>ReAct</code> 에이전트 기반 RAG 챗봇. <code>LLM</code>이 질문을 일상 대화 / 정보 요청인지 분류한 뒤
-                            정보 요청은 <code>벡터DB 검색</code> 과 <code>웹 검색</code> 도구를 자율 선택해 호출합니다.
-                            <code>deque(maxlen=10)</code> 기반 단기 메모리로 컨텍스트 연속성을 유지합니다.
+                            LangChain <code>ReAct</code> 에이전트 기반 RAG 챗봇.
+                            <code>벡터DB 검색</code> 을 통한 내부 정보와 <code>웹 검색</code> 도구를 자율 선택해 호출하고, 검색한 결과를 <code>LLM</code>이 종합해 답변을 생성합니다.
                         </p>
                         <p class="project-rationale">
-                            <code>lru_cache</code> + lifespan 워밍업으로 프로세스당 1회만 로드해 첫 요청 지연을 제거했습니다.
+                            <code>deque(maxlen=10)</code> 기반 단기 메모리로 컨텍스트 연속성을 유지하며, 일상적인 대화 판별도 가능합니다.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">Python</span>
@@ -860,14 +853,13 @@
                         </div>
                         <p>
                             업로드한 이미지의 객체를 판별하여 가장 유사 이미지들을 반환합니다.
-                            <code>YOLOv8</code> 객체 검출 → <code>CLIP ViT-L/14</code> 768차원 임베딩 → <code>Qdrant</code> 벡터DB 저장, 코사인 유사도 검색하여 제공하는 API
-                            <code>Celery 워커</code> 백그라운드에서 임베딩 처리하여 API 응답 경로에 영향을 주지 않도록 분리하였습니다.
+                            <code>YOLOv8</code> 객체 검출 → <code>CLIP ViT-L/14</code> 768차원 임베딩 → <code>Qdrant</code> 벡터DB 저장, 코사인 유사도 검색하여 제공합니다.
+
                         </p>
                         <p class="project-rationale">
                             YOLO · CLIP 같은 무거운 모델을 요청마다 로딩하면 첫 응답이 수십 초 지연되고,
-                            동기 추론을 async 라우터에서 그대로 호출하면 이벤트 루프가 멈춰 다른 요청까지 막힙니다.
-                            <strong><code>lru_cache</code> + lifespan 워밍업으로 프로세스당 1회만 로드</strong>해 첫 요청부터 즉시 응답하고,
-                            <strong><code>asyncio.to_thread</code>로 동기 추론을 워커 스레드에 격리</strong>해 동시 처리 능력을 유지하도록 설계했습니다.
+                            동기 추론을 async 라우터에서 그대로 호출하면 이벤트 루프가 멈춰 다른 요청까지 막힙니다. 이를 해결하기 위해
+                            <code>Celery 워커</code> 백그라운드에서 임베딩 처리하여 API 응답 경로에 영향을 주지 않도록 분리하였습니다.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">Python</span>
@@ -908,9 +900,7 @@
                             <code>ocr_jobs</code> 테이블에서 잡 라이프사이클을 추적합니다.
                         </p>
                         <p class="project-rationale">
-                            OCR은 단일 이미지(밀리초)부터 다중 페이지 PDF(수십 초)까지 처리 시간 편차가 큽니다.
-                            모두 동기 라우터에서 처리하면 무거운 잡이 게이트웨이 타임아웃을 유발하고 가벼운 요청까지 대기시킵니다.
-                            엔진은 ABC로 추상화해 신규 엔진 추가가 클래스 1개로 끝나게 설계했습니다.
+                            엔진은 ABC로 추상화하고 신규 엔진 확장이 용이하게 설계했습니다.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">Python</span>
@@ -946,12 +936,9 @@
                         </div>
                         <p>
                             Laravel 기반 관리자 CMS. <code>Google · Naver · Kakao</code> 소셜 로그인과 자체 회원가입을 모두 지원하며,
-                            확장 가능한 컨텐츠 관리와 관리자 대시보드를 구현했습니다. PHPUnit 유닛·기능 테스트로 안정성을 확보.
+                            확장 가능한 컨텐츠 관리와 관리자 대시보드를 구현했습니다.
                         </p>
                         <p class="project-rationale">
-                            단일 OAuth provider만 지원하면 가입 장벽이 커지고, 3개 소셜을 if-else로 구현하면 라우팅·예외 처리 분기가 폭발합니다.
-                            <strong>OAuth provider를 Strategy 패턴으로 추상화</strong>해 신규 제공자 추가가 클래스 1개로 끝나게 했고,
-                            관리자 대시보드도 도메인별 모듈로 분리해 새 컨텐츠 타입 추가 시 기존 코드 영향을 최소화했습니다.
                             <strong>PHPUnit 테스트를 활용</strong>해 장기 유지보수 비용을 줄였습니다.
                         </p>
                         <div class="project-tags">
