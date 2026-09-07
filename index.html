@@ -503,8 +503,7 @@
             color: var(--fg);
             transition: border-color .15s, color .15s, background .15s, transform .15s;
             font-weight: 500;
-            flex: 1;
-            min-width: 160px;
+            flex: 0 0 auto;
         }
         .project-link:hover {
             border-color: var(--acc-dark);
@@ -531,7 +530,7 @@
 
         @media (max-width: 480px) {
             .project { gap: 12px; padding: 32px 0; }
-            .project-link { min-width: 100%; }
+            .project-link { flex: 1 1 100%; }
         }
 
         /* ============== scroll to top ============== */
@@ -611,7 +610,7 @@
         <!-- HERO -->
         <section class="hero">
             <h1 class="hero-name">
-                Backend Engineer<span class="cursor"></span><br>
+                Backend Engineer<span class="cursor"></span>
             </h1>
         </section>
 
@@ -852,9 +851,8 @@
                             <span class="project-meta-item"><span class="meta-key">기간</span> 2025.09 — 2025.11</span>
                         </div>
                         <p>
-                            업로드한 이미지의 객체를 판별하여 가장 유사 이미지들을 반환합니다.
+                            업로드한 이미지의 객체를 판별하여 가장 유사한 이미지들을 반환합니다.
                             <code>YOLOv8</code> 객체 검출 → <code>CLIP ViT-L/14</code> 768차원 임베딩 → <code>Qdrant</code> 벡터DB 저장, 코사인 유사도 검색하여 제공합니다.
-
                         </p>
                         <p class="project-rationale">
                             YOLO · CLIP 같은 무거운 모델을 요청마다 로딩하면 첫 응답이 수십 초 지연되고,
@@ -879,7 +877,7 @@
                             <span>Case Study</span>
                             <i class="fas fa-chevron-right arrow"></i>
                         </a>
-                        <a class="project-link" href="https://github.com/qwerty1347/fastapi-image" target="_blank">
+                        <a class="project-link" href="https://github.com/qwerty1347/fastapi-imageSearch" target="_blank">
                             <i class="fab fa-github"></i>
                             <span>GitHub</span>
                             <i class="fas fa-chevron-right arrow"></i>
@@ -896,8 +894,8 @@
                         </div>
                         <p>
                             <code>EasyOCR · PaddleOCR · Naver Clova</code> OCR을 단일 인터페이스로 추상화한 멀티 엔진 API.
-                            동기 / 비동기 이중 엔드포인트로 가벼운 요청은 즉시 응답하고, 무거운 잡은 <code>Celery 워커</code> 백그라운드에서
-                            <code>ocr_jobs</code> 테이블에서 잡 라이프사이클을 추적합니다.
+                            동기 / 비동기 이중 엔드포인트로 가벼운 요청은 즉시 응답하고, 무거운 잡은 <code>Celery 워커</code>가 백그라운드에서 처리하며,
+                            <code>ocr_jobs</code> 테이블로 잡 라이프사이클을 추적합니다.
                         </p>
                         <p class="project-rationale">
                             엔진은 ABC로 추상화하고 신규 엔진 확장이 용이하게 설계했습니다.
@@ -974,7 +972,7 @@
     </main>
 
     <footer class="footer">
-        © 2025 이건희 <span class="heart">♥</span>
+        © 2025–2026 이건희 <span class="heart">♥</span>
     </footer>
 
     <button class="scroll-top" id="scrollTop" aria-label="맨 위로 가기">
