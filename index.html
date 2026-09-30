@@ -14,6 +14,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이건희 - Backend Portfolio</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta name="description" content="PHP · Python 기반 백엔드 엔지니어 이건희의 포트폴리오. FastAPI, LangChain, RAG, Celery 기반 서비스와 Claude Code 하네스 프로젝트의 아키텍처와 설계 근거를 정리했습니다.">
     <meta name="author" content="이건희">
     <link rel="canonical" href="https://qwerty1347.github.io/portfolio/">
@@ -28,62 +31,48 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="이건희 - Backend Engineer Portfolio">
     <meta name="twitter:description" content="FastAPI, LangChain, RAG, Celery 기반 서비스와 Claude Code 하네스 프로젝트의 아키텍처와 설계 근거.">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* =========================================================
-           qwerty1347 — backend portfolio
-           light theme · monospace accents · asymmetric · editorial
+           이건희 — backend portfolio
+           light · Pretendard · single accent · 읽기 쉬운 레이아웃
            ========================================================= */
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg:         #fafaf9;
-            --bg-card:    #ffffff;
-            --bg-soft:    #f4f4f3;
-            --bg-tab:     #f0f0ee;
+            --bg:         #ffffff;
+            --bg-soft:    #f7f8fa;
+            --bg-mute:    #f1f3f5;
 
-            --line:       #e5e5e3;
-            --line-soft:  #ececea;
-            --line-bold:  #0a0a0a;
+            --line:       #e9ecef;
+            --line-bold:  #dee2e6;
 
-            --fg:         #0a0a0a;
-            --fg-mute:    #525252;
-            --fg-dim:     #737373;
-            --fg-faint:   #a3a3a3;
+            --fg:         #191f28;
+            --fg-mute:    #4e5968;
+            --fg-dim:     #5a6471;
+            --fg-faint:   #66707d;
 
-            --acc:        #65a30d;       /* lime green */
-            --acc-dark:   #4d7c0f;
-            --acc-soft:   #ecfccb;
+            --acc:        #3169e0;
+            --acc-dark:   #1e4fc2;
+            --acc-soft:   #eef3fd;
 
-            --acc-2:      #1e40af;       /* deep blue */
-            --acc-2-soft: #dbeafe;
+            --shadow:    0 6px 24px -8px rgba(25, 31, 40, .12);
 
-            --acc-3:      #ea580c;       /* orange */
-            --acc-3-soft: #ffedd5;
+            --sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
-            --acc-4:      #7c3aed;       /* purple */
-            --acc-4-soft: #ede9fe;
-
-            --acc-5:      #db2777;       /* pink */
-            --acc-5-soft: #fce7f3;
-
-            --shadow-sm: 0 1px 2px rgba(10, 10, 10, .04);
-            --shadow:    0 4px 16px -4px rgba(10, 10, 10, .08);
-            --shadow-lg: 0 12px 32px -8px rgba(10, 10, 10, .12);
-
-            --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
-            --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-
-            --r-sm: 4px;
-            --r-md: 8px;
+            --r-sm: 6px;
+            --r-md: 10px;
             --r-lg: 14px;
         }
 
-        ::selection { background: var(--acc); color: var(--bg-card); }
+        ::selection { background: var(--acc-soft); color: var(--acc-dark); }
 
         html { scroll-padding-top: 80px; scroll-behavior: smooth; }
 
@@ -91,8 +80,10 @@
             background: var(--bg);
             color: var(--fg);
             font-family: var(--sans);
-            font-size: 15px;
+            font-size: 16px;
             line-height: 1.7;
+            word-break: keep-all;
+            overflow-wrap: break-word;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             overflow-x: hidden;
@@ -101,96 +92,83 @@
 
         a { color: inherit; text-decoration: none; }
 
+        :focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; border-radius: 4px; }
+
         code {
             font-family: var(--mono);
-            font-size: 0.88em;
-            color: var(--acc-dark);
-            background: var(--acc-soft);
-            border: 1px solid #d9f99d;
-            padding: 1px 7px;
-            border-radius: 3px;
-            white-space: nowrap;
-            font-weight: 500;
+            font-size: 0.84em;
+            color: var(--fg);
+            background: var(--bg-mute);
+            padding: 2px 6px;
+            border-radius: 4px;
+            overflow-wrap: anywhere;   /* 긴 식별자가 좁은 화면에서 칸을 밀어내지 않도록 */
         }
 
-        em { font-style: normal; color: var(--acc-3); font-weight: 500; }
-
-        /* ============== background grid ============== */
-        .bg-grid {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background-image: radial-gradient(circle at 1px 1px, rgba(10, 10, 10, .07) 1px, transparent 0);
-            background-size: 28px 28px;
-            mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
-            -webkit-mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
-            pointer-events: none;
-        }
+        em { font-style: normal; color: var(--acc-dark); font-weight: 600; }
 
         /* ============== topbar ============== */
         .topbar {
             position: sticky;
             top: 0;
             z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 36px;
-            background: rgba(250, 250, 249, .85);
+            background: rgba(255, 255, 255, .88);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--line);
         }
-        .brand {
+        .topbar-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 14px 32px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            font-family: var(--mono);
-            font-size: 14px;
-            font-weight: 600;
+            position: relative;
+        }
+        .brand {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -.01em;
             color: var(--fg);
         }
         .nav {
             display: flex;
             gap: 4px;
             align-items: center;
-            font-family: var(--mono);
-            font-size: 13px;
+            font-size: 15px;
+            font-weight: 500;
         }
         .nav a {
-            padding: 8px 14px;
-            color: var(--fg-mute);
+            padding: 6px 12px;
+            color: var(--fg-dim);
             border-radius: var(--r-sm);
             transition: background .15s, color .15s;
         }
-        .nav a:hover {
-            background: var(--bg-soft);
-            color: var(--fg);
-        }
+        .nav a:hover { background: var(--bg-mute); color: var(--fg); }
         .menu-toggle {
             display: none;
             background: transparent;
-            border: 1px solid var(--line);
+            border: 1px solid var(--line-bold);
             color: var(--fg);
-            padding: 8px 12px;
+            padding: 7px 11px;
             border-radius: var(--r-sm);
             cursor: pointer;
-            font-family: var(--mono);
         }
 
-        @media (max-width: 880px) {
+        @media (max-width: 760px) {
             .nav {
                 position: absolute;
                 top: 100%;
-                right: 24px;
+                right: 20px;
                 margin-top: 8px;
                 flex-direction: column;
+                align-items: stretch;
                 gap: 0;
-                background: var(--bg-card);
+                background: var(--bg);
                 border: 1px solid var(--line);
                 border-radius: var(--r-md);
                 padding: 6px;
-                min-width: 180px;
+                min-width: 160px;
                 box-shadow: var(--shadow);
                 opacity: 0;
                 pointer-events: none;
@@ -198,341 +176,303 @@
                 transition: opacity .2s, transform .2s;
             }
             .nav.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
-            .nav a { width: 100%; padding: 10px 14px; }
+            .nav a { padding: 10px 14px; }
             .menu-toggle { display: inline-flex; align-items: center; }
-            .topbar { padding: 14px 24px; }
+            .topbar-inner { padding: 12px 20px; }
         }
 
         /* ============== page ============== */
         .page {
-            max-width: 1100px;
+            max-width: 960px;
             margin: 0 auto;
-            padding: 80px 36px 0;
+            padding: 0 32px;
         }
-        @media (max-width: 760px) { .page { padding: 56px 20px 0; } }
+        @media (max-width: 760px) { .page { padding: 0 20px; } }
 
         /* ============== hero ============== */
         .hero {
-            padding-bottom: 20px;
+            padding: 96px 0 72px;
             border-bottom: 1px solid var(--line);
-            margin-bottom: 0;
         }
-
+        .hero-role {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--acc);
+            margin-bottom: 10px;
+        }
         .hero-name {
-            font-family: var(--sans);
-            font-size: clamp(56px, 10vw, 132px);
+            font-size: clamp(40px, 7vw, 60px);
             font-weight: 800;
-            letter-spacing: -.05em;
-            line-height: .92;
-            margin-bottom: 0;
+            letter-spacing: -.03em;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+        .hero-lead {
+            font-size: 18px;
+            line-height: 1.75;
+            color: var(--fg-mute);
+            max-width: 620px;
+            margin-bottom: 32px;
+        }
+        .hero-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 18px;
+            border-radius: var(--r-sm);
+            font-size: 15px;
+            font-weight: 600;
+            border: 1px solid var(--line-bold);
+            background: var(--bg);
             color: var(--fg);
+            transition: background .15s, border-color .15s, color .15s;
         }
-        .hero-name .cursor {
-            display: inline-block;
-            width: 6px;
-            height: clamp(48px, 8vw, 100px);
-            margin-left: 10px;
-            background: var(--acc);
-            vertical-align: -8px;
-            animation: blink 1.1s steps(2) infinite;
+        .btn:hover { background: var(--bg-soft); border-color: var(--fg-faint); }
+        .btn.primary { background: var(--fg); border-color: var(--fg); color: #fff; }
+        .btn.primary:hover { background: #333d4b; border-color: #333d4b; }
+        .btn i { font-size: 14px; }
+        @media (max-width: 760px) {
+            .hero { padding: 64px 0 52px; }
+            .hero-lead { font-size: 17px; }
         }
-        @keyframes blink { 50% { opacity: 0; } }
 
         /* ============== section heads ============== */
-        .section { padding: 56px 0; border-bottom: 1px solid var(--line); }
-        .section:last-of-type { border-bottom: none; padding-bottom: 0; }
+        .section { padding: 72px 0; border-bottom: 1px solid var(--line); }
+        .section:last-of-type { border-bottom: none; padding-bottom: 48px; }
 
         .section-head {
             display: flex;
-            align-items: baseline;
-            gap: 20px;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .section-id { color: var(--acc); font-variant-numeric: tabular-nums; }
+        .section-tag { color: var(--fg-faint); text-transform: capitalize; }
+        .section-tag::before { content: '·'; margin-right: 8px; }
+        .section-title {
+            font-size: 30px;
+            letter-spacing: -.02em;
+            line-height: 1.3;
+            font-weight: 700;
             margin-bottom: 12px;
         }
-        .section-id {
-            font-family: var(--mono);
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--acc-dark);
-            letter-spacing: .12em;
-        }
-        .section-id::before { content: '['; color: var(--fg-faint); margin-right: 4px; }
-        .section-id::after  { content: ']'; color: var(--fg-faint); margin-left: 4px; }
-        .section-tag {
-            font-family: var(--mono);
-            font-size: 12px;
-            color: var(--fg-faint);
-        }
-        .section-title {
-            font-family: var(--sans);
-            font-size: 42px;
-            letter-spacing: -.025em;
-            line-height: 1.15;
-            color: var(--fg);
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-        .section-title .dot { color: var(--acc-dark); }
         .section-lead {
-            color: var(--fg-mute);
+            color: var(--fg-dim);
             font-size: 16px;
-            line-height: 1.7;
-            max-width: 680px;
-            margin-bottom: 48px;
+            max-width: 640px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 760px) {
+            .section { padding: 56px 0; }
+            .section-title { font-size: 26px; }
         }
 
         /* ============== about ============== */
         .about-grid {
             display: grid;
-            grid-template-columns: 1.4fr 1fr;
+            grid-template-columns: 1.3fr 1fr;
             gap: 48px;
             align-items: start;
+            margin-top: 28px;
         }
-        .about-bio { font-size: 16px; line-height: 1.85; color: var(--fg); }
-        .about-bio p + p { margin-top: 18px; }
-        .about-bio strong {
-            background: linear-gradient(to top, var(--acc-soft) 60%, transparent 60%);
-            font-weight: 700;
-        }
+        .about-bio { font-size: 17px; line-height: 1.85; color: var(--fg-mute); }
+        .about-bio p + p { margin-top: 16px; }
         .about-card {
-            background: var(--bg-card);
             border: 1px solid var(--line);
             border-radius: var(--r-md);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
+            background: var(--bg-soft);
+            padding: 6px 22px;
         }
-        .about-card-head {
-            padding: 12px 18px;
-            background: var(--fg);
-            color: var(--bg-card);
-            font-family: var(--mono);
-            font-size: 11px;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-        .about-card-head .dot { color: var(--acc); }
         .about-row {
             display: grid;
-            grid-template-columns: 90px 1fr;
-            gap: 14px;
-            padding: 14px 18px;
-            border-bottom: 1px solid var(--line-soft);
-            font-size: 14px;
+            grid-template-columns: 76px 1fr;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 15px;
             align-items: baseline;
         }
         .about-row:last-child { border-bottom: none; }
-        .about-row-key {
-            color: var(--fg-mute);
-            font-family: var(--mono);
-            font-size: 12px;
-            letter-spacing: .03em;
-        }
-        .about-row-val { color: var(--fg); font-weight: 500; }
+        .about-row-key { color: var(--fg-faint); font-size: 14px; }
+        .about-grid > * { min-width: 0; }
+        .about-row-val { color: var(--fg); font-weight: 500; overflow-wrap: anywhere; }
         .about-row-val a {
-            color: var(--fg);
-            border-bottom: 1.5px solid var(--acc);
+            color: var(--acc);
             transition: color .15s;
         }
-        .about-row-val a:hover { color: var(--acc-dark); }
-        @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; gap: 32px; } }
+        .about-row-val a:hover { color: var(--acc-dark); text-decoration: underline; text-underline-offset: 3px; }
+        @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; gap: 28px; } }
+        @media (max-width: 400px) {
+            .about-card { padding: 4px 18px; }
+            .about-row { grid-template-columns: 1fr; gap: 0; padding: 12px 0; }
+            .about-row-key { font-size: 13px; }
+        }
 
         /* ============== projects ============== */
         .projects {
             display: flex;
             flex-direction: column;
-            gap: 0;
+            gap: 20px;
         }
         .project {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            padding: 36px 0;
-            border-top: 1px solid var(--line);
-            position: relative;
-            transition: padding .2s;
+            display: grid;
+            grid-template-columns: 56px 1fr;
+            column-gap: 16px;
+            padding: 32px 32px 28px 24px;
+            border: 1px solid var(--line);
+            border-radius: var(--r-lg);
+            background: var(--bg);
+            transition: border-color .2s, box-shadow .2s;
         }
-        .project:first-child { border-top: 1px solid var(--line-bold); }
-        .project:last-child  { border-bottom: 1px solid var(--line-bold); }
+        .project:hover { border-color: var(--line-bold); box-shadow: var(--shadow); }
 
         .project-num {
-            font-family: var(--mono);
-            color: var(--acc-dark);
-            font-size: 13px;
-            letter-spacing: .12em;
+            grid-row: span 2;
+            font-size: 14px;
             font-weight: 600;
+            color: var(--fg-faint);
+            font-variant-numeric: tabular-nums;
+            padding-top: 5px;
+            text-align: right;
         }
+        .project-body, .project-actions { grid-column: 2; min-width: 0; }
 
         .project-body h3 {
-            font-family: var(--sans);
-            font-size: 24px;
+            font-size: 21px;
             letter-spacing: -.02em;
+            line-height: 1.4;
             margin-bottom: 6px;
-            color: var(--fg);
             font-weight: 700;
         }
         .project-meta {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 8px 16px;
-            margin-bottom: 14px;
-            font-family: var(--mono);
-            font-size: 12px;
-            letter-spacing: .02em;
+            gap: 8px 14px;
+            margin-bottom: 16px;
+            font-size: 14px;
         }
         .project-meta-item {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: var(--fg-mute);
+            color: var(--fg-dim);
+            font-variant-numeric: tabular-nums;
         }
-        .project-meta-item .meta-key {
-            color: var(--fg-faint);
-            font-weight: 600;
-        }
-        .project-meta-item .meta-key::after {
-            content: ':';
-            margin-left: 1px;
-            color: var(--fg-faint);
-        }
+        .project-meta-item .meta-key { color: var(--fg-faint); }
         /* 실서비스 URL 배지 */
         .project-live {
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            font-family: var(--mono);
-            font-size: 12px;
-            font-weight: 500;
-            letter-spacing: .01em;
-            color: var(--acc-dark);
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--acc);
             background: var(--acc-soft);
-            border: 1px solid #d9f99d;
-            padding: 4px 11px 4px 9px;
+            padding: 3px 10px;
             border-radius: 999px;
-            transition: background .15s, border-color .15s, color .15s;
+            transition: background .15s, color .15s;
         }
-        .project-live:hover {
-            background: var(--acc-dark);
-            border-color: var(--acc-dark);
-            color: var(--bg-card);
-        }
+        .project-live:hover { background: var(--acc); color: #fff; }
         .project-live .live-dot {
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: var(--acc);
-            box-shadow: 0 0 0 0 rgba(101, 163, 13, .5);
-            animation: pulse 2s ease-out infinite;
+            background: currentColor;
             flex: none;
         }
-        .project-live:hover .live-dot { background: var(--acc-soft); animation: none; }
-        .project-live i { font-size: 10px; opacity: .7; }
-        @keyframes pulse {
-            70%  { box-shadow: 0 0 0 6px rgba(101, 163, 13, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(101, 163, 13, 0); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .project-live .live-dot { animation: none; }
-        }
+        .project-live i { font-size: 10px; }
 
         .project-body p {
             color: var(--fg-mute);
-            font-size: 15px;
-            line-height: 1.75;
+            font-size: 16px;
+            line-height: 1.8;
             margin-bottom: 14px;
-            max-width: 600px;
+            max-width: 680px;
         }
+        .project-body p strong { color: var(--fg); font-weight: 600; }
         .project-rationale {
             background: var(--bg-soft);
-            border-left: 3px solid var(--acc);
+            border-radius: var(--r-sm);
             padding: 12px 16px;
-            border-radius: 0 var(--r-sm) var(--r-sm) 0;
-            font-size: 14px !important;
-            line-height: 1.7 !important;
-            margin-top: -2px !important;
+            font-size: 15px !important;
+            line-height: 1.75 !important;
+        }
+        .project-rationale::before {
+            content: '설계 포인트';
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--fg-dim);
+            margin-bottom: 2px;
         }
         .project-note {
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            background: var(--acc-4-soft);
-            border: 1px solid #ddd6fe;
+            background: var(--bg-soft);
             padding: 12px 16px;
             border-radius: var(--r-sm);
-            font-size: 14px !important;
-            line-height: 1.7 !important;
-            color: var(--fg-mute) !important;
-            margin-top: 12px !important;
+            font-size: 15px !important;
+            line-height: 1.75 !important;
         }
-        .project-note i { color: var(--acc-4); font-size: 13px; margin-top: 5px; }
-        .project-note strong { color: var(--acc-4); font-weight: 600; }
+        .project-note i { color: var(--fg-dim); font-size: 13px; margin-top: 6px; }
+        .project-note strong { display: block; color: var(--fg); font-weight: 600; font-size: 14px; }
 
         .project-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
-            align-items: center;
-            margin-top: 14px;
+            margin-top: 18px;
         }
         .project-tag {
-            font-family: var(--mono);
-            font-size: 11px;
-            letter-spacing: .03em;
+            font-size: 13px;
+            font-weight: 500;
             color: var(--fg-mute);
-            background: var(--bg-card);
-            border: 1px solid var(--line);
-            padding: 3px 9px;
-            border-radius: var(--r-sm);
+            background: var(--bg-mute);
+            padding: 3px 10px;
+            border-radius: 999px;
         }
 
         .project-actions {
             display: flex;
-            flex-direction: row;
             flex-wrap: wrap;
             gap: 8px;
-            font-family: var(--mono);
-            font-size: 13px;
-            margin-top: 4px;
+            margin-top: 22px;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
         }
         .project-link {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border: 1px solid var(--line);
-            background: var(--bg-card);
+            gap: 8px;
+            padding: 9px 14px;
+            border: 1px solid var(--line-bold);
             border-radius: var(--r-sm);
+            font-size: 14px;
+            font-weight: 600;
             color: var(--fg);
-            transition: border-color .15s, color .15s, background .15s, transform .15s;
-            font-weight: 500;
-            flex: 0 0 auto;
+            transition: background .15s, border-color .15s, color .15s;
         }
-        .project-link:hover {
-            border-color: var(--acc-dark);
-            background: var(--acc-dark);
-            color: var(--bg-card);
-            transform: translateX(2px);
-        }
-        .project-link.primary {
-            background: var(--fg);
-            color: var(--bg-card);
-            border-color: var(--fg);
-        }
-        .project-link.primary:hover {
-            background: var(--acc-dark);
-            border-color: var(--acc-dark);
-        }
-        .project-link i { font-size: 13px; width: 14px; text-align: center; }
-        .project-link .arrow {
-            margin-left: auto;
-            color: var(--fg-faint);
-            transition: transform .2s, color .2s;
-        }
-        .project-link:hover .arrow { transform: translateX(4px); color: var(--bg-card); }
+        .project-link:hover { background: var(--bg-soft); border-color: var(--fg-faint); }
+        .project-link.primary { background: var(--fg); border-color: var(--fg); color: #fff; }
+        .project-link.primary:hover { background: #333d4b; border-color: #333d4b; }
+        .project-link i { font-size: 13px; }
+        .project-link .arrow { font-size: 11px; opacity: .6; transition: transform .15s; }
+        .project-link:hover .arrow { transform: translateX(2px); }
 
-        @media (max-width: 480px) {
-            .project { gap: 12px; padding: 32px 0; }
-            .project-link { flex: 1 1 100%; }
+        @media (max-width: 600px) {
+            .project { grid-template-columns: 1fr; padding: 24px 20px; }
+            .project-num { grid-row: auto; text-align: left; padding: 0 0 4px; }
+            .project-body, .project-actions { grid-column: 1; }
+            .project-link { flex: 1 1 auto; justify-content: center; }
         }
 
         /* ============== scroll to top ============== */
@@ -540,80 +480,77 @@
             position: fixed;
             bottom: 24px;
             right: 24px;
-            width: 46px;
-            height: 46px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: var(--fg);
-            color: var(--acc);
-            border: none;
+            background: var(--bg);
+            color: var(--fg-mute);
+            border: 1px solid var(--line-bold);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
-            box-shadow: 0 8px 24px -6px rgba(10, 10, 10, .25);
+            font-size: 14px;
+            box-shadow: var(--shadow);
             opacity: 0;
             pointer-events: none;
             transform: translateY(8px);
             transition: opacity .25s, transform .25s, background .15s, color .15s;
             z-index: 99;
         }
-        .scroll-top.visible {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0);
-        }
-        .scroll-top:hover {
-            background: var(--acc-dark);
-            color: var(--bg-card);
-        }
-        .scroll-top:active {
-            transform: translateY(0) scale(.95);
-        }
+        .scroll-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .scroll-top:hover { background: var(--fg); color: #fff; border-color: var(--fg); }
         @media (max-width: 760px) {
-            .scroll-top {
-                bottom: 18px;
-                right: 18px;
-                width: 42px;
-                height: 42px;
-            }
+            .scroll-top { bottom: 18px; right: 18px; width: 40px; height: 40px; }
         }
 
         /* ============== footer ============== */
         .footer {
-            padding: 24px 36px;
-            text-align: center;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 28px 32px 40px;
+            border-top: 1px solid var(--line);
             color: var(--fg-faint);
-            font-family: var(--mono);
-            font-size: 12px;
-            letter-spacing: .03em;
+            font-size: 14px;
         }
-        .footer .heart { color: var(--acc-dark); }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            * { transition: none !important; }
+        }
     </style>
 </head>
 <body>
-    <div class="bg-grid" aria-hidden="true"></div>
-
     <header class="topbar">
-        <a class="brand" href="#">
-            <span class="brand-name">이건희</span>
-        </a>
-        <button class="menu-toggle" id="menuToggle" aria-label="menu">
-            <i class="fas fa-bars"></i>
-        </button>
-        <nav class="nav" id="navLinks">
-            <a href="#about">About</a>
-            <a href="#projects">Projects</a>
-        </nav>
+        <div class="topbar-inner">
+            <a class="brand" href="#">이건희</a>
+            <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav" id="navLinks">
+                <a href="#about">소개</a>
+                <a href="#projects">프로젝트</a>
+            </nav>
+        </div>
     </header>
 
     <main class="page">
 
         <!-- HERO -->
         <section class="hero">
-            <h1 class="hero-name">
-                Backend Engineer<span class="cursor"></span>
-            </h1>
+            <p class="hero-role">Backend Engineer</p>
+            <h1 class="hero-name">이건희</h1>
+            <p class="hero-lead">
+                책임이 명확하게 분리된 코드와, 운영 중 마주칠 수 있는 작은 부분까지 놓치지 않는 설계를 선호합니다.
+            </p>
+            <div class="hero-links">
+                <a class="btn primary" href="#projects">
+                    프로젝트 보기 <i class="fas fa-arrow-down"></i>
+                </a>
+                <a class="btn" href="https://github.com/qwerty1347" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+            </div>
         </section>
 
         <!-- 01 ABOUT -->
@@ -622,10 +559,7 @@
                 <span class="section-id">01</span>
                 <span class="section-tag">about</span>
             </header>
-            <h2 class="section-title">소개<span class="dot">.</span></h2>
-            <p class="section-lead">
-                책임이 명확하게 분리된 코드와, 운영 중 마주칠 수 있는 작은 부분까지 놓치지 않는 설계를 선호합니다.
-            </p>
+            <h2 class="section-title">소개</h2>
 
             <div class="about-grid">
                 <div class="about-bio">
@@ -636,27 +570,24 @@
                 </div>
 
                 <aside class="about-card">
-                    <div class="about-card-head">
-                        <span class="dot">●</span> identity
-                    </div>
                     <div class="about-row">
-                        <span class="about-row-key">name</span>
+                        <span class="about-row-key">이름</span>
                         <span class="about-row-val">이건희</span>
                     </div>
                     <div class="about-row">
-                        <span class="about-row-key">role</span>
+                        <span class="about-row-key">직무</span>
                         <span class="about-row-val">Backend Engineer</span>
                     </div>
                     <div class="about-row">
-                        <span class="about-row-key">focus</span>
+                        <span class="about-row-key">관심 분야</span>
                         <span class="about-row-val">Architecture · AI</span>
                     </div>
                     <div class="about-row">
-                        <span class="about-row-key">education</span>
+                        <span class="about-row-key">학력</span>
                         <span class="about-row-val">가톨릭대학교<br>정보통신전자공학부</span>
                     </div>
                     <div class="about-row">
-                        <span class="about-row-key">github</span>
+                        <span class="about-row-key">GitHub</span>
                         <span class="about-row-val">
                             <a href="https://github.com/qwerty1347" target="_blank" rel="noopener noreferrer">github.com/qwerty1347</a>
                         </span>
@@ -671,7 +602,7 @@
                 <span class="section-id">02</span>
                 <span class="section-tag">projects</span>
             </header>
-            <h2 class="section-title">프로젝트<span class="dot">.</span></h2>
+            <h2 class="section-title">프로젝트</h2>
             <p class="section-lead">
                 각 프로젝트의 아키텍처와 설계 근거는 별도 Case Study 페이지에서 다룹니다.
             </p>
@@ -973,7 +904,7 @@
     </main>
 
     <footer class="footer">
-        © 2025–2026 이건희 <span class="heart">♥</span>
+        © 2025–2026 이건희
     </footer>
 
     <button class="scroll-top" id="scrollTop" aria-label="맨 위로 가기">
