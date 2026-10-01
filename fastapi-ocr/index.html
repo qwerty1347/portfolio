@@ -34,11 +34,8 @@
             <span class="brand-prompt">~/</span><span>포트폴리오</span><span class="brand-sep">/</span><span class="brand-cur">멀티 엔진 OCR</span>
         </a>
         <nav class="nav">
-            <a href="#architecture">arch</a>
-            <a href="#overview">overview</a>
-            <a href="#highlights">highlights</a>
-            <a href="#roadmap">roadmap</a>
-            <a href="#gallery">gallery</a>
+            <a href="#architecture">구성</a>
+            <a href="#gallery">화면</a>
         </nav>
     </header>
 
@@ -50,7 +47,8 @@
                 멀티 엔진 OCR<span class="cursor">_</span>
             </h1>
             <p class="hero-summary">
-                OCR 엔진을 인터페이스로 추상화하여 추가 확장이 용이한 구조로 설계했습니다. 무거운 추론은 <code>Celery</code> 워커로 분리해 비동기로 구현하여 API 응답 지연을 방지하였습니다. <code>pending → started → success/failed</code> 라이프사이클을 관리하며 안정적인 처리 흐름을 구현하였습니다.
+                OCR 엔진을 인터페이스로 추상화하여 추가 확장이 용이한 구조로 설계했습니다.
+                무거운 작업은 <code>Celery</code> 워커로 분리해 비동기로 구현하여 API 응답 지연을 방지하였습니다. <code>pending → started → success/failed</code> 라이프사이클을 관리하며 안정적인 처리 흐름을 구현하였습니다.
             </p>
         </section>
 
@@ -67,77 +65,8 @@
             </figure>
         </section>
 
-        <!-- 02 PIPELINE -->
-        <section id="overview" class="section">
-            <header class="section-head">
-                <span class="section-id">02</span>
-                <span class="section-kw">overview</span>
-            </header>
-            <h2 class="section-title">동기 / 비동기 두 가지 처리 흐름</h2>
-
-            <p class="section-lead">
-                단발성 가벼운 요청은 <code>POST /ocr/</code> 로 즉시 응답하고,
-                무거운 추론·배치는 <code>POST /ocr/jobs</code> 로 잡을 등록해 Celery 워커가 백그라운드 처리합니다.
-                응답성과 처리량을 양립시키기 위한 분리입니다.
-            </p>
-
-            <h3 class="diagram-title">동기 OCR 흐름 · <code>POST /api/v1/ocr/</code></h3>
-            <pre class="diagram">
-[Client]                [FastAPI]                [OCR Engine]
-   │                       │                          │
-   │ POST /api/v1/ocr/     │                          │
-   │ (file, engine)        │                          │
-   ├──────────────────────►│                          │
-   │                       │ JWT verify               │
-   │                       │ file validate            │
-   │                       │ save temp                │
-   │                       │                          │
-   │                       │ asyncio.to_thread()      │
-   │                       ├─────────────────────────►│
-   │                       │   engine.recognize()     │
-   │                       │   → result               │
-   │                       │◄─────────────────────────┤
-   │                       │ delete temp              │
-   │                       │                          │
-   │ { code, data:{images}}│                          │
-   │◄──────────────────────┤                          │
-</pre>
-            <p class="diagram-note">
-                EasyOCR · PaddleOCR 은 sync · CPU bound. async 라우터에서 직접 호출하면 이벤트 루프가 멈추므로
-                <code>asyncio.to_thread()</code> 로 워커 스레드에 위임해 동시 요청 처리 능력을 유지합니다.
-            </p>
-
-            <h3 class="diagram-title">비동기 잡 흐름 · <code>POST /api/v1/ocr/jobs</code></h3>
-            <pre class="diagram">
-[Client]            [API]               [MySQL]            [Redis]            [Worker]
-   │ POST /jobs       │                    │                  │                  │
-   ├─────────────────►│                    │                  │                  │
-   │                  │ INSERT pending     │                  │                  │
-   │                  ├───────────────────►│                  │                  │
-   │                  │ enqueue run_ocr    │                  │                  │
-   │                  ├──────────────────────────────────────►│                  │
-   │ 202 {job_id}     │                    │                  │ pull             │
-   │◄─────────────────┤                    │                  ├─────────────────►│
-   │                  │                    │ UPDATE started   │                  │
-   │                  │                    │◄─────────────────────────────────── │
-   │                  │                    │                  │  do OCR (3~30s)  │
-   │                  │                    │ UPDATE success   │                  │
-   │                  │                    │◄─────────────────────────────────── │
-   │ GET /jobs/{id}   │                    │                  │                  │
-   ├─────────────────►│ SELECT             │                  │                  │
-   │                  ├───────────────────►│                  │                  │
-   │ {status, result} │                    │                  │                  │
-   │◄─────────────────┤                    │                  │                  │
-</pre>
-            <p class="diagram-note">
-                <code>STARTED</code> 즉시 commit 으로 외부 가시성 확보 → 추론 → <code>SUCCESS/FAILED</code> 분기 commit.
-                같은 <code>job_id</code> 로 재실행되어도 같은 row 를 갱신만 하므로
-                <code>acks_late</code> + <code>reject_on_worker_lost</code> 와 정합합니다.
-            </p>
-        </section>
-
         <!-- 03 HIGHLIGHTS -->
-        <section id="highlights" class="section">
+        <!-- <section id="highlights" class="section">
             <header class="section-head">
                 <span class="section-id">03</span>
                 <span class="section-kw">highlights</span>
@@ -203,10 +132,10 @@
                     </div>
                 </article>
             </div>
-        </section>
+        </section> -->
 
         <!-- 04 ROADMAP -->
-        <section id="roadmap" class="section">
+        <!-- <section id="roadmap" class="section">
             <header class="section-head">
                 <span class="section-id">04</span>
                 <span class="section-kw">roadmap</span>
@@ -258,12 +187,12 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
 
         <!-- 05 GALLERY -->
         <section id="gallery" class="section">
             <header class="section-head">
-                <span class="section-id">05</span>
+                <span class="section-id">02</span>
                 <span class="section-kw">gallery</span>
             </header>
             <h2 class="section-title">엔진별 추출 결과</h2>

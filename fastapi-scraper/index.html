@@ -34,11 +34,8 @@
             <span class="brand-prompt">~/</span><span>포트폴리오</span><span class="brand-sep">/</span><span class="brand-cur">블로그 자동 포스팅</span>
         </a>
         <nav class="nav">
-            <a href="#architecture">arch</a>
-            <a href="#overview">overview</a>
-            <a href="#highlights">highlights</a>
-            <a href="#roadmap">roadmap</a>
-            <a href="#gallery">gallery</a>
+            <a href="#architecture">구성</a>
+            <a href="#gallery">화면</a>
         </nav>
     </header>
 
@@ -50,9 +47,9 @@
                 블로그 자동 포스팅<span class="cursor">_</span>
             </h1>
             <p class="hero-summary">
-                <strong>금융·연예</strong> 랭킹 뉴스를 <code>Playwright</code> 로 스크래핑하고,
+                <code>Playwright</code> 로 뉴스 리스트 중 랜덤 5개를 스크래핑하고,
                 <code>LLM</code> 으로 블로그용 콘텐츠로 가공한 뒤 티스토리에 자동 발행하는 큐레이션 파이프라인입니다.
-                카카오 OAuth 세션을 <code>storage_state</code> 로 보존해 재인증을 우회하고,
+                로그인 OAuth 세션을 <code>storage_state</code> 로 보존해 재인증을 우회하고,
                 마크다운 모드로 에디터에 본문을 직접 주입하여 예약 발행까지 처리합니다.
             </p>
         </section>
@@ -70,108 +67,8 @@
             </figure>
         </section>
 
-        <!-- 02 PIPELINE -->
-        <section id="overview" class="section">
-            <header class="section-head">
-                <span class="section-id">02</span>
-                <span class="section-kw">overview</span>
-            </header>
-            <h2 class="section-title">3단계 파이프라인 · scrape → summarize → publish</h2>
-
-            <p class="section-lead">
-                각 단계는 독립된 서비스 클래스로 분리되어 단위 디버깅·교체가 쉽고,
-                티스토리 발행 단계만 별도로 더 깊이 들여다보면 카카오 OAuth 우회 ·
-                CodeMirror 직접 주입 · 캘린더 UI 시뮬레이션이라는 세 가지 비표준 자동화 기법이 결합되어 있습니다.
-            </p>
-
-            <h3 class="diagram-title">전체 파이프라인 · <code>scrape → summarize → publish</code></h3>
-            <pre class="diagram">
-[Scraper]              [Summarizer]            [Publisher]            [Tistory]
-   │                       │                        │                     │
-   │ Playwright launch     │                        │                     │
-   │ → finance.naver.com   │                        │                     │
-   │ → 많이 본 뉴스 진입   │                        │                     │
-   │ → 랜덤 픽 → 새 탭     │                        │                     │
-   │ → article#dic_area    │                        │                     │
-   │   본문 추출           │                        │                     │
-   │                       │                        │                     │
-   ├──────────────────────►│                        │                     │
-   │ {title, body, url}    │                        │                     │
-   │                       │ Groq llama-3.1-8b      │                     │
-   │                       │ response_format =      │                     │
-   │                       │   "json_object"        │                     │
-   │                       │ 시스템 프롬프트:       │                     │
-   │                       │   따옴표 금지 + 줄바꿈│                     │
-   │                       │   규칙 명시            │                     │
-   │                       │ 후처리: 제목 32자 컷  │                     │
-   │                       │ → {title, body, tags}  │                     │
-   │                       │                        │                     │
-   │                       ├───────────────────────►│                     │
-   │                       │ {title, body, tags}    │                     │
-   │                       │                        │ storage_state 자동  │
-   │                       │                        │ 로그인 → 글쓰기 진입│
-   │                       │                        │ → CodeMirror 본문   │
-   │                       │                        │   주입 → 태그/예약  │
-   │                       │                        │   캘린더 클릭       │
-   │                       │                        ├────────────────────►│
-   │                       │                        │           발행 완료 │
-   │                       │                        │◄────────────────────┤
-</pre>
-            <p class="diagram-note">
-                세 단계가 각각 <code>FinanceNewsScrapService</code> ·
-                <code>NewsSummarizeService</code> · <code>TistoryPostService</code> 로 분리되어
-                단위 실행·교체가 가능합니다. LLM 단계는 <code>response_format="json_object"</code> 강제 +
-                시스템 프롬프트의 형식 규칙 + 응답 후처리(제목 컷 / 줄바꿈 정리)로 발행 가능한 JSON 을 보장합니다.
-            </p>
-
-            <h3 class="diagram-title">티스토리 발행 흐름 · <code>Playwright</code> UI 시뮬레이션</h3>
-            <pre class="diagram">
-[Publisher]                  [Playwright Browser]            [Tistory Editor]
-     │                              │                              │
-     │ create_context(              │                              │
-     │   storage_state=             │                              │
-     │     browser_context.json)    │                              │
-     ├─────────────────────────────►│                              │
-     │                              │ 카카오 OAuth 우회             │
-     │                              │ (쿠키 + localStorage 재사용) │
-     │                              ├─────────────────────────────►│
-     │                              │ 글쓰기 페이지 진입            │
-     │                              │                              │
-     │                              │ page.on('dialog', handler)   │
-     │                              │  ├─ 이어서 작성 → dismiss     │
-     │                              │  └─ 모드 전환  → accept       │
-     │                              │                              │
-     │                              │ CodeMirror API 호출          │
-     │                              │   editor.setValue(body)      │
-     │                              │   editor.save() / refresh()  │
-     │                              │   dispatchEvent('input')     │
-     │                              │   keyboard.type(' ') + ⌫     │
-     │                              ├─────────────────────────────►│
-     │                              │                              │  ← 본문 인식
-     │                              │                              │
-     │                              │ 태그 입력 + 발행 모달 열기    │
-     │                              ├─────────────────────────────►│
-     │                              │                              │
-     │                              │ 예약 발행 캘린더 클릭         │
-     │                              │  strong.txt_calendar 읽기    │
-     │                              │  → btn_prev/btn_next 이동    │
-     │                              │  → tbl_calendar 셀 클릭      │
-     │                              ├─────────────────────────────►│
-     │                              │                              │  ← 예약 등록
-     │                              │◄─────────────────────────────┤
-     │ 발행 완료                     │                              │
-     │◄─────────────────────────────┤                              │
-</pre>
-            <p class="diagram-note">
-                <code>storage_state</code> 재사용으로 2FA·캡차가 포함된 카카오 OAuth 를 매번 통과하지 않아도 됩니다.
-                CodeMirror 는 <code>setValue</code> 만으로는 Tistory 내부 상태가 갱신되지 않아
-                <code>save()</code> + <code>refresh()</code> + 이벤트 dispatch + 키보드 타이핑까지 결합해야 본문이 인식됩니다.
-                예약 발행도 <code>textContent</code> 변경이 아닌 실제 캘린더 셀 클릭으로 처리.
-            </p>
-        </section>
-
         <!-- 03 HIGHLIGHTS -->
-        <section id="highlights" class="section">
+        <!-- <section id="highlights" class="section">
             <header class="section-head">
                 <span class="section-id">03</span>
                 <span class="section-kw">highlights</span>
@@ -265,10 +162,10 @@
                     </div>
                 </article>
             </div>
-        </section>
+        </section> -->
 
         <!-- 04 ROADMAP -->
-        <section id="roadmap" class="section">
+        <!-- <section id="roadmap" class="section">
             <header class="section-head">
                 <span class="section-id">04</span>
                 <span class="section-kw">roadmap</span>
@@ -332,12 +229,12 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
 
-    <!-- 05 GALLERY -->
+        <!-- 05 GALLERY -->
         <section id="gallery" class="section">
             <header class="section-head">
-                <span class="section-id">05</span>
+                <span class="section-id">02</span>
                 <span class="section-kw">gallery</span>
             </header>
             <h2 class="section-title">실행 결과</h2>
