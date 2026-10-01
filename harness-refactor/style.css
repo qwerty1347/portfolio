@@ -271,6 +271,96 @@ em { font-style: normal; color: var(--acc-dark); font-weight: 600; }
 }
 
 /* =====================================================================
+   01 — Component table
+   ===================================================================== */
+.spec-table-wrap {
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow-x: auto;
+    margin-bottom: 32px;
+}
+.spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14.5px;
+    line-height: 1.6;
+}
+.spec-table th {
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-faint);
+    background: var(--bg-soft);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+}
+.spec-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    color: var(--fg-mute);
+    vertical-align: top;
+}
+.spec-table tr:last-child td { border-bottom: none; }
+.spec-table td:nth-child(2),
+.spec-table td.tools { white-space: nowrap; }
+.spec-table td.tools code { margin-right: 2px; }
+.spec-table td:last-child { min-width: 220px; }
+
+.kind {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-dim);
+    background: var(--bg-mute);
+    padding: 2px 8px;
+    border-radius: var(--r-sm);
+    white-space: nowrap;
+}
+.kind-skill { color: var(--acc-dark); background: var(--acc-soft); }
+
+/* =====================================================================
+   02 — Before / After
+   ===================================================================== */
+.compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+.compare-pane {
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--bg-soft);
+    overflow: hidden;
+}
+.compare-pane figcaption {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+}
+.compare-mark { font-family: var(--mono); margin-right: 4px; }
+.compare-pane.before .compare-mark { color: var(--danger); }
+.compare-pane.after  .compare-mark { color: var(--acc); }
+.compare-pane.after { border-color: var(--acc-soft); }
+.compare-pane pre {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--fg-mute);
+    padding: 18px;
+    overflow-x: auto;
+    white-space: pre;
+    font-variant-ligatures: none;   /* != · <= 가 ≠ · ≤ 로 합쳐져 보이지 않도록 */
+}
+
+@media (max-width: 760px) {
+    .compare { grid-template-columns: 1fr; }
+}
+
+/* =====================================================================
    03 — Highlights
    ===================================================================== */
 .highlights {
