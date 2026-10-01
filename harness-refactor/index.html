@@ -89,12 +89,6 @@
    사용자
                  diff -r app/ _workspace/output/app/   →   복사는 사람이 한다
 </pre>
-            <p class="diagram-note">
-                고치지 말라고 프롬프트에 아무리 적어도 지켜지지 않을 때가 있습니다. 그래서 도구를 뺐습니다.
-                네 에이전트 모두 <code>Edit</code> 이 없어서 기존 파일을 수정하지 못하고, <code>Glob</code> 이 없어서 지정한 파일 밖으로 못 나갑니다.
-                결과물이 <code>_workspace/output/</code> 에만 쌓이는 건 그 때문입니다.
-                analyzer 한테만 <code>Grep</code> 을 줬는데, 이것도 대상 파일 경로를 고정해서 넘깁니다.
-            </p>
         </section>
 
         <!-- 03 HIGHLIGHTS -->
