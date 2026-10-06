@@ -48,10 +48,10 @@
             </h1>
             <p class="hero-intro">FastAPI로 만든 블로그 자동 포스팅 API입니다.</p>
             <ul class="hero-summary">
-                <li>Playwright로 네이버 금융·연예 랭킹 뉴스에서 기사 2건을 무작위로 골라 본문을 가져옵니다.</li>
+                <li>Playwright로 지정된 페이지에서 뉴스 5개를 무작위로 스크래핑해 가져옵니다.</li>
                 <li>가져온 기사는 LLM의 JSON 출력 모드를 써서 제목, 마크다운 본문, 태그로 나눈 블로그 글로 완성합니다.</li>
                 <li>완성된 글은 Playwright로 티스토리에 자동으로 발행합니다.</li>
-                <li>OAuth 로그인 세션을 별도 저장하고 관리하여, 처음 한 번만 로그인하면 이후에는 자동으로 로그인됩니다.</li>
+                <li>OAuth 로그인 세션을 파일로 저장해 두어, 처음 한 번만 로그인하면 이후에는 자동으로 로그인됩니다.</li>
             </ul>
         </section>
 
@@ -74,7 +74,7 @@
                 <span class="section-id">03</span>
                 <span class="section-kw">highlights</span>
             </header>
-            <h2 class="section-title">기술적 의사결정</h2>
+            <h2 class="section-title">기술적 결정</h2>
 
             <div class="highlights">
                 <article class="highlight">
@@ -82,9 +82,9 @@
                     <div class="highlight-body">
                         <h3>카카오 OAuth 세션 재사용</h3>
                         <p>
-                            첫 로그인만 사용자가 직접 진행한 후 Playwright <code>context.storage_state(path=...)</code>
-                            로 쿠키·로컬스토리지를 파일에 보존. 이후 모든 실행은 <code>create_context(storage_state=...)</code>
-                            로 카카오 OAuth 단계 전체를 우회합니다. 2FA·캡차 같은 자동화 어려운 단계도 한 번이면 끝.
+                            첫 로그인만 사용자가 직접 하고, Playwright <code>context.storage_state(path=...)</code>
+                            로 쿠키·로컬스토리지를 파일에 저장합니다. 이후 모든 실행은 <code>create_context(storage_state=...)</code>
+                            로 카카오 OAuth 단계 전체를 건너뜁니다. 2FA·캡차처럼 자동화하기 어려운 단계도 한 번만 거치면 됩니다.
                         </p>
                         <div class="tag-row">
                             <span class="mini-tag">OAuth</span>
@@ -99,10 +99,10 @@
                     <div class="highlight-body">
                         <h3>dialog 자동 분기 처리</h3>
                         <p>
-                            티스토리 글쓰기 페이지는 다양한 confirm 다이얼로그를 띄웁니다 — "이어서 작성하시겠습니까?"
-                            (임시 글 복원), "작성 모드를 변경하시겠습니까?" (모드 전환) 등.
-                            <code>page.on('dialog', ...)</code> 에서 메시지 내용 보고
-                            자동으로 <code>dismiss()</code> / <code>accept()</code> 분기 처리.
+                            티스토리 글쓰기 페이지는 여러 confirm 다이얼로그를 띄웁니다. "이어서 작성하시겠습니까?"
+                            (임시 글 복원), "작성 모드를 변경하시겠습니까?" (모드 전환) 같은 것들입니다.
+                            <code>page.on('dialog', ...)</code> 에서 메시지 내용을 보고
+                            <code>dismiss()</code> / <code>accept()</code> 중 하나를 자동으로 고릅니다.
                         </p>
                         <div class="tag-row">
                             <span class="mini-tag">dialog</span>
@@ -116,10 +116,10 @@
                     <div class="highlight-body">
                         <h3>예약 발행 캘린더 UI 클릭</h3>
                         <p>
-                            <code>button.btn_reserve</code> 의 <code>textContent</code> 만 변경하면 표시만 바뀌고
-                            Tistory 내부 상태는 갱신되지 않음. 캘린더 popup 을 열어 헤더(<code>strong.txt_calendar</code>)를
-                            읽어 목표 달과 비교, <code>btn_prev</code>/<code>btn_next</code> 로 이동 후
-                            <code>table.tbl_calendar</code> 내 날짜 셀을 실제로 클릭하는 방식으로 처리.
+                            <code>button.btn_reserve</code> 의 <code>textContent</code> 만 바꾸면 표시만 바뀌고
+                            Tistory 내부 상태는 갱신되지 않습니다. 그래서 캘린더 popup 을 열어 헤더(<code>strong.txt_calendar</code>)를
+                            읽고 목표 달과 비교한 뒤, <code>btn_prev</code>/<code>btn_next</code> 로 이동해
+                            <code>table.tbl_calendar</code> 안의 날짜 셀을 실제로 클릭합니다.
                         </p>
                         <div class="tag-row">
                             <span class="mini-tag">date picker</span>
@@ -133,10 +133,10 @@
                     <div class="highlight-body">
                         <h3>LLM 응답 JSON 안정화</h3>
                         <p>
-                            한글 본문에 등장하는 인용 따옴표, 줄바꿈, 외국어 문자 등은 LLM 이 JSON escape 를 깨먹기 쉬움.
-                            <code>response_format</code> 으로 형식 강제 + 시스템 프롬프트에
-                            따옴표 사용 금지·줄바꿈 처리 규칙 명시 + 응답 후처리(제목 32자 컷, 줄바꿈 제거) 결합으로
-                            발행 가능한 형태 보장.
+                            한글 본문에 들어간 인용 따옴표, 줄바꿈, 외국어 문자 때문에 LLM 이 만든 JSON 이스케이프가 깨지기 쉽습니다.
+                            <code>response_format</code> 으로 형식을 강제하고, 시스템 프롬프트에
+                            따옴표 사용 금지·줄바꿈 처리 규칙을 적고, 응답을 후처리(제목 32자 자르기, 줄바꿈 제거)해서
+                            JSON 이 깨져 발행이 실패하는 경우를 막았습니다.
                         </p>
                         <div class="tag-row">
                             <span class="mini-tag">JSON mode</span>
@@ -151,10 +151,10 @@
                     <div class="highlight-body">
                         <h3>전역 logger + 카테고리 파일 로그</h3>
                         <p>
-                            <code>app/core/logger.py</code> 의 단일 logger 객체 (formatter 가 호출 위치를 자동 캡처)
-                            + <code>app/core/utils/log.py</code> 의 <code>save_log()</code> 로 카테고리별 일자 파일
-                            (<code>storage/logs/tistory/YYYY-MM-DD.log</code>) 분리.
-                            디버그 실시간 로그와 영구 기록을 책임 분리.
+                            <code>app/core/logger.py</code> 의 단일 logger 객체(formatter 가 호출 위치를 자동으로 기록)와
+                            <code>app/core/utils/log.py</code> 의 <code>save_log()</code> 로 로그를 카테고리별 일자 파일
+                            (<code>storage/logs/tistory/YYYY-MM-DD.log</code>)에 나눠 남깁니다.
+                            디버그용 실시간 로그와 영구 기록을 따로 관리합니다.
                         </p>
                         <div class="tag-row">
                             <span class="mini-tag">logging</span>

@@ -129,12 +129,12 @@
                 <article class="highlight">
                     <div class="highlight-num">001</div>
                     <div class="highlight-body">
-                        <h3>Tool DI — 클로저 팩토리 패턴</h3>
+                        <h3>Tool DI: 클로저 팩토리 패턴</h3>
                         <p>
                             <code>ChatAgentService</code> 가 <code>qdrant</code> · <code>embedding_model</code> 을 직접
-                            소유하던 leaky abstraction 을 제거. <code>build_db_search(db_search)</code> 가
+                            들고 있던 구조를 걷어냈습니다. <code>build_db_search(db_search)</code> 가
                             의존성을 <em>클로저로 캡처</em> 해 <code>@tool</code> 함수를 반환하므로 LLM
-                            에게는 <code>query: str</code> 만 노출되고, Service 시그니처는 LLM · Tools · Memory 만 안다.
+                            에게는 <code>query: str</code> 만 노출되고, Service 시그니처에는 LLM · Tools · Memory 만 남습니다.
                         </p>
                         <div class="tag-row">
                             <span class="mini-tag">DI</span>
@@ -150,9 +150,9 @@
                         <h3>의존성 주입 + 모델 싱글톤</h3>
                         <p>
                             <code>get_qdrant_client</code> · <code>get_embedding_model</code> · <code>get_groq</code> 를
-                            <code>@lru_cache(maxsize=1)</code> 로 감싸 프로세스당 1회만 로드. FastAPI 는
-                            <code>Depends</code> 로, Celery 워커는 같은 캐시 함수를 직접 호출하여 <em>완전히 동일한</em>
-                            객체를 재사용. 라우터 import 만으로 SentenceTransformer 가 끌려오지 않는다.
+                            <code>@lru_cache(maxsize=1)</code> 로 감싸 프로세스당 한 번만 로드합니다. FastAPI 는
+                            <code>Depends</code> 로, Celery 워커는 같은 캐시 함수를 직접 호출해 <em>같은</em>
+                            객체를 재사용합니다. 라우터를 import 하는 것만으로는 SentenceTransformer 가 로드되지 않습니다.
                         </p>
                         <div class="tag-row">
                             <span class="mini-tag">lru_cache</span>
@@ -167,10 +167,10 @@
                     <div class="highlight-body">
                         <h3>AgentExecutor + ReAct 프롬프트 캐싱</h3>
                         <p>
-                            기존엔 매 요청마다 <code>hub.pull("hwchase17/react")</code> 를 호출하고
-                            <code>AgentExecutor</code> 를 새로 만들었다. <code>REACT_PROMPT</code> 를 모듈 상수로
-                            끌어올리고 <code>ChatAgentService.__init__</code> 에서 Executor 를 1회만 빌드,
-                            <code>ainvoke</code> 로 재사용해 네트워크 / 조립 비용을 제거.
+                            기존에는 요청마다 <code>hub.pull("hwchase17/react")</code> 를 호출하고
+                            <code>AgentExecutor</code> 를 새로 만들었습니다. <code>REACT_PROMPT</code> 를 모듈 상수로
+                            올리고 <code>ChatAgentService.__init__</code> 에서 Executor 를 한 번만 만든 뒤
+                            <code>ainvoke</code> 로 재사용해, 요청마다 프롬프트를 내려받고 Executor 를 조립하던 비용을 없앴습니다.
                         </p>
                         <div class="tag-row">
                             <span class="mini-tag">react</span>
@@ -186,9 +186,9 @@
                         <h3>lifespan 워밍업으로 콜드 스타트 제거</h3>
                         <p>
                             <code>@asynccontextmanager</code> 기반 lifespan 에서 부팅 시 Qdrant 클라이언트 ·
-                            SentenceTransformer · Groq 를 미리 로드. 첫 <code>/api/v1/chat</code> 요청에서
-                            384차원 임베딩 모델 다운로드가 발생하지 않도록 차단. 종료 시 Qdrant
-                            client 를 명시적으로 close.
+                            SentenceTransformer · Groq 를 미리 로드합니다. 그래서 첫 <code>/api/v1/chat</code> 요청에서
+                            384차원 임베딩 모델을 내려받지 않습니다. 종료 시에는 Qdrant
+                            client 를 명시적으로 close 합니다.
                         </p>
                         <div class="tag-row">
                             <span class="mini-tag">lifespan</span>
@@ -203,9 +203,9 @@
                         <h3>Chitchat vs RAG 자동 분기</h3>
                         <p>
                             "안녕" · "심심해" · "추천해줘" 같은 일상 대화에까지 ReAct 에이전트 + Qdrant
-                            검색을 돌리면 비용 · 지연이 낭비된다. 1차 LLM 호출로
-                            <code>True/False</code> 를 받아 chitchat 이면 친근체 응답만, 아니면 도구 사용
-                            경로로 분기. 프롬프트는 Python Boolean 출력만 허용하도록 제약.
+                            검색을 돌리면 비용과 시간이 낭비됩니다. 그래서 먼저 LLM 을 한 번 호출해
+                            <code>True/False</code> 를 받고, chitchat 이면 친근한 말투로 바로 답하고 아니면 도구 사용
+                            경로로 보냅니다. 프롬프트는 Python Boolean 만 출력하도록 제한했습니다.
                         </p>
                         <div class="tag-row">
                             <span class="mini-tag">routing</span>

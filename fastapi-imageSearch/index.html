@@ -82,8 +82,8 @@
                     <div class="highlight-body">
                         <h3>의존성 주입 + 모델 싱글톤</h3>
                         <p>
-                            CLIP <code>ViT-L/14</code> · YOLOv8 · Qdrant 클라이언트는 메모리·초기화 비용이 큰 자원.
-                            매 요청마다 새로 만들면 응답 시간이 폭증하므로
+                            CLIP <code>ViT-L/14</code> · YOLOv8 · Qdrant 클라이언트는 메모리와 초기화 비용이 큰 자원입니다.
+                            요청마다 새로 만들면 매번 모델을 로드하느라 응답이 크게 늦어지므로
                             <code>get_qdrant_client</code> · <code>get_embedding_model</code> · <code>get_yolo_model</code>
                             을 <code>@lru_cache(maxsize=1)</code> 로 감싸 프로세스당 1회만 로드합니다.
                             FastAPI 라우터는 <code>Depends</code> 로, Celery 워커는 같은 캐시 함수를 직접 호출해
@@ -103,9 +103,9 @@
                         <h3>lifespan 워밍업으로 콜드 스타트 제거</h3>
                         <p>
                             <code>@asynccontextmanager</code> 기반 lifespan 에서 부팅 시 Qdrant 클라이언트 ·
-                            CLIP · YOLO 를 미리 로드합니다. 첫 요청에서 추론과 모델 로드가 동시에 발생하면
-                            수 초의 지연이 생기는데, 워밍업으로 이 콜드 스타트를 완전히 차단.
-                            종료 시점에는 Qdrant 클라이언트를 명시적으로 <code>close()</code> 해 graceful shutdown.
+                            CLIP · YOLO 를 미리 로드합니다. 첫 요청에서 추론과 모델 로드가 겹치면
+                            수 초의 지연이 생기는데, 워밍업으로 이 지연을 없앴습니다.
+                            종료 시점에는 Qdrant 클라이언트를 명시적으로 <code>close()</code> 해 정상 종료합니다.
                         </p>
                         <div class="tag-row">
                             <span class="mini-tag">lifespan</span>
@@ -118,7 +118,7 @@
                 <article class="highlight">
                     <div class="highlight-num">003</div>
                     <div class="highlight-body">
-                        <h3>입력 검증 — bbox 임계치</h3>
+                        <h3>입력 검증: bbox 임계치</h3>
                         <p>
                             YOLO 가 검출한 객체가 너무 작거나(점·반점 수준) 비율이 비정상이면
                             CLIP 임베딩이 노이즈가 되어 무관한 이미지를 매칭하기 쉽습니다.
@@ -171,7 +171,7 @@
                     <span class="rm-pri med">P1</span>
                     <div class="rm-body">
                         <h4>Celery 워커 안정성 보강</h4>
-                        <p><code>task_acks_late</code> · <code>worker_prefetch_multiplier=1</code> · <code>task_time_limit</code> 정책 추가. GPU 작업이 멈추거나 워커가 죽었을 때 안전한 재처리 보장.</p>
+                        <p><code>task_acks_late</code> · <code>worker_prefetch_multiplier=1</code> · <code>task_time_limit</code> 정책 추가. GPU 작업이 멈추거나 워커가 죽어도 작업이 다시 처리되게 함.</p>
                         <div class="tag-row">
                             <span class="mini-tag">acks_late</span>
                             <span class="mini-tag">prefetch</span>
@@ -193,7 +193,7 @@
                 <div class="rm-item">
                     <span class="rm-pri med">P1</span>
                     <div class="rm-body">
-                        <h4>테스트 작성 — DI mock 활용</h4>
+                        <h4>테스트 작성: DI mock 활용</h4>
                         <p><code>tests/</code> 디렉터리가 비어 있음. <code>app.dependency_overrides[get_qdrant_client]</code> 로 mock 주입해 라우터·서비스 단위 테스트 작성. 모델은 stub 으로 대체해 외부 자원 없이 실행.</p>
                         <div class="tag-row">
                             <span class="mini-tag">pytest</span>
