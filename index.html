@@ -214,9 +214,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-top: 32px;
-            padding-top: 28px;
-            border-top: 1px solid var(--line);
+            margin-top: 40px;
         }
         .btn {
             display: inline-flex;
@@ -318,30 +316,16 @@
         .projects {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
         }
         .project {
-            display: grid;
-            grid-template-columns: 56px 1fr;
-            column-gap: 16px;
-            padding: 32px 32px 28px 24px;
+            padding: 32px 32px 28px;
             border: 1px solid var(--line);
             border-radius: var(--r-lg);
             background: var(--bg);
             transition: border-color .2s, box-shadow .2s;
         }
         .project:hover { border-color: var(--line-bold); box-shadow: var(--shadow); }
-
-        .project-num {
-            grid-row: span 2;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--fg-faint);
-            font-variant-numeric: tabular-nums;
-            padding-top: 5px;
-            text-align: right;
-        }
-        .project-body, .project-actions { grid-column: 2; min-width: 0; }
 
         .project-body h3 {
             font-size: 21px;
@@ -472,9 +456,7 @@
         .project-link:hover .arrow { transform: translateX(2px); }
 
         @media (max-width: 600px) {
-            .project { grid-template-columns: 1fr; padding: 24px 20px; }
-            .project-num { grid-row: auto; text-align: left; padding: 0 0 4px; }
-            .project-body, .project-actions { grid-column: 1; }
+            .project { padding: 24px 20px; }
             .project-link { flex: 1 1 auto; justify-content: center; }
         }
 
@@ -600,8 +582,7 @@
 
             <div class="projects">
 
-                <article class="project">
-                    <div class="project-num">001</div>
+                <!-- <article class="project">
                     <div class="project-body">
                         <h3>레거시 리팩토링 하네스</h3>
                         <div class="project-meta">
@@ -635,10 +616,9 @@
                             <i class="fas fa-chevron-right arrow"></i>
                         </a>
                     </div>
-                </article>
+                </article> -->
 
                 <article class="project">
-                    <div class="project-num">002</div>
                     <div class="project-body">
                         <h3>개발 문서 챗봇</h3>
                         <div class="project-meta">
@@ -650,13 +630,11 @@
                             </a>
                         </div>
                         <p>
-                            개발하며 기록한 문서들을 임베딩하여 벡터DB에 저장하고,
-                            사용자가 질문하면 근거와 함께 답변을 하는 RAG 챗봇입니다.
+                            개발하며 기록한 문서들을 Pinecone에 임베딩해 두고, LLM을 통해 검색하여 근거로 답하는 Next.js 기반 서버리스 RAG 챗봇입니다.
                         </p>
                         <p class="project-note">
                             <i class="fas fa-wand-magic-sparkles"></i>
                             <span>
-                                바이브 코딩 프로젝트
                                 main 브랜치에 머지되면 자동으로 빌드 후 배포됩니다.
                             </span>
                         </p>
@@ -667,7 +645,6 @@
                             <span class="project-tag">Pinecone</span>
                             <span class="project-tag">RAG</span>
                             <span class="project-tag">Vercel</span>
-                            <span class="project-tag">Vibe Coding</span>
                         </div>
                     </div>
                     <div class="project-actions">
@@ -685,18 +662,16 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">003</div>
                     <div class="project-body">
                         <h3>블로그 자동 포스팅</h3>
                         <div class="project-meta">
                             <span class="project-meta-item"><span class="meta-key">기간</span> 2026.03 — 2026.05</span>
                         </div>
                         <p>
-                            뉴스 리스트 중 랜덤 5개를 스크래핑하고, LLM으로 블로그 콘텐츠로 가공한 뒤
-                            티스토리에 발행까지 자동으로 처리하는 파이프라인.
+                            지정된 페이지 내 뉴스를 랜덤으로 5개 스크래핑하고, LLM으로 블로그 컨텐츠로 가공한 후 티스토리에 자동으로 발행하는 FastAPI 기반 자동화 파이프라인입니다.
                         </p>
                         <p class="project-rationale">
-                            로그인 (OAuth) 세션을 별도 저장하고 관리하며 본문 작성과 예약 발행까지 가능하게 만들었습니다.
+                            OAuth 로그인 세션을 별도 저장하며 관리하고 본문 작성과 예약 발행까지 가능하게 만들었습니다.
                         </p>
                         <div class="project-tags">
                             <span class="project-tag">Python</span>
@@ -722,24 +697,22 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">004</div>
                     <div class="project-body">
-                        <h3>RAG 에이전트 챗봇</h3>
+                        <h3>LangChain ReAct 에이전트 챗봇</h3>
                         <div class="project-meta">
                             <span class="project-meta-item"><span class="meta-key">기간</span> 2025.12 — 2026.02</span>
                         </div>
                         <p>
-                            <code>DB 검색</code> 과 <code>웹 검색</code> 도구를 자율 선택해 호출하고, 검색한 결과를 LLM이 종합해 답변을 생성합니다.
+                            ReAct 에이전트가 벡터 DB 검색과 웹 검색 중 맞는 도구를 골라 답하는 FastAPI 기반 RAG 챗봇입니다.
                         </p>
                         <p class="project-rationale">
                             단기 메모리 관리로 컨텍스트 연속성을 유지하며, 일상적인 대화 판별도 가능합니다.
                         </p>
                         <div class="project-tags">
-                            <span class="project-tag">Python</span>
                             <span class="project-tag">FastAPI</span>
                             <span class="project-tag">LangChain</span>
                             <span class="project-tag">LLM</span>
-                            <span class="project-tag">VectorDB</span>
+                            <span class="project-tag">Qdrant</span>
                             <span class="project-tag">Streamlit</span>
                             <span class="project-tag">Celery</span>
                             <span class="project-tag">Redis</span>
@@ -761,27 +734,22 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">005</div>
                     <div class="project-body">
                         <h3>이미지 렌즈 (유사 이미지 검색)</h3>
                         <div class="project-meta">
                             <span class="project-meta-item"><span class="meta-key">기간</span> 2025.09 — 2025.11</span>
                         </div>
                         <p>
-                            업로드한 이미지의 객체를 판별하여 가장 유사한 이미지들을 반환합니다.
-                            이미지 대상 확인 및 임베딩 → 벡터DB 저장
-                            사용자 검색 시 유사도 판별 후 반환하여 제공합니다.
+                            사용자가 업로드한 이미지를 YOLOv8로 객체를 찾아 잘라내고, CLIP 임베딩과 Qdrant 벡터 검색으로 가장 유사한 이미지를 찾는 FastAPI 기반 API입니다.
                         </p>
                         <p class="project-rationale">
                             Celery 워커가 백그라운드에서 임베딩 처리하여 API 응답 경로에 영향을 주지 않도록 분리하여 처리합니다.
                         </p>
                         <div class="project-tags">
-                            <span class="project-tag">Python</span>
                             <span class="project-tag">FastAPI</span>
                             <span class="project-tag">YOLOv8</span>
                             <span class="project-tag">CLIP</span>
                             <span class="project-tag">Qdrant</span>
-                            <span class="project-tag">PyTorch</span>
                             <span class="project-tag">Celery</span>
                             <span class="project-tag">Redis</span>
                             <span class="project-tag">Docker</span>
@@ -802,21 +770,19 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">006</div>
                     <div class="project-body">
                         <h3>멀티 엔진 OCR</h3>
                         <div class="project-meta">
                             <span class="project-meta-item"><span class="meta-key">기간</span> 2025.06 — 2025.08</span>
                         </div>
                         <p>
-                            <code>EasyOCR · PaddleOCR · Naver Clova</code> OCR들을 단일 인터페이스로 추상화한 멀티 엔진 API.
-                            동기 / 비동기 이중 엔드포인트로 가벼운 요청은 즉시 응답하고, 무거운 잡은 <code>Celery 워커</code>가 백그라운드에서 처리합니다.
+                            EasyOCR, PaddleOCR, Naver Clova 세 가지 OCR 엔진을 단일 인터페이스로 추상화한 멀티 엔진 API.
+                            동기 / 비동기 이중 엔드포인트로 가벼운 요청은 즉시 응답하고, 무거운 잡은 Celery 워커가 백그라운드에서 처리하는 API입니다.
                         </p>
                         <p class="project-rationale">
                             엔진은 ABC로 추상화하고 신규 엔진 확장이 용이하게 설계했습니다.
                         </p>
                         <div class="project-tags">
-                            <span class="project-tag">Python</span>
                             <span class="project-tag">FastAPI</span>
                             <span class="project-tag">Celery</span>
                             <span class="project-tag">Redis</span>
@@ -841,7 +807,6 @@
                 </article>
 
                 <article class="project">
-                    <div class="project-num">007</div>
                     <div class="project-body">
                         <h3>관리자 CMS</h3>
                         <div class="project-meta">
@@ -855,11 +820,9 @@
                             PHPUnit 테스트를 활용해 유지보수 비용을 줄였습니다.
                         </p>
                         <div class="project-tags">
-                            <span class="project-tag">PHP</span>
                             <span class="project-tag">Laravel</span>
                             <span class="project-tag">MySQL</span>
                             <span class="project-tag">MongoDB</span>
-                            <span class="project-tag">OAuth2</span>
                             <span class="project-tag">JWT</span>
                             <span class="project-tag">jQuery</span>
                             <span class="project-tag">Bootstrap</span>

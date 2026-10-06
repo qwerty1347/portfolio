@@ -47,11 +47,11 @@
             <h1 class="hero-title">
                 개발 문서 챗봇<span class="cursor">_</span>
             </h1>
-            <p class="hero-summary">
-                개발하며 기록한 문서들을 <code>gemini-embedding-001</code> 로 임베딩해 <code>Pinecone</code> 벡터DB 에 저장하고,
-                사용자가 질문하면 <code>Gemini</code> 가 근거와 함께 답변을 하는 RAG 챗봇입니다.
-                main 브랜치에 머지되면 <code>Vercel</code> 을 통해 빌드부터 배포까지 자동으로 처리합니다.
-            </p>
+            <ul class="hero-summary">
+                <li>Next.js 15로 만들어 Vercel에 배포한 서버리스 RAG 채팅 서비스입니다.</li>
+                <li>개발하며 기록한 문서들을 Gemini로 임베딩해 Pinecone 벡터DB에 저장하고, 사용자가 질문하면 LLM이 근거와 함께 답변합니다.</li>
+                <li>main 브랜치에 머지되면 Vercel을 통해 빌드부터 배포까지 자동으로 처리합니다.</li>
+            </ul>
         </section>
 
         <!-- 01 ARCHITECTURE -->
@@ -76,7 +76,7 @@
             <h2 class="section-title">쓰기와 읽기의 분리 · index → search → answer</h2>
 
             <p class="section-lead">
-                대상은 <code>dev-notes</code> 저장소 내 문서들 입니다.
+                대상은 <code>dev-notes</code> 저장소 내 문서들입니다.
             </p>
 
             <h3 class="diagram-title">인덱싱 · <code>npm run index:github</code> (로컬 수동 실행)</h3>
@@ -88,7 +88,7 @@
 
             <h3 class="diagram-title">채팅</h3>
             <p class="diagram-note">
-                자료에 없는 내용은 추측하지 말고 모른다고 답하라 를 명시해 환각을 억제하고,
+                "자료에 없는 내용은 추측하지 말고 모른다고 답하라"를 명시해 환각을 억제하고,
                 답변과 함께 근거가 된 노트를 출처 링크로 함께 내려 사용자가 직접 원문을 확인할 수 있게 했습니다.
             </p>
         </section>

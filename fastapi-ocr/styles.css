@@ -175,6 +175,24 @@ em { font-style: normal; color: var(--acc-dark); font-weight: 600; }
     color: var(--fg-mute);
     font-size: 17px;
     line-height: 1.85;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.hero-summary li {
+    position: relative;
+    padding-left: 20px;
+}
+.hero-summary li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: .92em;
+    width: 8px;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--fg-faint);
 }
 
 @media (max-width: 760px) {

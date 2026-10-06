@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAG 에이전트 챗봇</title>
+    <title>LangChain ReAct 에이전트 챗봇</title>
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <link rel="icon" href="../favicon-32.png" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="../apple-touch-icon.png">
@@ -31,7 +31,7 @@
 
     <header class="topbar">
         <a class="brand" href="../">
-            <span class="brand-prompt">~/</span><span>포트폴리오</span><span class="brand-sep">/</span><span class="brand-cur">RAG 에이전트 챗봇</span>
+            <span class="brand-prompt">~/</span><span>포트폴리오</span><span class="brand-sep">/</span><span class="brand-cur">LangChain ReAct 에이전트 챗봇</span>
         </a>
         <nav class="nav">
             <a href="#architecture">구성</a>
@@ -45,13 +45,15 @@
         <!-- HERO -->
         <section class="hero">
             <h1 class="hero-title">
-                RAG 에이전트 챗봇<span class="cursor">_</span>
+                LangChain ReAct 에이전트 챗봇<span class="cursor">_</span>
             </h1>
-            <p class="hero-summary">
-                사용자 검색 시 <code>Llama 3.1-8B</code> 가 일상 대화인지 판단하고,
-                <code>LangChain ReAct</code> 에이전트가 <code>Qdrant</code> 벡터 검색과
-                <code>SerpAPI</code> 웹 검색 도구를 스스로 선택해 호출합니다.
-            </p>
+            <ul class="hero-summary">
+                <li>FastAPI와 LangChain으로 만든 챗봇 API입니다. 사용자 질문이 일상 대화인지 정보 요청인지 LLM으로 분류해서 응답 경로를 나눕니다.</li>
+                <li>정보 요청이면 ReAct 에이전트가 벡터 DB 검색과 웹 검색 중 맞는 도구를 골라 호출합니다.</li>
+                <li>단기 메모리 관리로 최근 대화 내용을 기억해 문맥에 맞게 답합니다.</li>
+                <li>공지 데이터 임베딩은 Celery와 Redis로 백그라운드에서 처리합니다.</li>
+                <li>전체 서비스는 Docker Compose로 띄울 수 있게 구성했습니다.</li>
+            </ul>
         </section>
 
         <!-- 01 ARCHITECTURE -->
