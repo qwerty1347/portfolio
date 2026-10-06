@@ -46,8 +46,9 @@
             <h1 class="hero-title">
                 이미지 렌즈 (유사 이미지 검색)<span class="cursor">_</span>
             </h1>
+            <p class="hero-intro">FastAPI로 만든 유사 이미지 검색 API입니다.</p>
             <ul class="hero-summary">
-                <li>FastAPI로 만든 유사 이미지 검색 API입니다. 이미지를 업로드하면 YOLOv8로 신뢰도가 가장 높은 객체 하나를 찾아서 그 부분만 잘라냅니다.</li>
+                <li>이미지를 업로드하면 YOLOv8로 신뢰도가 가장 높은 객체 하나를 찾아서 그 부분만 잘라냅니다.</li>
                 <li>잘라낸 객체 이미지를 CLIP ViT-L-14로 768차원 벡터로 바꿉니다. 그다음 Qdrant에서 코사인 유사도 기준으로 가장 비슷한 이미지 5개를 찾아 돌려줍니다.</li>
                 <li>검색 대상인 데이터셋 이미지는 Celery와 Redis로 백그라운드에서 한꺼번에 임베딩합니다.</li>
                 <li>전체 서비스는 Docker Compose로 띄울 수 있게 구성했습니다.</li>

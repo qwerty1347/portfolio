@@ -46,8 +46,8 @@
             <h1 class="hero-title">
                 멀티 엔진 OCR<span class="cursor">_</span>
             </h1>
+            <p class="hero-intro">EasyOCR, PaddleOCR, Naver Clova OCR 세 가지 엔진을 인터페이스로 추상화한 멀티 엔진 OCR API입니다.</p>
             <ul class="hero-summary">
-                <li>EasyOCR, PaddleOCR, Naver Clova OCR 세 가지 엔진을 인터페이스로 추상화한 멀티 엔진 OCR API입니다.</li>
                 <li>가벼운 요청은 동기 엔드포인트에서 바로 결과를 돌려줍니다. 무거운 요청은 잡으로 등록해 Celery와 Redis 워커가 백그라운드에서 처리합니다.</li>
                 <li>잡 진행 상태(pending → started → success/failed)는 MySQL에 저장하고, 모든 OCR 엔드포인트는 JWT 인증으로 보호됩니다.</li>
                 <li>전체 서비스는 Docker Compose로 띄울 수 있게 구성했습니다.</li>

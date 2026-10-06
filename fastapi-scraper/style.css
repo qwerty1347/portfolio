@@ -170,6 +170,16 @@ em { font-style: normal; color: var(--acc-dark); font-weight: 600; }
     margin-bottom: 20px;
 }
 
+.hero-intro {
+    max-width: 720px;
+    color: var(--fg);
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.7;
+    letter-spacing: -.01em;
+    margin-bottom: 20px;
+}
+
 .hero-summary {
     max-width: 720px;
     color: var(--fg-mute);
@@ -182,21 +192,22 @@ em { font-style: normal; color: var(--acc-dark); font-weight: 600; }
 }
 .hero-summary li {
     position: relative;
-    padding-left: 20px;
+    padding-left: 22px;
 }
+/* 터미널 프롬프트 모양 글머리 */
 .hero-summary li::before {
-    content: '';
+    content: '>';
     position: absolute;
-    left: 2px;
-    top: .92em;
-    width: 8px;
-    height: 2px;
-    border-radius: 1px;
-    background: var(--fg-faint);
+    left: 0;
+    top: 0;
+    font-family: var(--mono);
+    font-weight: 500;
+    color: var(--acc);
 }
 
 @media (max-width: 760px) {
     .hero { padding: 56px 0 44px; }
+    .hero-intro { font-size: 18px; }
 }
 
 /* =====================================================================
